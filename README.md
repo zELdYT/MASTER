@@ -1,38 +1,38 @@
-## MASTER: Швейцарский нож для C
+## MASTER: The Swiss Army Knife for C
 
-MASTER - это амбициозный open-source проект, написанный одним разработчиком, который стремится предоставить разработчикам широкий спектр полезных функций на языке C. От обработки мультимедиа до квантовых вычислений, MASTER нацелен на то, чтобы стать вашим универсальным инструментом для решения самых разных задач.
+MASTER is an ambitious open-source project developed by a single developer, aiming to provide a wide range of powerful features in the C programming language. From multimedia processing to quantum computing, MASTER aspires to be your go-to tool for tackling diverse challenges.
 
-**Что уже есть:**
+**What's Already Included:**
 
-* **Мультимедиа:**
-    * Парсинг BMP и WAV файлов.
-    * Создание WAV файлов.
-    * Парсинг CSV, TSV файлов.
-* **Кодирование и сжатие:**
-    * LZ77, LZ78, RLE алгоритмы сжатия.
-    * Функции для работы с Base64, Base32 и Base16.
-* **Математика:**
-    * Библиотека для работы с большими целыми числами (bigint).
-    * Кватернионы, октанионы, седенионы и комплексные числа.
-    * Ряды (включая ряд Тейлора).
-    * Статистические функции (аналогично модулю statistics в Python).
-* **Случайные числа:**
-    * Различные генераторы случайных чисел, включая Mersenne Twister.
-* **Прочее:**
-    * Парсер COFF файлов.
-    * Перечисления (включая хирагану и катакану).
-    * Материалы для OpenGL.
-    * Функции хэширования (включая SHA-3 семейство).
-    * Работа с динамическими матрицами.
-    * Симуляция кубитов.
+* **Multimedia:**
+    * Parsing BMP and WAV files.
+    * Creating WAV files.
+    * Parsing CSV and TSV files.
+* **Encoding and Compression:**
+    * LZ77, LZ78, and RLE compression algorithms.
+    * Functions for Base64, Base32, and Base16 encoding.
+* **Mathematics:**
+    * A library for working with large integers (bigint).
+    * Quaternions, octonions, sedenions, and complex numbers.
+    * Series (including Taylor series).
+    * Statistical functions (similar to Python's `statistics` module).
+* **Random Numbers:**
+    * Various random number generators, including the Mersenne Twister.
+* **Other Features:**
+    * COFF file parser.
+    * Enumerations (including Hiragana and Katakana).
+    * Materials for OpenGL.
+    * Hashing functions (including the SHA-3 family).
+    * Dynamic matrix operations.
+    * Qubit simulation.
 
-Следите за обновлениями и присоединяйтесь к проекту MASTER!
+Stay tuned for updates and join the MASTER project today!
 
-# РЕЛИЗ СКОРО!
-Библиотека появится со всеми файлами и со своей уникальной структурой 5 декабря ровно в полночь по московскому времени.
-На данный момент ведутся работы ***(ПРИМЕРНЫЕ ДАННЫЕ)*** :
-* Структура библиотеки - **80%**
-* Документированность библиотеки - **20%**
-* Некоторые функции - **33%**
+# COMING SOON!
+The library will be released with its unique structure and all files on **December 5th at midnight (Moscow time)**.  
+Current development progress **(APPROXIMATE ESTIMATES)**:
+* Library structure - **80%**
+* Documentation - **20%**
+* Function implementation - **33%**
 
-// be master~
+// Be master~
