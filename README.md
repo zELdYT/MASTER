@@ -28,8 +28,7 @@ MASTER is an ambitious open-source project developed by a single developer, aimi
 
 Stay tuned for updates and join the MASTER project today!
 
-# COMING SOON!
-The library will be released with its unique structure and all files on **December 5th at midnight (Moscow time)**.  
+# COMING SOON!  
 Current development progress **(APPROXIMATE ESTIMATES)**:
 * Library structure - **80%**
 * Documentation - **20%**
