@@ -32,6 +32,6 @@ Stay tuned for updates and join the MASTER project today!
 Current development progress **(APPROXIMATE ESTIMATES)**:
 * Library structure - **80%**
 * Documentation - **20%**
-* Function implementation - **33%**
+* Function implementation - **40%**
 
 // Be master~
