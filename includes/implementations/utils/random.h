@@ -50,7 +50,7 @@ MASTER_random_LCG64_set( const UI8 new_seed ) {
  * "o" must be malloced with size (output_len)
 */
 void
-MASTER_random_KDF1( const char * s, UI4 l, char * o, void (*hashfunc)(const char *, UI4, UI1 *), const UI4 hash_len_output, const UI4 output_len ) {
+MASTER_random_KDF1( const char * s, UI4 l, UI1 * o, void (*hashfunc)(const char *, UI4, UI1 *), const UI4 hash_len_output, const UI4 output_len ) {
 	const UI4 k = output_len / hash_len_output + (output_len % hash_len_output > 0);
 	UI4 i = 0;
 	l += 4;
@@ -67,7 +67,7 @@ MASTER_random_KDF1( const char * s, UI4 l, char * o, void (*hashfunc)(const char
 }
 
 void
-MASTER_random_KDF2( const char * s, UI4 l, char * o, void (*hashfunc)(const char *, UI4, UI1 *), const UI4 hash_len_output, const UI4 output_len ) {
+MASTER_random_KDF2( const char * s, UI4 l, UI1 * o, void (*hashfunc)(const char *, UI4, UI1 *), const UI4 hash_len_output, const UI4 output_len ) {
 	const UI4 k = output_len / hash_len_output + (output_len % hash_len_output > 0);
 	UI4 i = 1;
 	l += 4;
@@ -84,7 +84,7 @@ MASTER_random_KDF2( const char * s, UI4 l, char * o, void (*hashfunc)(const char
 }
 
 void
-MASTER_random_KDF3( const char * s, UI4 l, char * o, void (*hashfunc)(const char *, UI4, UI1 *), const UI4 hash_len_output, const UI4 output_len, const UI4 pamt ) {
+MASTER_random_KDF3( const char * s, UI4 l, UI1 * o, void (*hashfunc)(const char *, UI4, UI1 *), const UI4 hash_len_output, const UI4 output_len, const UI4 pamt ) {
 	const UI4 k = output_len / hash_len_output + (output_len % hash_len_output > 0);
 	UI4 i = 0;
 	l += pamt;
@@ -457,6 +457,74 @@ MASTER_random_xoshiro256starstar_get(MASTER_random_xoshiro256starstar * const xs
 // !!# xoshiro256**
 
 // !# XorShift
+
+#if defined(__x86_64__) || defined(__i386__)
+#include <cpuid.h>
+#endif
+
+// #! RDRAND
+
+unsigned char
+MASTER_rdrand_supported(void) {
+#if defined(__x86_64__) || defined(__i386__)
+    unsigned int eax, ebx, ecx, edx;
+    if (__get_cpuid(1, &eax, &ebx, &ecx, &edx))
+        return (ecx & bit_RDRND) != 0;
+#endif /* Processor */
+    return 0;
+}
+
+#if defined(__x86_64__) || defined(__i386__)
+
+#define MASTER_RDRAND_CONTENT { \
+    unsigned char ok; \
+    __asm__ volatile ("rdrand %0; setc %1" : "=r" (*rand), "=qm" (ok)); \
+    return ok; }
+
+unsigned char
+MASTER_rdrand16_get(unsigned short * rand) MASTER_RDRAND_CONTENT
+unsigned char
+MASTER_rdrand32_get(unsigned int * rand) MASTER_RDRAND_CONTENT
+unsigned char
+MASTER_rdrand64_get(unsigned long long * rand) MASTER_RDRAND_CONTENT
+
+#undef MASTER_RDRAND_CONTENT
+
+#endif /* Processor */
+
+// !# RDRAND
+
+// #! RDSEED
+
+unsigned char MASTER_rdseed_supported(void) {
+#if defined(__x86_64__) || defined(__i386__)
+    unsigned int eax, ebx, ecx, edx;
+    if (__get_cpuid(1, &eax, &ebx, &ecx, &edx))
+        return (ecx & (1 << 18)) != 0;
+#endif /* Processor */
+    return 0;
+}
+
+#if defined(__x86_64__) || defined(__i386__)
+
+#define MASTER_RDSEED_CONTENT { \
+    unsigned char ok; \
+    __asm__ volatile ("rdseed %0; setc %1" : "=r" (*rand), "=qm" (ok)); \
+    return ok; \
+}
+
+unsigned char
+MASTER_rdseed16_get(unsigned short * rand) MASTER_RDSEED_CONTENT
+unsigned char
+MASTER_rdseed32_get(unsigned int * rand) MASTER_RDSEED_CONTENT
+unsigned char
+MASTER_rdseed64_get(unsigned long long * rand) MASTER_RDSEED_CONTENT
+
+#undef MASTER_RDSEED_CONTENT
+
+#endif /* Processor */
+
+// !# RDSEED
 
 #endif /* __MASTER_RANDOM_INCLUDE_H__ */
 
