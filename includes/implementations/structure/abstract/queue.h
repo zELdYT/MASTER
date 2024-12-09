@@ -40,7 +40,7 @@ MASTER_queue_init( void ) {
 }
 
 int
-MASTER_queue_push( MASTER_queue * const queue, const void * value, const unsigned long size ) {
+MASTER_queue_push( MASTER_queue * const queue, const void * value, const UI4 size ) {
 	if (!queue) return MASTER_GOT_NULL_ARGUMENT;
 	MASTER_queue_node * node = (MASTER_queue_node *)MASTER_malloc(sizeof(MASTER_queue_node));
 	if (!node) return MASTER_FAILED_MALLOC;
@@ -62,7 +62,7 @@ MASTER_queue_push( MASTER_queue * const queue, const void * value, const unsigne
 }
 
 int
-MASTER_queue_pop( MASTER_queue * const queue, void * const value, const unsigned long size ) {
+MASTER_queue_pop( MASTER_queue * const queue, void * const value, const UI4 size ) {
 	if (!queue) return MASTER_GOT_NULL_ARGUMENT;
 	if (queue->__start == queue->__end && queue->__start == 0) return MASTER_QUEUE_IS_EMPTY;
 	memcpy(value, queue->__start->__value, size);
@@ -77,13 +77,13 @@ MASTER_queue_pop( MASTER_queue * const queue, void * const value, const unsigned
 }
 
 int
-MASTER_queue_peek( const MASTER_queue * const queue, void * const value, const unsigned long size ) {
+MASTER_queue_peek( const MASTER_queue * const queue, void * const value, const UI4 size ) {
 	if (!queue) return MASTER_GOT_NULL_ARGUMENT;
 	memcpy(value, queue->__start->__value, size);
 	return MASTER_NO_ERROR;
 }
 
-unsigned char
+UI1
 MASTER_queue_isEmpty( const MASTER_queue * const queue ) {
 	return (queue) ? (queue->__start == 0) : 0;
 }

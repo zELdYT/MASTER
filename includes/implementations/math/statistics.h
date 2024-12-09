@@ -11,8 +11,9 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include "../../headers/enumeration/master_enum.h"
 
-#define __MASTER_CREATE_SOMEFUNC( __MASTER_MACROS_CREATE_FUNC ) \
+#define __MASTER_STATISTICS_CREATE_SOMEFUNC( __MASTER_MACROS_CREATE_FUNC ) \
 __MASTER_MACROS_CREATE_FUNC(char,        c)  \
 __MASTER_MACROS_CREATE_FUNC(short,       h)  \
 __MASTER_MACROS_CREATE_FUNC(long,        l)  \
@@ -21,27 +22,27 @@ __MASTER_MACROS_CREATE_FUNC(float,       f)  \
 __MASTER_MACROS_CREATE_FUNC(double,      d)  \
 __MASTER_MACROS_CREATE_FUNC(long double, ld)
 
-#define __MASTER_CREATE_SUM_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_SUM_FUNC(type, suff) \
 type \
-MASTER_sum##suff( const type * array, unsigned long __l) { \
+MASTER_sum##suff( const type * array, UI4 __l) { \
 	type S = 0; \
-	unsigned long i = 0; \
+	UI4 i = 0; \
 	for (; i < __l; i++) \
 		S += array[i]; \
 	return S; \
 }
 
-#define __MASTER_CREATE_MEAN_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_MEAN_FUNC(type, suff) \
 type \
-MASTER_mean##suff( const type * array, unsigned long __l) { \
+MASTER_mean##suff( const type * array, UI4 __l) { \
 	return MASTER_sum##suff(array, __l) / __l; \
 }
 
-#define __MASTER_CREATE_FMEAN_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_FMEAN_FUNC(type, suff) \
 type \
-MASTER_fmean##suff( const type * array, const type * weights, unsigned long __l) { \
+MASTER_fmean##suff( const type * array, const type * weights, UI4 __l) { \
 	type num = 0; type den = 0; \
-	unsigned long i = 0; \
+	UI4 i = 0; \
 	for (; i < __l; i++) { \
 		num += array[i] * weights[i]; \
 		den += weights[i]; \
@@ -49,48 +50,48 @@ MASTER_fmean##suff( const type * array, const type * weights, unsigned long __l)
 	return num / den; \
 } 
 
-#define __MASTER_CREATE_GEOMETRIC_MEAN_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_GEOMETRIC_MEAN_FUNC(type, suff) \
 type \
-MASTER_geometric_mean##suff( const type * array, unsigned long __l) { \
+MASTER_geometric_mean##suff( const type * array, UI4 __l) { \
 	type P = 1; \
-	unsigned long i = 0; \
+	UI4 i = 0; \
 	for (; i < __l; i++) \
 		P *= array[i]; \
 	return pow(P, 1.0/__l); \
 }
 
-#define __MASTER_CREATE_HARMONIC_MEAN_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_HARMONIC_MEAN_FUNC(type, suff) \
 type \
-MASTER_harmonic_mean##suff( const type * array, const type * weights, unsigned long __l) { \
+MASTER_harmonic_mean##suff( const type * array, const type * weights, UI4 __l) { \
 	type S = MASTER_sum##suff(weights, __l); \
 	type T = 0; \
-	unsigned long i = 0; \
+	UI4 i = 0; \
 	for (; i < __l; i++) \
 		T += weights[i] / array[i]; \
 	return S / T; \
 }
 
-#define __MASTER_CREATE_MEDIAN_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_MEDIAN_FUNC(type, suff) \
 type \
-MASTER_median##suff( type * array, unsigned long __l ) { \
+MASTER_median##suff( type * array, UI4 __l ) { \
 	return (__l % 2 == 0) ? (array[__l / 2 - 1] + array[__l / 2]) / 2.0 : array[__l / 2]; }
 
-#define __MASTER_CREATE_MEDIAN_LOW_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_MEDIAN_LOW_FUNC(type, suff) \
 type \
-MASTER_median##suff##_low( type * array, unsigned long __l ) { \
+MASTER_median##suff##_low( type * array, UI4 __l ) { \
 	return (__l % 2 == 0) ? array[__l / 2 - 1] : array[__l / 2]; }
 
-#define __MASTER_CREATE_MEDIAN_HIGH_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_MEDIAN_HIGH_FUNC(type, suff) \
 type \
-MASTER_median##suff##_high( type * array, unsigned long __l ) { \
+MASTER_median##suff##_high( type * array, UI4 __l ) { \
 	return array[__l / 2]; }
 
 // array must be sorted
-#define __MASTER_CREATE_MEDIAN_GROUPED_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_MEDIAN_GROUPED_FUNC(type, suff) \
 type \
-MASTER_median_grouped##suff( type * array, unsigned long __l, type interval ) { \
+MASTER_median_grouped##suff( type * array, UI4 __l, type interval ) { \
 	type x = array[__l / 2]; \
-	unsigned long i = __l, j = __l, k; \
+	UI4 i = __l, j = __l, k; \
 	for (k = 0; k < __l; k++) \
 		if (array[k] >= x) { \
 			i = k; \
@@ -104,15 +105,15 @@ MASTER_median_grouped##suff( type * array, unsigned long __l, type interval ) { 
 	return (x - interval / 2.0) + interval * (__l / 2 - i) / (j - i); \
 }
 
-#define __MASTER_CREATE_MODE_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_MODE_FUNC(type, suff) \
 type \
-MASTER_mode##suff( type * array, unsigned long __l ) { \
+MASTER_mode##suff( type * array, UI4 __l ) { \
 	type most_common = -1; \
-	unsigned long repeates = 0; \
+	UI4 repeates = 0; \
 	type * unical = (type *)malloc(0); \
-	unsigned long * count  = (unsigned long *)malloc(0); \
-	unsigned long i = 0, j, len = 0; \
-	unsigned char is_inlist; \
+	UI4 * count  = (UI4 *)malloc(0); \
+	UI4 i = 0, j, len = 0; \
+	UI1 is_inlist; \
 	for (; i < __l; i++) { \
 		is_inlist = 0; \
 		for (j = 0; j < len; j++) { \
@@ -124,7 +125,7 @@ MASTER_mode##suff( type * array, unsigned long __l ) { \
 		} \
 		if (is_inlist == 0) { \
 			unical = (type *)realloc(unical, ++len * sizeof(type)); \
-			count  = (unsigned long *)realloc(count,  len * sizeof(unsigned long)); \
+			count  = (UI4 *)realloc(count,  len * sizeof(UI4)); \
 			unical[len - 1] = array[i]; \
 			count[len - 1] = 1; \
 		} \
@@ -142,17 +143,17 @@ MASTER_mode##suff( type * array, unsigned long __l ) { \
 }
 
 // USING MALLOC! UNSAFE
-#define __MASTER_CREATE_MULTI_MODE_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_MULTI_MODE_FUNC(type, suff) \
 type * \
-MASTER_multi_mode##suff( const type * array, unsigned long __l, unsigned long * len_out ) { \
-	unsigned long repeates = 0; \
+MASTER_multi_mode##suff( const type * array, UI4 __l, UI4 * len_out ) { \
+	UI4 repeates = 0; \
 	type * array_out; \
-	unsigned long compared_count = 0; \
-	unsigned long next_compared_index = 0; \
+	UI4 compared_count = 0; \
+	UI4 next_compared_index = 0; \
 	type * unical = (type *)malloc(0); \
-	unsigned long * count  = (unsigned long *)malloc(0); \
-	unsigned long i = 0, j, len = 0; \
-	unsigned char is_inlist; \
+	UI4 * count  = (UI4 *)malloc(0); \
+	UI4 i = 0, j, len = 0; \
+	UI1 is_inlist; \
 	for (; i < __l; i++) { \
 		is_inlist = 0; \
 		for (j = 0; j < len; j++) { \
@@ -164,7 +165,7 @@ MASTER_multi_mode##suff( const type * array, unsigned long __l, unsigned long * 
 		} \
 		if (is_inlist == 0) { \
 			unical = (type *)realloc(unical, ++len * sizeof(type)); \
-			count  = (unsigned long *)realloc(count,  len * sizeof(unsigned long)); \
+			count  = (UI4 *)realloc(count,  len * sizeof(UI4)); \
 			unical[len - 1] = array[i]; \
 			count[len - 1] = 1; \
 		} \
@@ -188,44 +189,44 @@ MASTER_multi_mode##suff( const type * array, unsigned long __l, unsigned long * 
 }
 
 // mu = sum(array) / len(array)
-#define __MASTER_CREATE_PSTDEV_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_PSTDEV_FUNC(type, suff) \
 type \
-MASTER_pstdev##suff( const type * array, unsigned long __l, type mu) { \
+MASTER_pstdev##suff( const type * array, UI4 __l, type mu) { \
 	type S = 0; \
-	unsigned long i = 0; \
+	UI4 i = 0; \
 	for (; i < __l; i++) \
 		S += pow(array[i] - mu, 2); \
 	return sqrt(S/__l); \
 }
 
 // mu = sum(array) / len(array)
-#define __MASTER_CREATE_PVARIANCE_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_PVARIANCE_FUNC(type, suff) \
 type \
-MASTER_pvariance##suff( const type * array, unsigned long __l, type mu) { \
+MASTER_pvariance##suff( const type * array, UI4 __l, type mu) { \
 	type S = 0; \
-	unsigned long i = 0; \
+	UI4 i = 0; \
 	for (; i < __l; i++) \
 		S += pow(array[i] - mu, 2); \
 	return S/__l; \
 }
 
 // xbar = sum(array) / len(array)
-#define __MASTER_CREATE_STDEV_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_STDEV_FUNC(type, suff) \
 type \
-MASTER_stdev##suff( const type * array, unsigned long __l, type xbar) { \
+MASTER_stdev##suff( const type * array, UI4 __l, type xbar) { \
 	type S = 0; \
-	unsigned long i = 0; \
+	UI4 i = 0; \
 	for (; i < __l; i++) \
 		S += pow(array[i] - xbar, 2); \
 	return sqrt(S/(__l - 1)); \
 }
 
 // xbar = sum(array) / len(array)
-#define __MASTER_CREATE_VARIANCE_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_VARIANCE_FUNC(type, suff) \
 type \
-MASTER_variance##suff( const type * array, unsigned long __l, type xbar) { \
+MASTER_variance##suff( const type * array, UI4 __l, type xbar) { \
 	type S = 0; \
-	unsigned long i = 0; \
+	UI4 i = 0; \
 	for (; i < __l; i++) \
 		S += pow(array[i] - xbar, 2); \
 	return S/(__l - 1); \
@@ -233,13 +234,13 @@ MASTER_variance##suff( const type * array, unsigned long __l, type xbar) { \
 
 // array must be sorted
 // USING MALLOC! UNSAFE (outlen = n - 1)
-#define __MASTER_CREATE_QUANTILES_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_QUANTILES_FUNC(type, suff) \
 type * \
-MASTER_quantiles##suff( const type * array, unsigned long __l, unsigned long n, const unsigned char method) { \
+MASTER_quantiles##suff( const type * array, UI4 __l, UI4 n, const UI1 method) { \
 	type probs[__l]; \
 	type q; \
 	type * quantiles; \
-	unsigned long i = 0, k, ptr = 0; \
+	UI4 i = 0, k, ptr = 0; \
 	switch (method) { \
 		case MASTER_quantile_EXCLUSIVE: \
 			for (; i < __l; i++) \
@@ -269,25 +270,25 @@ typedef enum {
 	MASTER_quantile_INCLUSIVE = 0x40,
 } MASTER_quantile_methods;
 
-#define __MASTER_CREATE_COVARIANCE_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_COVARIANCE_FUNC(type, suff) \
 type \
-MASTER_covariance##suff( const type * array_1, const type * array_2, unsigned long __l) { \
+MASTER_covariance##suff( const type * array_1, const type * array_2, UI4 __l) { \
 	type x_mean = MASTER_sum##suff(array_1, __l) / __l; \
 	type y_mean = MASTER_sum##suff(array_2, __l) / __l; \
 	type covariance = 0; \
-	unsigned long i = 0; \
+	UI4 i = 0; \
 	for (; i < __l; i++) \
 		covariance += (array_1[i] - x_mean) * (array_2[i] - y_mean); \
 	return covariance / (__l - 1); \
 }
 
-#define __MASTER_CREATE_PEARSON_CORRELATION_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_PEARSON_CORRELATION_FUNC(type, suff) \
 type \
-MASTER_pearson_correlation##suff( const type * array_1, const type * array_2, unsigned long __l) { \
+MASTER_pearson_correlation##suff( const type * array_1, const type * array_2, UI4 __l) { \
 	type x_mean = MASTER_sum##suff(array_1, __l) / (type)__l; \
 	type y_mean = MASTER_sum##suff(array_2, __l) / (type)__l; \
 	type sum_xy = 0, sum_x_sq = 0, sum_y_sq = 0; \
-	unsigned long i; \
+	UI4 i; \
 	for (i = 0; i < __l; i++) \
 		sum_xy += (array_1[i] - x_mean) * (array_2[i] - y_mean); \
 	for (i = 0; i < __l; i++) \
@@ -299,13 +300,13 @@ MASTER_pearson_correlation##suff( const type * array_1, const type * array_2, un
 
 // array must be sorted
 // unsafe, but private
-#define __MASTER_CREATE_CORRELATION_PRIVATE_RANK_DATA_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_CORRELATION_PRIVATE_RANK_DATA_FUNC(type, suff) \
 static type * \
-__MASTER_rank_data##suff( const type * array, unsigned long __l) { \
+__MASTER_rank_data##suff( const type * array, UI4 __l) { \
 	type data [__l]; \
-	unsigned long index[__l]; \
+	UI4 index[__l]; \
 	type rank_sum, avg_rank; \
-	unsigned long i, j, k; \
+	UI4 i, j, k; \
 	for (i = 0; i < __l; i++) { \
 		data[i] = array[i]; \
 		index[i] = i; \
@@ -326,9 +327,9 @@ __MASTER_rank_data##suff( const type * array, unsigned long __l) { \
 	return ranks; \
 }
 
-#define __MASTER_CREATE_SPEARMAN_CORRELATION_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_SPEARMAN_CORRELATION_FUNC(type, suff) \
 type \
-MASTER_spearman_correlation##suff( const type * array_1, const type * array_2, unsigned long __l) { \
+MASTER_spearman_correlation##suff( const type * array_1, const type * array_2, UI4 __l) { \
 	type * rank_x = __MASTER_rank_data##suff(array_1, __l); \
 	type * rank_y = __MASTER_rank_data##suff(array_2, __l); \
 	type res = MASTER_pearson_correlation##suff(rank_x, rank_y, __l); \
@@ -338,9 +339,9 @@ MASTER_spearman_correlation##suff( const type * array_1, const type * array_2, u
 }
 
 // arrays must be sorted
-#define __MASTER_CREATE_CORRELATION_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_CORRELATION_FUNC(type, suff) \
 type \
-MASTER_correlation##suff( const type * array_1, const type * array_2, unsigned long __l, const unsigned char method) { \
+MASTER_correlation##suff( const type * array_1, const type * array_2, UI4 __l, const UI1 method) { \
 	switch (method) { \
 		case MASTER_correlation_LINEAR: return MASTER_pearson_correlation##suff(array_1, array_2, __l); \
 		case MASTER_correlation_RANKED: return MASTER_spearman_correlation##suff(array_1, array_2, __l); \
@@ -353,10 +354,10 @@ typedef enum {
 	MASTER_correlation_RANKED = 0x80,
 } MASTER_correlation_methods;
 
-#define __MASTER_CREATE_LINEAR_REGRESSION_FUNC(type, suff) \
+#define __MASTER_STATISTICS_CREATE_LINEAR_REGRESSION_FUNC(type, suff) \
 type \
-MASTER_linear_regression##suff( const type * array_1, const type * array_2, unsigned long __l, const unsigned char proportional, type * intercept) { \
-	unsigned long i; \
+MASTER_linear_regression##suff( const type * array_1, const type * array_2, UI4 __l, const UI1 proportional, type * intercept) { \
+	UI4 i; \
 	type num = 0, den = 0; \
 	type c_slope, c_intercept = 0; \
 	if (proportional) { \
@@ -380,28 +381,52 @@ MASTER_linear_regression##suff( const type * array_1, const type * array_2, unsi
 	return c_slope; \
 }
 
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_SUM_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_MEAN_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_FMEAN_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_GEOMETRIC_MEAN_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_HARMONIC_MEAN_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_MEDIAN_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_MEDIAN_LOW_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_MEDIAN_HIGH_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_MEDIAN_GROUPED_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_MODE_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_MULTI_MODE_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_PSTDEV_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_PVARIANCE_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_STDEV_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_VARIANCE_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_QUANTILES_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_COVARIANCE_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_PEARSON_CORRELATION_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_CORRELATION_PRIVATE_RANK_DATA_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_SPEARMAN_CORRELATION_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_CORRELATION_FUNC)
-__MASTER_CREATE_SOMEFUNC(__MASTER_CREATE_LINEAR_REGRESSION_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_SUM_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_MEAN_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_FMEAN_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_GEOMETRIC_MEAN_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_HARMONIC_MEAN_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_MEDIAN_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_MEDIAN_LOW_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_MEDIAN_HIGH_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_MEDIAN_GROUPED_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_MODE_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_MULTI_MODE_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_PSTDEV_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_PVARIANCE_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_STDEV_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_VARIANCE_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_QUANTILES_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_COVARIANCE_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_PEARSON_CORRELATION_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_CORRELATION_PRIVATE_RANK_DATA_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_SPEARMAN_CORRELATION_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_CORRELATION_FUNC)
+__MASTER_STATISTICS_CREATE_SOMEFUNC(__MASTER_STATISTICS_CREATE_LINEAR_REGRESSION_FUNC)
+
+#undef __MASTER_STATISTICS_CREATE_SOMEFUNC
+#undef __MASTER_STATISTICS_CREATE_SUM_FUNC
+#undef __MASTER_STATISTICS_CREATE_MEAN_FUNC
+#undef __MASTER_STATISTICS_CREATE_FMEAN_FUNC
+#undef __MASTER_STATISTICS_CREATE_GEOMETRIC_MEAN_FUNC
+#undef __MASTER_STATISTICS_CREATE_HARMONIC_MEAN_FUNC
+#undef __MASTER_STATISTICS_CREATE_MEDIAN_FUNC
+#undef __MASTER_STATISTICS_CREATE_MEDIAN_LOW_FUNC
+#undef __MASTER_STATISTICS_CREATE_MEDIAN_HIGH_FUNC
+#undef __MASTER_STATISTICS_CREATE_MEDIAN_GROUPED_FUNC
+#undef __MASTER_STATISTICS_CREATE_MODE_FUNC
+#undef __MASTER_STATISTICS_CREATE_MULTI_MODE_FUNC
+#undef __MASTER_STATISTICS_CREATE_PSTDEV_FUNC
+#undef __MASTER_STATISTICS_CREATE_PVARIANCE_FUNC
+#undef __MASTER_STATISTICS_CREATE_STDEV_FUNC
+#undef __MASTER_STATISTICS_CREATE_VARIANCE_FUNC
+#undef __MASTER_STATISTICS_CREATE_QUANTILES_FUNC
+#undef __MASTER_STATISTICS_CREATE_COVARIANCE_FUNC
+#undef __MASTER_STATISTICS_CREATE_PEARSON_CORRELATION_FUNC
+#undef __MASTER_STATISTICS_CREATE_CORRELATION_PRIVATE_RANK_DATA_FUNC
+#undef __MASTER_STATISTICS_CREATE_SPEARMAN_CORRELATION_FUNC
+#undef __MASTER_STATISTICS_CREATE_CORRELATION_FUNC
+#undef __MASTER_STATISTICS_CREATE_LINEAR_REGRESSION_FUNC
 
 #endif /* __MASTER_STATISTICS_INCLUDE_H__ */
 

@@ -14,19 +14,20 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../headers/enumeration/master_enum.h"
 
 #ifdef __MASTER_MACROS_TRASHCAN__
 typedef struct {
 	void * __ptr;
-	unsigned long __byte_count;
+	UI4 __byte_count;
 } Trash;
 Trash * MASTER_trashcan;
-unsigned long MASTER_trashcan_len = 0;
+UI4 MASTER_trashcan_len = 0;
 #endif /* __MASTER_MACROS_TRASHCAN__ */
 
 #ifdef __MASTER_MACROS_TRASHCAN__
 void *
-MASTER_malloc(const unsigned long __byte_count) {
+MASTER_malloc(const UI4 __byte_count) {
 	MASTER_trashcan = (Trash *)realloc(MASTER_trashcan, sizeof(Trash) * ++MASTER_trashcan_len);
 	MASTER_trashcan[MASTER_trashcan_len - 1].__ptr = malloc(__byte_count);
 	MASTER_trashcan[MASTER_trashcan_len - 1].__byte_count = __byte_count;
@@ -38,7 +39,7 @@ MASTER_malloc(const unsigned long __byte_count) {
 
 #ifdef __MASTER_MACROS_TRASHCAN__
 void *
-MASTER_calloc(const unsigned long __item_count, const unsigned long __item_size) {
+MASTER_calloc(const UI4 __item_count, const UI4 __item_size) {
 	MASTER_trashcan = (Trash *)realloc(MASTER_trashcan, sizeof(Trash) * ++MASTER_trashcan_len);
 	MASTER_trashcan[MASTER_trashcan_len - 1].__ptr = calloc(__item_count, __item_size);
 	MASTER_trashcan[MASTER_trashcan_len - 1].__byte_count = __item_count * __item_size;
@@ -50,8 +51,8 @@ MASTER_calloc(const unsigned long __item_count, const unsigned long __item_size)
 
 #ifdef __MASTER_MACROS_TRASHCAN__
 void *
-MASTER_realloc(void * const __ptr, const unsigned long __byte_count) {
-	unsigned long i = 0;
+MASTER_realloc(void * const __ptr, const UI4 __byte_count) {
+	UI4 i = 0;
 	for (; i < MASTER_trashcan_len; i++)
 		if (MASTER_trashcan[i].__ptr == __ptr) {
 			MASTER_trashcan[i].__ptr = realloc(__ptr, __byte_count);
@@ -67,7 +68,7 @@ MASTER_realloc(void * const __ptr, const unsigned long __byte_count) {
 #ifdef __MASTER_MACROS_TRASHCAN__
 void
 MASTER_free(void * const __ptr) {
-	unsigned long i = 0, j;
+	UI4 i = 0, j;
 	for (; i < MASTER_trashcan_len; i++) {
 		if (MASTER_trashcan[i].__ptr == __ptr) {
 			Trash buf;
@@ -90,7 +91,7 @@ MASTER_free(void * const __ptr) {
 void
 MASTER_output(void) {
 	if (MASTER_trashcan_len > 0) {
-		unsigned long i;
+		UI4 i;
 		printf("FOUNDED UNCLEANED!\n");
 		for (i = 0; i < MASTER_trashcan_len; i++) {
 			if (MASTER_trashcan[i].__ptr == 0) {

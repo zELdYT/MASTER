@@ -171,57 +171,57 @@ MASTER_Qubit_ControlledU(MASTER_Qubit * const control, MASTER_Qubit * const targ
 
 
 typedef struct {
-    MASTER_complexd alpha; // Amplitude state |0⟩
-    MASTER_complexd beta;  // Amplitude state |1⟩
-    MASTER_complexd gamma; // Amplitude state |2⟩
+	MASTER_complexd alpha; // Amplitude state |0⟩
+	MASTER_complexd beta;  // Amplitude state |1⟩
+	MASTER_complexd gamma; // Amplitude state |2⟩
 } MASTER_Qutrit;
 
 MASTER_Qutrit
 MASTER_Qutrit_init(void) {
-    MASTER_Qutrit q;
-    q.alpha = MASTER_complex_toComplexd(1.0);
-    q.beta = MASTER_complex_toComplexd(0.0);
-    q.gamma = MASTER_complex_toComplexd(0.0);
-    return q;
+	MASTER_Qutrit q;
+	q.alpha = MASTER_complex_toComplexd(1.0);
+	q.beta = MASTER_complex_toComplexd(0.0);
+	q.gamma = MASTER_complex_toComplexd(0.0);
+	return q;
 }
 
 int
 MASTER_Qutrit_get(MASTER_Qutrit * const q) {
-    double p0 = pow(q->alpha.real, 2) + pow(q->alpha.imag, 2);
-    double p1 = pow(q->beta.real, 2) + pow(q->beta.imag, 2);
-    double random_value = (double)rand() / RAND_MAX;
+	double p0 = pow(q->alpha.real, 2) + pow(q->alpha.imag, 2);
+	double p1 = pow(q->beta.real, 2) + pow(q->beta.imag, 2);
+	double random_value = (double)rand() / RAND_MAX;
 
-    if (random_value < p0) {
-        q->alpha = MASTER_complex_toComplexd(1.0);
-        q->beta = MASTER_complex_toComplexd(0.0);
-        q->gamma = MASTER_complex_toComplexd(0.0);
-        return 0;
-    } else if (random_value < p0 + p1) {
-        q->alpha = MASTER_complex_toComplexd(0.0);
-        q->beta = MASTER_complex_toComplexd(1.0);
-        q->gamma = MASTER_complex_toComplexd(0.0);
-        return 1;
-    } else {
-        q->alpha = MASTER_complex_toComplexd(0.0);
-        q->beta = MASTER_complex_toComplexd(0.0);
-        q->gamma = MASTER_complex_toComplexd(1.0);
-        return 2;
-    }
+	if (random_value < p0) {
+		q->alpha = MASTER_complex_toComplexd(1.0);
+		q->beta = MASTER_complex_toComplexd(0.0);
+		q->gamma = MASTER_complex_toComplexd(0.0);
+		return 0;
+	} else if (random_value < p0 + p1) {
+		q->alpha = MASTER_complex_toComplexd(0.0);
+		q->beta = MASTER_complex_toComplexd(1.0);
+		q->gamma = MASTER_complex_toComplexd(0.0);
+		return 1;
+	} else {
+		q->alpha = MASTER_complex_toComplexd(0.0);
+		q->beta = MASTER_complex_toComplexd(0.0);
+		q->gamma = MASTER_complex_toComplexd(1.0);
+		return 2;
+	}
 }
 
 void
 MASTER_Qutrit_set(MASTER_Qutrit * const q, const double alpha, const double beta, const double gamma) {
-    q->alpha = MASTER_complex_toComplexd(alpha);
-    q->beta = MASTER_complex_toComplexd(beta);
-    q->gamma = MASTER_complex_toComplexd(gamma);
+	q->alpha = MASTER_complex_toComplexd(alpha);
+	q->beta = MASTER_complex_toComplexd(beta);
+	q->gamma = MASTER_complex_toComplexd(gamma);
 }
 
 void
 MASTER_Qutrit_PauliX(MASTER_Qutrit * const q) {
-    MASTER_complexd temp = q->alpha;
-    q->alpha = q->gamma;
-    q->gamma = q->beta;
-    q->beta = temp;
+	MASTER_complexd temp = q->alpha;
+	q->alpha = q->gamma;
+	q->gamma = q->beta;
+	q->beta = temp;
 }
 
 #endif /* __MASTER_QUANTUM_INCLUDE_H__ */

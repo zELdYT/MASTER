@@ -6,6 +6,14 @@
  * See the LICENSE file in the project root for more details.
  */
 
+#ifndef __MASTER_CODE_STYLE_INCLUDE_H__
+#define __MASTER_CODE_STYLE_INCLUDE_H__
+
+typedef unsigned char UI1;
+typedef unsigned short UI2;
+typedef unsigned long UI4;
+typedef unsigned  long long UI8;
+
 typedef enum {
 	MASTER_NO_ERROR = 0,
 	MASTER_ERROR,
@@ -23,3 +31,8 @@ typedef enum {
 	
 	MASTER_QUEUE_IS_EMPTY,
 } MASTER_return_code;
+
+
+#endif /* __MASTER_CODE_STYLE_INCLUDE_H__ */
+
+// be master~

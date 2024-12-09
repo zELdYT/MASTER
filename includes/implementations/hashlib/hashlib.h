@@ -11,6 +11,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "../../headers/enumeration/master_enum.h"
 
 #define __MASTER_HASHLIB_FUNCTION_RLL32(X, C) (((X) << (C)) | ((X) >> (32 - (C))))
 #define __MASTER_HASHLIB_FUNCTION_RLL64(X, C) (((X) << (C)) | ((X) >> (64 - (C))))
@@ -105,9 +106,9 @@ MASTER_reverse(UI1 v) {
 
 UI1
 MASTER_reverse8(UI1 v) {
-    v = ((v >> 1) & 0x55) | ((v & 0x55) << 1);
-    v = ((v >> 2) & 0x33) | ((v & 0x33) << 2);
-    return ((v >> 4) & 0x0F) | ((v & 0x0F) << 4);
+	v = ((v >> 1) & 0x55) | ((v & 0x55) << 1);
+	v = ((v >> 2) & 0x33) | ((v & 0x33) << 2);
+	return ((v >> 4) & 0x0F) | ((v & 0x0F) << 4);
 }
 
 UI4
@@ -160,13 +161,13 @@ MASTER_reflectN(UI8 v, UI1 n) {
 UI8
 MASTER_CRC_CalculateCheckSum(const char *__s, UI4 __l, const MASTER_CRC * const crc_struct) {
 	// FIXME : support crc_struct->width < 8
-    UI8 crc = crc_struct->init;
+	UI8 crc = crc_struct->init;
 	UI1 byte, bit;
 	const UI8 topbit = 1ULL << (crc_struct->width - 1);
 	
 	while (__l--) {
 		byte = *__s++;
-        if (crc_struct->refin == 1) byte = MASTER_reverse8(byte);
+		if (crc_struct->refin == 1) byte = MASTER_reverse8(byte);
 		if (crc_struct->width < 8) crc ^= byte;
 		else crc ^= ((UI8)byte) << (crc_struct->width - 8);
 		for (bit = 0; bit < 8; bit++) {
@@ -174,7 +175,7 @@ MASTER_CRC_CalculateCheckSum(const char *__s, UI4 __l, const MASTER_CRC * const 
 			else crc <<= 1;
 		}
 	}
-    if (crc_struct->refout == 1) crc = MASTER_reflectN(crc, crc_struct->width);
+	if (crc_struct->refout == 1) crc = MASTER_reflectN(crc, crc_struct->width);
 	crc ^= crc_struct->xorout;
 	return crc;
 }
@@ -326,38 +327,38 @@ MASTER_CRC32B_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) {
 // #! MD2
 
 static const UI1 MASTER_MD2_Table[256] = {
-	41 , 46 , 67 , 201, 162, 216, 124, 1,
-	61 , 54 , 84 , 161, 236, 240, 6	, 19 ,
-	98 , 167, 5	, 243, 192, 199, 115, 140,
-	152, 147, 43 , 217, 188, 76 , 130, 202,
-	30 , 155, 87 , 60 , 253, 212, 224, 22 ,
-	103, 66 , 111, 24 , 138, 23 , 229, 18 ,
-	190, 78 , 196, 214, 218, 158, 222, 73 ,
-	160, 251, 245, 142, 187, 47 , 238, 122,
-	169, 104, 121, 145, 21 , 178, 7	, 63 ,
-	148, 194, 16 , 137, 11 , 34 , 95 , 33 ,
-	128, 127, 93 , 154, 90 , 144, 50 , 39 ,
-	53 , 62 , 204, 231, 191, 247, 151, 3,
-	255, 25 , 48 , 179, 72 , 165, 181, 209,
-	215, 94 , 146, 42 , 172, 86 , 170, 198,
-	79 , 184, 56 , 210, 150, 164, 125, 182,
-	118, 252, 107, 226, 156, 116, 4	, 241,
-	69 , 157, 112, 89 , 100, 113, 135, 32 ,
-	134, 91 , 207, 101, 230, 45 , 168, 2,
-	27 , 96 , 37 , 173, 174, 176, 185, 246,
-	28 , 70 , 97 , 105, 52 , 64 , 126, 15 ,
-	85 , 71 , 163, 35 , 221, 81 , 175, 58 ,
-	195, 92 , 249, 206, 186, 197, 234, 38 ,
-	44 , 83 , 13 , 110, 133, 40 , 132, 9,
-	211, 223, 205, 244, 65 , 129, 77 , 82 ,
-	106, 220, 55 , 200, 108, 193, 171, 250,
-	36 , 225, 123, 8, 12 , 189, 177, 74 ,
-	120, 136, 149, 139, 227, 99 , 232, 109,
-	233, 203, 213, 254, 59 , 0	, 29 , 57 ,
-	242, 239, 183, 14 , 102, 88 , 208, 228,
-	166, 119, 114, 248, 235, 117, 75 , 10 ,
-	49 , 68 , 80 , 180, 143, 237, 31 , 26 ,
-	219, 153, 141, 51 , 159, 17 , 131, 20
+	41, 46, 67, 201, 162, 216, 124, 1,
+	61, 54, 84, 161, 236, 240, 6, 19,
+	98, 167, 5, 243, 192, 199, 115, 140,
+	152, 147, 43, 217, 188, 76, 130, 202,
+	30, 155, 87, 60, 253, 212, 224, 22,
+	103, 66, 111, 24, 138, 23, 229, 18,
+	190, 78, 196, 214, 218, 158, 222, 73,
+	160, 251, 245, 142, 187, 47, 238, 122,
+	169, 104, 121, 145, 21, 178, 7, 63,
+	148, 194, 16, 137, 11, 34, 95, 33,
+	128, 127, 93, 154, 90, 144, 50, 39,
+	53, 62, 204, 231, 191, 247, 151, 3,
+	255, 25, 48, 179, 72, 165, 181, 209,
+	215, 94, 146, 42, 172, 86, 170, 198,
+	79, 184, 56, 210, 150, 164, 125, 182,
+	118, 252, 107, 226, 156, 116, 4, 241,
+	69, 157, 112, 89, 100, 113, 135, 32,
+	134, 91, 207, 101, 230, 45, 168, 2,
+	27, 96, 37, 173, 174, 176, 185, 246,
+	28, 70, 97, 105, 52, 64, 126, 15,
+	85, 71, 163, 35, 221, 81, 175, 58,
+	195, 92, 249, 206, 186, 197, 234, 38,
+	44, 83, 13, 110, 133, 40, 132, 9,
+	211, 223, 205, 244, 65, 129, 77, 82,
+	106, 220, 55, 200, 108, 193, 171, 250,
+	36, 225, 123, 8, 12, 189, 177, 74,
+	120, 136, 149, 139, 227, 99, 232, 109,
+	233, 203, 213, 254, 59, 0, 29, 57,
+	242, 239, 183, 14, 102, 88, 208, 228,
+	166, 119, 114, 248, 235, 117, 75, 10,
+	49, 68, 80, 180, 143, 237, 31, 26,
+	219, 153, 141, 51, 159, 17, 131, 20
 };
 
 typedef struct {
@@ -851,9 +852,9 @@ MASTER_MD5_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 
 static const UI8 MASTER_MD6_Q[] = {
 	0x7311c2812425cfa0, 0x6432286434aac8e7, 0xb60450e9ef68b7c1, 0xe8fb23908d9f06f1, 
-    0xdd2e76cba691e5bf, 0x0cd0d63b2c30bc41, 0x1f8ccf6823058f8a, 0x54e5ed5b88e3775d, 
-    0x4ad12aae0a6d6031, 0x3e7f16bb88222e0d, 0x8af8671d3fb50c2c, 0x995ad1178bd25c31, 
-    0xc878c1dd04c4b633, 0x3b72066c7a1552ac, 0x0d6f3522631effcb
+	0xdd2e76cba691e5bf, 0x0cd0d63b2c30bc41, 0x1f8ccf6823058f8a, 0x54e5ed5b88e3775d, 
+	0x4ad12aae0a6d6031, 0x3e7f16bb88222e0d, 0x8af8671d3fb50c2c, 0x995ad1178bd25c31, 
+	0xc878c1dd04c4b633, 0x3b72066c7a1552ac, 0x0d6f3522631effcb
 };
 // TODO
 
@@ -2346,7 +2347,7 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 
 #define FOR(i, ST, L, S) \
 	 do { for (UI4 i = 0; i < L; i += ST) { S; } } while (0)
-#define mkapply_ds(NAME, S)	\
+#define mkapply_ds(NAME, S) \
 	static inline void \
 	NAME(UI1 * dst, \
 		 const UI1 * src, \
@@ -2356,14 +2357,14 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 #define mkapply_sd(NAME, S) \
 	static inline void \
 	NAME(const UI1 * src, \
-		 UI1 * dst,	\
+		 UI1 * dst, \
 		 UI4 len) { \
 		FOR(i, 1, len, S); }
 
 #define foldP(I, L, F) \
-	while (L >= rate) {	\
+	while (L >= rate) { \
 		F(a, I, rate); \
-		MASTER_SHA3_FUNCTION_KECCAKF(a);	\
+		MASTER_SHA3_FUNCTION_KECCAKF(a); \
 		I += rate; \
 		L -= rate; }
 
@@ -2413,7 +2414,7 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 	\
 	void \
 	MASTER_SHAKE##bits##_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) { \
-		MASTER_SHA3_FUNCTION_HASH(hash_output, bits / 4, __s, __l, 200 - (bits / 4), 0x1f);	}
+		MASTER_SHA3_FUNCTION_HASH(hash_output, bits / 4, __s, __l, 200 - (bits / 4), 0x1f); }
 
 #define defsha3(bits) \
 	typedef struct { \
@@ -2462,12 +2463,12 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 	\
 	void \
 	MASTER_SHA3_##bits##_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) { \
-		MASTER_SHA3_FUNCTION_HASH(hash_output, bits / 8, __s, __l, 200 - (bits / 4), 0x06);	}
+		MASTER_SHA3_FUNCTION_HASH(hash_output, bits / 8, __s, __l, 200 - (bits / 4), 0x06); }
 
 static const UI1 MASTER_SHA3_Table_RHO[24] = {
 	1, 3, 6, 10, 15, 21,
-	28, 36, 45, 55,	2, 14,
-	27, 41, 56,	8, 25, 43,
+	28, 36, 45, 55, 2, 14,
+	27, 41, 56, 8, 25, 43,
 	62, 18, 39, 61, 20, 44
 };
 static const UI1 MASTER_SHA3_Table_PI[24] = {
@@ -2477,12 +2478,12 @@ static const UI1 MASTER_SHA3_Table_PI[24] = {
 	20, 14, 22, 9, 6, 1
 };
 static const UI8 MASTER_SHA3_Table_RC[24] = {
-	1ULL, 0x8082ULL, 0x800000000000808aULL, 0x8000000080008000ULL,
-	0x808bULL, 0x80000001ULL, 0x8000000080008081ULL, 0x8000000000008009ULL,
-	0x8aULL, 0x88ULL, 0x80008009ULL, 0x8000000aULL,
-	0x8000808bULL, 0x800000000000008bULL, 0x8000000000008089ULL, 0x8000000000008003ULL,
-	0x8000000000008002ULL, 0x8000000000000080ULL, 0x800aULL, 0x800000008000000aULL,
-	0x8000000080008081ULL, 0x8000000000008080ULL, 0x80000001ULL, 0x8000000080008008ULL
+	1, 0x8082, 0x800000000000808a, 0x8000000080008000,
+	0x808b, 0x80000001, 0x8000000080008081, 0x8000000000008009,
+	0x8a, 0x88, 0x80008009, 0x8000000a,
+	0x8000808b, 0x800000000000008b, 0x8000000000008089, 0x8000000000008003,
+	0x8000000000008002, 0x8000000000000080, 0x800a, 0x800000008000000a,
+	0x8000000080008081, 0x8000000000008080, 0x80000001, 0x8000000080008008
 };
 
 static inline void
@@ -2791,6 +2792,19 @@ MASTER_RIPEMD128_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) 
 	MASTER_RIPEMD128_Final(&__ripemd128, hash_output);
 }
 
+#undef __MASTER_RIPEMD128_FUNCTION_F
+#undef __MASTER_RIPEMD128_FUNCTION_G
+#undef __MASTER_RIPEMD128_FUNCTION_H
+#undef __MASTER_RIPEMD128_FUNCTION_I
+#undef __MASTER_RIPEMD128_FUNCTION_FF
+#undef __MASTER_RIPEMD128_FUNCTION_GG
+#undef __MASTER_RIPEMD128_FUNCTION_HH
+#undef __MASTER_RIPEMD128_FUNCTION_II
+#undef __MASTER_RIPEMD128_FUNCTION_FFF
+#undef __MASTER_RIPEMD128_FUNCTION_GGG
+#undef __MASTER_RIPEMD128_FUNCTION_HHH
+#undef __MASTER_RIPEMD128_FUNCTION_III
+
 // !!# RIPEMD128
 
 // #!! RIPEMD160
@@ -2825,7 +2839,7 @@ MASTER_RIPEMD160_Init(void) {
 	__ripemd160.__h[1] = 0xEFCDAB89;
 	__ripemd160.__h[2] = 0x98BADCFE;
 	__ripemd160.__h[3] = 0x10325476;
-    __ripemd160.__h[4] = 0xC3D2E1F0;
+	__ripemd160.__h[4] = 0xC3D2E1F0;
 	__ripemd160.__l = __ripemd160.__tl = 0;
 	return __ripemd160;
 }
@@ -2844,22 +2858,22 @@ MASTER_RIPEMD160_Transform(MASTER_RIPEMD160 * __ripemd160) {
 	UI4 eee = __ripemd160->__h[4];
 	UI4 * x = (UI4 *)__ripemd160->__b;
 	
-    __MASTER_RIPEMD160_FUNCTION_FF(aa, bb, cc, dd, ee, x[0],  11);
-    __MASTER_RIPEMD160_FUNCTION_FF(ee, aa, bb, cc, dd, x[1],  14);
-    __MASTER_RIPEMD160_FUNCTION_FF(dd, ee, aa, bb, cc, x[2],  15);
-    __MASTER_RIPEMD160_FUNCTION_FF(cc, dd, ee, aa, bb, x[3],  12);
-    __MASTER_RIPEMD160_FUNCTION_FF(bb, cc, dd, ee, aa, x[4],  5);
-    __MASTER_RIPEMD160_FUNCTION_FF(aa, bb, cc, dd, ee, x[5],  8);
-    __MASTER_RIPEMD160_FUNCTION_FF(ee, aa, bb, cc, dd, x[6],  7);
-    __MASTER_RIPEMD160_FUNCTION_FF(dd, ee, aa, bb, cc, x[7],  9);
-    __MASTER_RIPEMD160_FUNCTION_FF(cc, dd, ee, aa, bb, x[8],  11);
-    __MASTER_RIPEMD160_FUNCTION_FF(bb, cc, dd, ee, aa, x[9],  13);
-    __MASTER_RIPEMD160_FUNCTION_FF(aa, bb, cc, dd, ee, x[10], 14);
-    __MASTER_RIPEMD160_FUNCTION_FF(ee, aa, bb, cc, dd, x[11], 15);
-    __MASTER_RIPEMD160_FUNCTION_FF(dd, ee, aa, bb, cc, x[12], 6);
-    __MASTER_RIPEMD160_FUNCTION_FF(cc, dd, ee, aa, bb, x[13], 7);
-    __MASTER_RIPEMD160_FUNCTION_FF(bb, cc, dd, ee, aa, x[14], 9);
-    __MASTER_RIPEMD160_FUNCTION_FF(aa, bb, cc, dd, ee, x[15], 8);
+	__MASTER_RIPEMD160_FUNCTION_FF(aa, bb, cc, dd, ee, x[0],  11);
+	__MASTER_RIPEMD160_FUNCTION_FF(ee, aa, bb, cc, dd, x[1],  14);
+	__MASTER_RIPEMD160_FUNCTION_FF(dd, ee, aa, bb, cc, x[2],  15);
+	__MASTER_RIPEMD160_FUNCTION_FF(cc, dd, ee, aa, bb, x[3],  12);
+	__MASTER_RIPEMD160_FUNCTION_FF(bb, cc, dd, ee, aa, x[4],  5);
+	__MASTER_RIPEMD160_FUNCTION_FF(aa, bb, cc, dd, ee, x[5],  8);
+	__MASTER_RIPEMD160_FUNCTION_FF(ee, aa, bb, cc, dd, x[6],  7);
+	__MASTER_RIPEMD160_FUNCTION_FF(dd, ee, aa, bb, cc, x[7],  9);
+	__MASTER_RIPEMD160_FUNCTION_FF(cc, dd, ee, aa, bb, x[8],  11);
+	__MASTER_RIPEMD160_FUNCTION_FF(bb, cc, dd, ee, aa, x[9],  13);
+	__MASTER_RIPEMD160_FUNCTION_FF(aa, bb, cc, dd, ee, x[10], 14);
+	__MASTER_RIPEMD160_FUNCTION_FF(ee, aa, bb, cc, dd, x[11], 15);
+	__MASTER_RIPEMD160_FUNCTION_FF(dd, ee, aa, bb, cc, x[12], 6);
+	__MASTER_RIPEMD160_FUNCTION_FF(cc, dd, ee, aa, bb, x[13], 7);
+	__MASTER_RIPEMD160_FUNCTION_FF(bb, cc, dd, ee, aa, x[14], 9);
+	__MASTER_RIPEMD160_FUNCTION_FF(aa, bb, cc, dd, ee, x[15], 8);
 	
 	__MASTER_RIPEMD160_FUNCTION_GG(ee, aa, bb, cc, dd, x[7],  7);
 	__MASTER_RIPEMD160_FUNCTION_GG(dd, ee, aa, bb, cc, x[4],  6);
@@ -3066,6 +3080,22 @@ MASTER_RIPEMD160_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) 
 	MASTER_RIPEMD160_Final(&__ripemd160, hash_output);
 }
 
+#undef __MASTER_RIPEMD160_FUNCTION_F
+#undef __MASTER_RIPEMD160_FUNCTION_G
+#undef __MASTER_RIPEMD160_FUNCTION_H
+#undef __MASTER_RIPEMD160_FUNCTION_I
+#undef __MASTER_RIPEMD160_FUNCTION_J
+#undef __MASTER_RIPEMD160_FUNCTION_FF
+#undef __MASTER_RIPEMD160_FUNCTION_GG
+#undef __MASTER_RIPEMD160_FUNCTION_HH
+#undef __MASTER_RIPEMD160_FUNCTION_II
+#undef __MASTER_RIPEMD160_FUNCTION_JJ
+#undef __MASTER_RIPEMD160_FUNCTION_FFF
+#undef __MASTER_RIPEMD160_FUNCTION_GGG
+#undef __MASTER_RIPEMD160_FUNCTION_HHH
+#undef __MASTER_RIPEMD160_FUNCTION_III
+#undef __MASTER_RIPEMD160_FUNCTION_JJJ
+
 // !!# RIPEMD160
 
 // #!! RIPEMD256
@@ -3092,33 +3122,33 @@ MASTER_RIPEMD256_Init(void) {
 	__ripemd256.__h[1] = 0xEFCDAB89;
 	__ripemd256.__h[2] = 0x98BADCFE;
 	__ripemd256.__h[3] = 0x10325476;
-    __ripemd256.__h[4] = 0x76543210;
+	__ripemd256.__h[4] = 0x76543210;
 	__ripemd256.__h[5] = 0xFEDCBA98;
 	__ripemd256.__h[6] = 0x89ABCDEF;
-    __ripemd256.__h[7] = 0x01234567;
+	__ripemd256.__h[7] = 0x01234567;
 	__ripemd256.__l = __ripemd256.__tl = 0;
 	return __ripemd256;
 }
 
 static void
 MASTER_RIPEMD256_Transform(MASTER_RIPEMD256 * __ripemd256) {
-    UI4 aa = __ripemd256->__h[0];
-    UI4 bb = __ripemd256->__h[1];
-    UI4 cc = __ripemd256->__h[2];
-    UI4 dd = __ripemd256->__h[3];
-    UI4 aaa = __ripemd256->__h[4];
-    UI4 bbb = __ripemd256->__h[5];
-    UI4 ccc = __ripemd256->__h[6];
-    UI4 ddd = __ripemd256->__h[7];
-    UI4 * x = (UI4 *)__ripemd256->__b;
-    UI4 t;
-    UI4 i = 0;
+	UI4 aa = __ripemd256->__h[0];
+	UI4 bb = __ripemd256->__h[1];
+	UI4 cc = __ripemd256->__h[2];
+	UI4 dd = __ripemd256->__h[3];
+	UI4 aaa = __ripemd256->__h[4];
+	UI4 bbb = __ripemd256->__h[5];
+	UI4 ccc = __ripemd256->__h[6];
+	UI4 ddd = __ripemd256->__h[7];
+	UI4 * x = (UI4 *)__ripemd256->__b;
+	UI4 t;
+	UI4 i = 0;
 
-    static const UI4 k[8] = {
-        0x00000000, 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0x50A28BE6, 0x5C4DD124, 0x6D703EF3, 0x00000000
-    };
+	static const UI4 k[8] = {
+		0x00000000, 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0x50A28BE6, 0x5C4DD124, 0x6D703EF3, 0x00000000
+	};
 
-    static const UI1 r[128] = {
+	static const UI1 r[128] = {
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
 		7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
 		3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
@@ -3128,7 +3158,7 @@ MASTER_RIPEMD256_Transform(MASTER_RIPEMD256 * __ripemd256) {
 		15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
 		8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14
 	};
-    static const UI1 s[128] = {
+	static const UI1 s[128] = {
 		11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
 		7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
 		11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
@@ -3139,33 +3169,33 @@ MASTER_RIPEMD256_Transform(MASTER_RIPEMD256 * __ripemd256) {
 		15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8
 	};
 	
-    for (i = 0; i < 64; i++) {
-        t = __MASTER_HASHLIB_FUNCTION_RLL32(aa + __MASTER_RIPEMD256_FUNCTION_FUNC(i, bb, cc, dd) + x[r[i]] + k[i/16], s[i]);
-        aa = dd;
-        dd = cc;
-        cc = bb;
-        bb = t;
-        
-        t = __MASTER_HASHLIB_FUNCTION_RLL32(aaa + __MASTER_RIPEMD256_FUNCTION_FUNC(63 - i, bbb, ccc, ddd) + x[r[64 + i]] + k[4 + (i/16)], s[64 + i]);
-        aaa = ddd;
-        ddd = ccc;
-        ccc = bbb;
-        bbb = t;
+	for (i = 0; i < 64; i++) {
+		t = __MASTER_HASHLIB_FUNCTION_RLL32(aa + __MASTER_RIPEMD256_FUNCTION_FUNC(i, bb, cc, dd) + x[r[i]] + k[i/16], s[i]);
+		aa = dd;
+		dd = cc;
+		cc = bb;
+		bb = t;
+		
+		t = __MASTER_HASHLIB_FUNCTION_RLL32(aaa + __MASTER_RIPEMD256_FUNCTION_FUNC(63 - i, bbb, ccc, ddd) + x[r[64 + i]] + k[4 + (i/16)], s[64 + i]);
+		aaa = ddd;
+		ddd = ccc;
+		ccc = bbb;
+		bbb = t;
 
-        if (i == 15) { t = aa; aa = aaa; aaa = t; }
-        else if (i == 31) { t = bb; bb = bbb; bbb = t; }
-        else if (i == 47) { t = cc; cc = ccc; ccc = t; }
-        else if (i == 63) { t = dd; dd = ddd; ddd = t; }
-    }
+		if (i == 15) { t = aa; aa = aaa; aaa = t; }
+		else if (i == 31) { t = bb; bb = bbb; bbb = t; }
+		else if (i == 47) { t = cc; cc = ccc; ccc = t; }
+		else if (i == 63) { t = dd; dd = ddd; ddd = t; }
+	}
 
-    __ripemd256->__h[0] += aa;
-    __ripemd256->__h[1] += bb;
-    __ripemd256->__h[2] += cc;
-    __ripemd256->__h[3] += dd;
-    __ripemd256->__h[4] += aaa;
-    __ripemd256->__h[5] += bbb;
-    __ripemd256->__h[6] += ccc;
-    __ripemd256->__h[7] += ddd;
+	__ripemd256->__h[0] += aa;
+	__ripemd256->__h[1] += bb;
+	__ripemd256->__h[2] += cc;
+	__ripemd256->__h[3] += dd;
+	__ripemd256->__h[4] += aaa;
+	__ripemd256->__h[5] += bbb;
+	__ripemd256->__h[6] += ccc;
+	__ripemd256->__h[7] += ddd;
 }
 
 void
@@ -3212,6 +3242,12 @@ MASTER_RIPEMD256_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) 
 	MASTER_RIPEMD256_Final(&__ripemd256, hash_output);
 }
 
+#undef __MASTER_RIPEMD256_FUNCTION_F
+#undef __MASTER_RIPEMD256_FUNCTION_G
+#undef __MASTER_RIPEMD256_FUNCTION_H
+#undef __MASTER_RIPEMD256_FUNCTION_I
+#undef __MASTER_RIPEMD256_FUNCTION_FUNC
+
 // !!# RIPEMD256
 
 // #!! RIPEMD320
@@ -3240,37 +3276,37 @@ MASTER_RIPEMD320_Init(void) {
 	__ripemd320.__h[1] = 0xEFCDAB89;
 	__ripemd320.__h[2] = 0x98BADCFE;
 	__ripemd320.__h[3] = 0x10325476;
-    __ripemd320.__h[4] = 0xC3D2E1F0;
+	__ripemd320.__h[4] = 0xC3D2E1F0;
 	__ripemd320.__h[5] = 0x76543210;
 	__ripemd320.__h[6] = 0xFEDCBA98;
-    __ripemd320.__h[7] = 0x89ABCDEF;
+	__ripemd320.__h[7] = 0x89ABCDEF;
 	__ripemd320.__h[8] = 0x01234567;
-    __ripemd320.__h[9] = 0x3C2D1E0F;
+	__ripemd320.__h[9] = 0x3C2D1E0F;
 	__ripemd320.__l = __ripemd320.__tl = 0;
 	return __ripemd320;
 }
 
 static void
 MASTER_RIPEMD320_Transform(MASTER_RIPEMD320 * __ripemd320) {
-    UI4 aa = __ripemd320->__h[0];
-    UI4 bb = __ripemd320->__h[1];
-    UI4 cc = __ripemd320->__h[2];
-    UI4 dd = __ripemd320->__h[3];
-    UI4 ee = __ripemd320->__h[4];
-    UI4 aaa = __ripemd320->__h[5];
-    UI4 bbb = __ripemd320->__h[6];
-    UI4 ccc = __ripemd320->__h[7];
-    UI4 ddd = __ripemd320->__h[8];
-    UI4 eee = __ripemd320->__h[9];
-    UI4 * x = (UI4 *)__ripemd320->__b;
-    UI4 t;
-    UI4 i = 0;
+	UI4 aa = __ripemd320->__h[0];
+	UI4 bb = __ripemd320->__h[1];
+	UI4 cc = __ripemd320->__h[2];
+	UI4 dd = __ripemd320->__h[3];
+	UI4 ee = __ripemd320->__h[4];
+	UI4 aaa = __ripemd320->__h[5];
+	UI4 bbb = __ripemd320->__h[6];
+	UI4 ccc = __ripemd320->__h[7];
+	UI4 ddd = __ripemd320->__h[8];
+	UI4 eee = __ripemd320->__h[9];
+	UI4 * x = (UI4 *)__ripemd320->__b;
+	UI4 t;
+	UI4 i = 0;
 
-    static const UI4 k[10] = {
-        0x00000000, 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xA953FD4E, 0x50A28BE6, 0x5C4DD124, 0x6D703EF3, 0x7A6D76E9, 0x00000000
-    };
+	static const UI4 k[10] = {
+		0x00000000, 0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xA953FD4E, 0x50A28BE6, 0x5C4DD124, 0x6D703EF3, 0x7A6D76E9, 0x00000000
+	};
 
-    static const UI1 r[160] = {
+	static const UI1 r[160] = {
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
 		7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
 		3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
@@ -3282,7 +3318,7 @@ MASTER_RIPEMD320_Transform(MASTER_RIPEMD320 * __ripemd320) {
 		8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14,
 		12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11
 	};
-    static const UI1 s[160] = {
+	static const UI1 s[160] = {
 		11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
 		7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
 		11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
@@ -3295,38 +3331,38 @@ MASTER_RIPEMD320_Transform(MASTER_RIPEMD320 * __ripemd320) {
 		8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 	};
 	
-    for (i = 0; i < 80; i++) {
-        t = __MASTER_HASHLIB_FUNCTION_RLL32(aa + __MASTER_RIPEMD320_FUNCTION_FUNC(i, bb, cc, dd) + x[r[i]] + k[i/16], s[i]) + ee;
-        aa = ee;
-        ee = dd;
-        dd = __MASTER_HASHLIB_FUNCTION_RLL32(cc, 10);
-        cc = bb;
-        bb = t;
+	for (i = 0; i < 80; i++) {
+		t = __MASTER_HASHLIB_FUNCTION_RLL32(aa + __MASTER_RIPEMD320_FUNCTION_FUNC(i, bb, cc, dd) + x[r[i]] + k[i/16], s[i]) + ee;
+		aa = ee;
+		ee = dd;
+		dd = __MASTER_HASHLIB_FUNCTION_RLL32(cc, 10);
+		cc = bb;
+		bb = t;
 
-        t = __MASTER_HASHLIB_FUNCTION_RLL32(aaa + __MASTER_RIPEMD320_FUNCTION_FUNC(79 - i, bbb, ccc, ddd) + x[r[80 + i]] + k[5 + i/16], s[80 + i]) + eee;
-        aaa = eee;
-        eee = ddd;
-        ddd = __MASTER_HASHLIB_FUNCTION_RLL32(ccc, 10);
-        ccc = bbb;
-        bbb = t;
+		t = __MASTER_HASHLIB_FUNCTION_RLL32(aaa + __MASTER_RIPEMD320_FUNCTION_FUNC(79 - i, bbb, ccc, ddd) + x[r[80 + i]] + k[5 + i/16], s[80 + i]) + eee;
+		aaa = eee;
+		eee = ddd;
+		ddd = __MASTER_HASHLIB_FUNCTION_RLL32(ccc, 10);
+		ccc = bbb;
+		bbb = t;
 
-        if (i == 15) { t = bb; bb = bbb; bbb = t; }
-        else if (i == 31) { t = dd; dd = ddd; ddd = t; }
-        else if (i == 47) { t = aa; aa = aaa; aaa = t; }
-        else if (i == 63) { t = cc; cc = ccc; ccc = t; }
-        else if (i == 79) { t = ee; ee = eee; eee = t; }
-    }
+		if (i == 15) { t = bb; bb = bbb; bbb = t; }
+		else if (i == 31) { t = dd; dd = ddd; ddd = t; }
+		else if (i == 47) { t = aa; aa = aaa; aaa = t; }
+		else if (i == 63) { t = cc; cc = ccc; ccc = t; }
+		else if (i == 79) { t = ee; ee = eee; eee = t; }
+	}
 
-    __ripemd320->__h[0] += aa;
-    __ripemd320->__h[1] += bb;
-    __ripemd320->__h[2] += cc;
-    __ripemd320->__h[3] += dd;
-    __ripemd320->__h[4] += ee;
-    __ripemd320->__h[5] += aaa;
-    __ripemd320->__h[6] += bbb;
-    __ripemd320->__h[7] += ccc;
-    __ripemd320->__h[8] += ddd;
-    __ripemd320->__h[9] += eee;
+	__ripemd320->__h[0] += aa;
+	__ripemd320->__h[1] += bb;
+	__ripemd320->__h[2] += cc;
+	__ripemd320->__h[3] += dd;
+	__ripemd320->__h[4] += ee;
+	__ripemd320->__h[5] += aaa;
+	__ripemd320->__h[6] += bbb;
+	__ripemd320->__h[7] += ccc;
+	__ripemd320->__h[8] += ddd;
+	__ripemd320->__h[9] += eee;
 }
 
 void
@@ -3373,6 +3409,13 @@ MASTER_RIPEMD320_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) 
 	MASTER_RIPEMD320_Final(&__ripemd320, hash_output);
 }
 
+#undef __MASTER_RIPEMD320_FUNCTION_F
+#undef __MASTER_RIPEMD320_FUNCTION_G
+#undef __MASTER_RIPEMD320_FUNCTION_H
+#undef __MASTER_RIPEMD320_FUNCTION_I
+#undef __MASTER_RIPEMD320_FUNCTION_J
+#undef __MASTER_RIPEMD320_FUNCTION_FUNC
+
 // !!# RIPEMD320
 
 // !# RIPEMD
@@ -3391,14 +3434,14 @@ MASTER_MurmurHash2_CalculateHashSum(const char * __s, unsigned int __l, UI1 * ha
 	while (__l >= 4) {
 		k = *(UI4 *)__s;
 		
-	    k *= m;
+		k *= m;
 		k ^= k >> r;
 		k *= m;
 		
-	    h *= m;
+		h *= m;
 		h ^= k;
 		
-	    __s += 4;
+		__s += 4;
 		__l -= 4;
 	}
 	switch (__l) {
@@ -3464,7 +3507,7 @@ MASTER_MurmurHash2A_CalculateHashSum(const char * __s, UI4 __l, UI4 seed, UI1 * 
 
 // #! BLAKE
 
-// #! BLAKE2B
+// #!! BLAKE2B
 
 #define __MASTER_BLAKE2B_FUNCTION_G(x, y, a, b, c, d) do { \
 	a = a + b + x; \
@@ -3590,9 +3633,9 @@ MASTER_BLAKE2B_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output, UI
 	MASTER_BLAKE2B_Final(&__blake2b, hash_output);
 }
 
-// !# BLAKE2B
+// !!# BLAKE2B
 
-// #! BLAKE2S
+// #!! BLAKE2S
 
 static const UI4 MASTER_BLAKE2S_TABLE_IV[8] = {
 	0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
@@ -3681,16 +3724,14 @@ MASTER_BLAKE2S_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output, UI
 	MASTER_BLAKE2S_Final(&__blake2s, hash_output);
 }
 
-// !# BLAKE2S
+// !!# BLAKE2S
+
+#undef __MASTER_BLAKE2B_FUNCTION_G
+#undef __MASTER_BLAKE2S_FUNCTION_G
 
 // !# BLAKE
 
 // #! WHIRLPOOL
-
-typedef unsigned char UI1;
-typedef unsigned short UI2;
-typedef unsigned long UI4;
-typedef unsigned long long UI8;
 
 typedef struct {
 	UI1 __bl[32];
@@ -4409,7 +4450,7 @@ MASTER_WHIRLPOOL_Final(MASTER_WHIRLPOOL * const __whirlpool, UI1 * hash_output) 
 		hash_output += 8;
 	}
 	__whirlpool->__bb = __bb;
-	__whirlpool->__bp	= __bp;
+	__whirlpool->__bp = __bp;
 }
 
 void

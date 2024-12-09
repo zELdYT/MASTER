@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../../headers/enumeration/master_enum.h"
+
 //#define __MASTER_MACROS_TRASHCAN__
 #include "../utils/memory_safe.h"
 
@@ -22,34 +24,34 @@
 #define FALSE 0
 
 typedef struct {
-	unsigned long * chunks;
-	unsigned long size;
+	UI4 * chunks;
+	UI4 size;
 } INT;
 
 // $a
 void
 int_delete_empty(INT * __i) {
-	for (unsigned long i = __i->size - 1;; i--) {
+	for (UI4 i = __i->size - 1;; i--) {
 		if (__i->chunks[i] == 0x0) {
 			if (__i->size == 1) break;
 			__i->size--;
 		}
 		else break;
 	}
-	__i->chunks = (unsigned long *)MASTER_realloc(__i->chunks, sizeof(unsigned long) * __i->size);
+	__i->chunks = (UI4 *)MASTER_realloc(__i->chunks, sizeof(UI4) * __i->size);
 }
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
 // a = bytes(b[:l])
 INT
-str_2_intExt(const char * __s, unsigned long __l) {
+str_2_intExt(const char * __s, UI4 __l) {
 	INT __i;
-	unsigned long size = min(strlen(__s), __l);
+	UI4 size = min(strlen(__s), __l);
 	__i.size = size / 4 + ((size % 4 > 0) ? 1 : 0);
-	__i.chunks = (unsigned long *)MASTER_calloc(__i.size, sizeof(unsigned long));
-	for (unsigned long i = size - 1;; i--) {
-		__i.chunks[i / 4] |= ((unsigned char)__s[i]) << (24 - (i % 4) * 8);
+	__i.chunks = (UI4 *)MASTER_calloc(__i.size, sizeof(UI4));
+	for (UI4 i = size - 1;; i--) {
+		__i.chunks[i / 4] |= ((UI1)__s[i]) << (24 - (i % 4) * 8);
 		if (i == 0) break;
 	}
 	return __i;
@@ -63,13 +65,13 @@ str_2_int(const char * __s) {
 
 // a = bytes(b[:l])
 INT
-str_2_intbExt(const char * __s, unsigned long __l) {
+str_2_intbExt(const char * __s, UI4 __l) {
 	INT __i;
-	unsigned long size = min(strlen(__s), __l);
+	UI4 size = min(strlen(__s), __l);
 	__i.size = size / 4 + ((size % 4 > 0) ? 1 : 0);
-	__i.chunks = (unsigned long *)MASTER_calloc(__i.size, sizeof(unsigned long));
-	for (unsigned long i = 0; i < size; i++) {
-		__i.chunks[__i.size - 1 - i / 4] |= ((unsigned char)__s[size - 1 -i]) << ((i % 4) * 8);
+	__i.chunks = (UI4 *)MASTER_calloc(__i.size, sizeof(UI4));
+	for (UI4 i = 0; i < size; i++) {
+		__i.chunks[__i.size - 1 - i / 4] |= ((UI1)__s[size - 1 -i]) << ((i % 4) * 8);
 	}
 	return __i;
 }
@@ -82,10 +84,10 @@ str_2_intb(const char * __s) {
 
 // a = b
 INT
-ul_2_int(unsigned long __num) {
+ul_2_int(UI4 __num) {
 	INT __i;
 	__i.size = 1;
-	__i.chunks = (unsigned long *)MASTER_malloc(sizeof(unsigned long) * __i.size);
+	__i.chunks = (UI4 *)MASTER_malloc(sizeof(UI4) * __i.size);
 	__i.chunks[0] = __num;
 	return __i;
 }
@@ -95,8 +97,8 @@ INT
 int_copy(const INT * __o) {
 	INT __i;
 	__i.size = __o->size;
-	__i.chunks = (unsigned long *)MASTER_calloc(__i.size, sizeof(unsigned long));
-	for (unsigned long i = 0; i < __i.size; i++) 
+	__i.chunks = (UI4 *)MASTER_calloc(__i.size, sizeof(UI4));
+	for (UI4 i = 0; i < __i.size; i++) 
 		__i.chunks[i] = __o->chunks[i];
 	return __i;
 }
@@ -112,14 +114,14 @@ free_int(INT * __i) {
 
 
 // a /= b
-unsigned long
-int_idiv(INT * __i, unsigned long __ul) {
-	unsigned long rem = 0;
-	for (unsigned long i = 0; i < __i->size; i++) {
+UI4
+int_idiv(INT * __i, UI4 __ul) {
+	UI4 rem = 0;
+	for (UI4 i = 0; i < __i->size; i++) {
 		if (rem > 0) {
-			unsigned long buf = __i->chunks[i];
-			__i->chunks[i] = (unsigned long long)(((unsigned long long)rem << 32) | (unsigned long long)__i->chunks[i]) / __ul;
-			rem = (unsigned long long)(((unsigned long long)rem << 32) | (unsigned long long)buf) % __ul;
+			UI4 buf = __i->chunks[i];
+			__i->chunks[i] = (UI8)(((UI8)rem << 32) | (UI8)__i->chunks[i]) / __ul;
+			rem = (UI8)(((UI8)rem << 32) | (UI8)buf) % __ul;
 		} else {
 			rem = __i->chunks[i] % __ul;
 			__i->chunks[i] /= __ul;
@@ -130,59 +132,59 @@ int_idiv(INT * __i, unsigned long __ul) {
 }
 
 // a *= b
-unsigned long
-int_imul(INT * __i, unsigned long __ul) {
-	unsigned long rem = 0;
-	unsigned long i = 0;
+UI4
+int_imul(INT * __i, UI4 __ul) {
+	UI4 rem = 0;
+	UI4 i = 0;
 	for (; i < __i->size; i++) {
 		if (rem > 0) {
-			unsigned long buf = __i->chunks[i];
+			UI4 buf = __i->chunks[i];
 			__i->chunks[i] = __i->chunks[i] * __ul + rem;
-			rem = ((unsigned long long)buf * __ul + rem) >> 32;
+			rem = ((UI8)buf * __ul + rem) >> 32;
 		} else {
-			rem = ((unsigned long long)__i->chunks[i] * __ul) >> 32;
+			rem = ((UI8)__i->chunks[i] * __ul) >> 32;
 			__i->chunks[i] *= __ul;
 		}
 	}
 	if (rem > 0) {
-		__i->chunks = (unsigned long *)MASTER_realloc(__i->chunks, sizeof(unsigned long) * ++__i->size);
+		__i->chunks = (UI4 *)MASTER_realloc(__i->chunks, sizeof(UI4) * ++__i->size);
 		__i->chunks[i] = rem;
 	}
 	return rem;
 }
 
 // a += b
-unsigned long
-int_iadd(INT * __i, unsigned long __ul) {
-	unsigned long rem = 0;
-	unsigned long i = 0;
+UI4
+int_iadd(INT * __i, UI4 __ul) {
+	UI4 rem = 0;
+	UI4 i = 0;
 	do {
 		if (rem > 0) {
-			unsigned long buf = __i->chunks[i];
+			UI4 buf = __i->chunks[i];
 			__i->chunks[i] = (__i->chunks[i] + rem) + __ul;
-			rem = ((unsigned long long)(buf + rem) + __ul) >> 32;
+			rem = ((UI8)(buf + rem) + __ul) >> 32;
 		} else {
-			rem = ((unsigned long long)__i->chunks[i] + __ul) >> 32;
+			rem = ((UI8)__i->chunks[i] + __ul) >> 32;
 			__i->chunks[i] += __ul;
 		}
 		i++;
 	} while (rem > 0 && i < __i->size);
 	if (rem > 0) {
-		__i->chunks = (unsigned long *)MASTER_realloc(__i->chunks, sizeof(unsigned long) * ++__i->size);
+		__i->chunks = (UI4 *)MASTER_realloc(__i->chunks, sizeof(UI4) * ++__i->size);
 		__i->chunks[i] = rem;
 	}
 	return rem;
 }
 
 // a >>= b
-unsigned long
-int_irsf(INT * __i, unsigned long __ul) {
-	unsigned long rem = 0;
-	for (unsigned long i = __i->size - 1;; i--) {
+UI4
+int_irsf(INT * __i, UI4 __ul) {
+	UI4 rem = 0;
+	for (UI4 i = __i->size - 1;; i--) {
 		if (rem > 0) {
-			unsigned long buf = __i->chunks[i];
-			__i->chunks[i] = (unsigned long long)(((unsigned long long)rem << 32) | (unsigned long long)__i->chunks[i]) >> __ul;
-			rem = (unsigned long long)(((unsigned long long)rem << 32) | (unsigned long long)buf) & ((0x1 << __ul) - 1);
+			UI4 buf = __i->chunks[i];
+			__i->chunks[i] = (UI8)(((UI8)rem << 32) | (UI8)__i->chunks[i]) >> __ul;
+			rem = (UI8)(((UI8)rem << 32) | (UI8)buf) & ((0x1 << __ul) - 1);
 		} else {
 			rem = __i->chunks[i] & ((0x1 << __ul) - 1);
 			__i->chunks[i] >>= __ul;
@@ -196,7 +198,7 @@ int_irsf(INT * __i, unsigned long __ul) {
 // a == 0
 BOOL
 int_iszero(INT * __i) {
-	for (unsigned long i = 0; i < __i->size; i++)
+	for (UI4 i = 0; i < __i->size; i++)
 		if (__i->chunks[i] != 0x0) return 0;
 	return 1;
 }
@@ -205,7 +207,7 @@ int_iszero(INT * __i) {
 BOOL
 int_equ(const INT * __i1, const INT * __i2) {
 	if (__i1->size != __i2->size) return FALSE;
-	for (unsigned long i = 0; i < __i1->size && i < __i2->size; i++)
+	for (UI4 i = 0; i < __i1->size && i < __i2->size; i++)
 		if (__i1->chunks[i] != __i2->chunks[i]) return FALSE;
 	return TRUE;
 }
@@ -214,7 +216,7 @@ int_equ(const INT * __i1, const INT * __i2) {
 BOOL
 int_neq(const INT * __i1, const INT * __i2) {
 	if (__i1->size != __i2->size) return TRUE;
-	for (unsigned long i = 0; i < __i1->size && i < __i2->size; i++)
+	for (UI4 i = 0; i < __i1->size && i < __i2->size; i++)
 		if (__i1->chunks[i] != __i2->chunks[i]) return TRUE;
 	return FALSE;
 }
@@ -224,7 +226,7 @@ BOOL
 int_lss(const INT * __i1, const INT * __i2) {
 	if (__i1->size < __i2->size) return TRUE;
 	otherwise (__i1->size > __i2->size) return FALSE;
-	for (unsigned long i = 0; i < __i1->size && i < __i2->size; i++)
+	for (UI4 i = 0; i < __i1->size && i < __i2->size; i++)
 		if (__i1->chunks[i] >= __i2->chunks[i]) return FALSE;
 	return TRUE;
 }
@@ -234,7 +236,7 @@ BOOL
 int_leq(const INT * __i1, const INT * __i2) {
 	if (__i1->size < __i2->size) return TRUE;
 	otherwise (__i1->size > __i2->size) return FALSE;
-	for (unsigned long i = 0; i < __i1->size && i < __i2->size; i++)
+	for (UI4 i = 0; i < __i1->size && i < __i2->size; i++)
 		if (__i1->chunks[i] > __i2->chunks[i]) return FALSE;
 	return TRUE;
 }
@@ -244,7 +246,7 @@ BOOL
 int_gtr(const INT * __i1, const INT * __i2) {
 	if (__i1->size < __i2->size) return FALSE;
 	otherwise (__i1->size > __i2->size) return TRUE;
-	for (unsigned long i = 0; i < __i1->size && i < __i2->size; i++)
+	for (UI4 i = 0; i < __i1->size && i < __i2->size; i++)
 		if (__i1->chunks[i] <= __i2->chunks[i]) return FALSE;
 	return TRUE;
 }
@@ -254,7 +256,7 @@ BOOL
 int_geq(const INT * __i1, const INT * __i2) {
 	if (__i1->size < __i2->size) return FALSE;
 	otherwise (__i1->size > __i2->size) return TRUE;
-	for (unsigned long i = 0; i < __i1->size && i < __i2->size; i++)
+	for (UI4 i = 0; i < __i1->size && i < __i2->size; i++)
 		if (__i1->chunks[i] < __i2->chunks[i]) return FALSE;
 	return TRUE;
 }
@@ -263,7 +265,7 @@ int_geq(const INT * __i1, const INT * __i2) {
 
 // be master~
 
-int mai__n() {
+int main() {
 	INT a = ul_2_int(0xFF);
 	INT b = ul_2_int(0xFF);
 	printf("%s\n", int_gtr(&a, &b) ? "True" : "False");

@@ -9,10 +9,7 @@
 #ifndef __MASTER_RANDOM_INCLUDE_H__
 #define __MASTER_RANDOM_INCLUDE_H__
 
-typedef unsigned char UI1;
-typedef unsigned short UI2;
-typedef unsigned long UI4;
-typedef unsigned long long UI8;
+#include "../../headers/enumeration/master_enum.h"
 
 // #! Linear Conngruental Generator
 
@@ -106,14 +103,14 @@ MASTER_random_KDF3( const char * s, UI4 l, UI1 * o, void (*hashfunc)(const char 
 // #! Mersenne Twister random
 
 typedef struct {
-	unsigned long long __MT[312];
+	UI8 __MT[312];
 	int __index;
 } MASTER_random_mt64;
 
 static void
 MASTER_random_mt64_twist( MASTER_random_mt64 * const __mt ) {
-	register unsigned short i = 0;
-	register unsigned long long y;
+	register UI2 i = 0;
+	register UI8 y;
 	for (; i < 312; i++) {
 		y = (__mt->__MT[i] & 0x8000000000000000) + (__mt->__MT[(i + 1) % 312] & 0x7FFFFFFFFFFFFFFF);
 		__mt->__MT[i] = __mt->__MT[(i + 156) % 312] ^ (y >> 1);
@@ -124,21 +121,21 @@ MASTER_random_mt64_twist( MASTER_random_mt64 * const __mt ) {
 }
 
 MASTER_random_mt64
-MASTER_random_mt64_init( const unsigned long long seed ) {
+MASTER_random_mt64_init( const UI8 seed ) {
 	MASTER_random_mt64 mt;
 	mt.__index = 312;
 	mt.__MT[0] = seed;
-	register unsigned short i = 1;
+	register UI2 i = 1;
 	for (; i < 312; i++) 
 		mt.__MT[i] = (6364136223846793005 * (mt.__MT[i - 1] ^ (mt.__MT[i - 1] >> 62)) + i) & 0xFFFFFFFFFFFFFFFF;
 	return mt;
 }
 
-unsigned long long
+UI8
 MASTER_random_mt64_get( MASTER_random_mt64 * const mt ) {
 	if (mt->__index >= 312)
 		MASTER_random_mt64_twist(mt);
-	register unsigned long long y = mt->__MT[mt->__index];
+	register UI8 y = mt->__MT[mt->__index];
 	y = (y ^ (y >> 29)) & 0x5555555555555555;
 	y = (y ^ (y << 17)) & 0x71D67FFFEDA60000;
 	y = (y ^ (y << 37)) & 0xFFF7EEE000000000;
@@ -154,19 +151,19 @@ MASTER_random_mt64_get( MASTER_random_mt64 * const mt ) {
 // #!! 32
 
 typedef struct {
-	unsigned long __a;
+	UI4 __a;
 } MASTER_random_xorshift32;
 
 MASTER_random_xorshift32
-MASTER_random_xorshift32_init(unsigned long seed) {
+MASTER_random_xorshift32_init(UI4 seed) {
 	MASTER_random_xorshift32 xs32;
 	xs32.__a = seed;
 	return xs32;
 }
 
-unsigned long
+UI4
 MASTER_random_xorshift32_get(MASTER_random_xorshift32 * const xs32) {
-	unsigned long x = xs32->__a;
+	UI4 x = xs32->__a;
 	x ^= x << 13;
 	x ^= x >> 17;
 	x ^= x << 5;
@@ -178,19 +175,19 @@ MASTER_random_xorshift32_get(MASTER_random_xorshift32 * const xs32) {
 // #!! 64
 
 typedef struct {
-	unsigned long long __a;
+	UI8 __a;
 } MASTER_random_xorshift64;
 
 MASTER_random_xorshift64
-MASTER_random_xorshift64_init(unsigned long long seed) {
+MASTER_random_xorshift64_init(UI8 seed) {
 	MASTER_random_xorshift64 xs64;
 	xs64.__a = seed;
 	return xs64;
 }
 
-unsigned long
+UI4
 MASTER_random_xorshift64_get(MASTER_random_xorshift64 * const xs64) {
-	unsigned long long x = xs64->__a;
+	UI8 x = xs64->__a;
 	x ^= x << 13;
 	x ^= x >> 7;
 	x ^= x << 17;
@@ -202,20 +199,20 @@ MASTER_random_xorshift64_get(MASTER_random_xorshift64 * const xs64) {
 // #!! 128
 
 typedef struct {
-	unsigned long __x[4];
+	UI4 __x[4];
 } MASTER_random_xorshift128;
 
 MASTER_random_xorshift128
-MASTER_random_xorshift128_init(unsigned long seed) {
+MASTER_random_xorshift128_init(UI4 seed) {
 	MASTER_random_xorshift128 xs128;
 	xs128.__x[0] = seed;
 	return xs128;
 }
 
-unsigned long
+UI4
 MASTER_random_xorshift128_get(MASTER_random_xorshift128 * const xs128) {
-	unsigned long t = xs128->__x[3];
-	const unsigned long s = xs128->__x[0];
+	UI4 t = xs128->__x[3];
+	const UI4 s = xs128->__x[0];
 	xs128->__x[3] = xs128->__x[2];
 	xs128->__x[2] = xs128->__x[1];
 	xs128->__x[1] = s;
@@ -229,21 +226,21 @@ MASTER_random_xorshift128_get(MASTER_random_xorshift128 * const xs128) {
 // #!! XorWow
 
 typedef struct {
-	unsigned long __x[5];
-	unsigned long __c;
+	UI4 __x[5];
+	UI4 __c;
 } MASTER_random_xorwow;
 
 MASTER_random_xorwow
-MASTER_random_xorwow_init(unsigned long seed) {
+MASTER_random_xorwow_init(UI4 seed) {
 	MASTER_random_xorwow xw;
 	xw.__x[0] = seed;
 	return xw;
 }
 
-unsigned long
+UI4
 MASTER_random_xorwow_get(MASTER_random_xorwow * const xw) {
-	unsigned long t = xw->__x[4];
-	const unsigned long s = xw->__x[0];
+	UI4 t = xw->__x[4];
+	const UI4 s = xw->__x[0];
 	xw->__x[4] = xw->__x[3];
 	xw->__x[3] = xw->__x[2];
 	xw->__x[2] = xw->__x[1];
@@ -263,17 +260,17 @@ MASTER_random_xorwow_get(MASTER_random_xorwow * const xw) {
 // #!! 64*
 
 typedef struct {
-	unsigned long long __x;
+	UI8 __x;
 } MASTER_random_xorshift64star;
 
 MASTER_random_xorshift64star
-MASTER_random_xorshift64star_init(unsigned long long seed) {
+MASTER_random_xorshift64star_init(UI8 seed) {
 	MASTER_random_xorshift64star xs64s;
 	xs64s.__x = seed;
 	return xs64s;
 }
 
-unsigned long long
+UI8
 MASTER_random_xorshift64star_get(MASTER_random_xorshift64star * const xs64s) {
 	xs64s->__x ^= xs64s->__x >> 12;
 	xs64s->__x ^= xs64s->__x << 25;
@@ -286,21 +283,21 @@ MASTER_random_xorshift64star_get(MASTER_random_xorshift64star * const xs64s) {
 // #!! 1024*
 
 typedef struct {
-	unsigned long long __x[16];
+	UI8 __x[16];
 	int __i;
 } MASTER_random_xorshift1024star;
 
 MASTER_random_xorshift1024star
-MASTER_random_xorshift1024star_init(unsigned long long seed) {
+MASTER_random_xorshift1024star_init(UI8 seed) {
 	MASTER_random_xorshift1024star xs1024s;
 	xs1024s.__x[0] = seed;
 	return xs1024s;
 }
 
-unsigned long
+UI4
 MASTER_random_xorshift1024star_get(MASTER_random_xorshift1024star * const xs1024s) {
-	const unsigned long long s = xs1024s->__x[xs1024s->__i++];
-	unsigned long long t = xs1024s->__x[xs1024s->__i &= 15];
+	const UI8 s = xs1024s->__x[xs1024s->__i++];
+	UI8 t = xs1024s->__x[xs1024s->__i &= 15];
 	t ^= t << 31;
 	t ^= t >> 11;
 	t ^= s ^ (s >> 30);
@@ -313,20 +310,20 @@ MASTER_random_xorshift1024star_get(MASTER_random_xorshift1024star * const xs1024
 // #!! 128+
 
 typedef struct {
-	unsigned long long __x[2];
+	UI8 __x[2];
 } MASTER_random_xorshift128plus;
 
 MASTER_random_xorshift128plus
-MASTER_random_xorshift128plus_init(unsigned long long seed) {
+MASTER_random_xorshift128plus_init(UI8 seed) {
 	MASTER_random_xorshift128plus xs128p;
 	xs128p.__x[0] = seed;
 	return xs128p;
 }
 
-unsigned long long
+UI8
 MASTER_random_xorshift128plus_get(MASTER_random_xorshift128plus * const xs128p) {
-	unsigned long long t = xs128p->__x[0];
-	const unsigned long long s = xs128p->__x[1];
+	UI8 t = xs128p->__x[0];
+	const UI8 s = xs128p->__x[1];
 	xs128p->__x[0] = s;
 	t ^= t << 23;
 	t ^= t >> 18;
@@ -340,20 +337,20 @@ MASTER_random_xorshift128plus_get(MASTER_random_xorshift128plus * const xs128p) 
 // #!! r128+
 
 typedef struct {
-	unsigned long long __x[2];
+	UI8 __x[2];
 } MASTER_random_xorshiftr128plus;
 
 MASTER_random_xorshiftr128plus
-MASTER_random_xorshiftr128plus_init(unsigned long long seed) {
+MASTER_random_xorshiftr128plus_init(UI8 seed) {
 	MASTER_random_xorshiftr128plus xsr128p;
 	xsr128p.__x[0] = seed;
 	return xsr128p;
 }
 
-unsigned long long
+UI8
 MASTER_random_xorshiftr128plus_get(MASTER_random_xorshiftr128plus * const xsr128p) {
-	unsigned long long x = xsr128p->__x[0];
-	const unsigned long long y = xsr128p->__x[1];
+	UI8 x = xsr128p->__x[0];
+	const UI8 y = xsr128p->__x[1];
 	xsr128p->__x[0] = y;
 	x ^= x << 23;
 	x ^= x >> 17;
@@ -369,20 +366,20 @@ MASTER_random_xorshiftr128plus_get(MASTER_random_xorshiftr128plus * const xsr128
 // #!! xoshiro256+
 
 typedef struct {
-	unsigned long long __x[4];
+	UI8 __x[4];
 } MASTER_random_xoshiro256plus;
 
 MASTER_random_xoshiro256plus
-MASTER_random_xoshiro256plus_init(unsigned long long seed) {
+MASTER_random_xoshiro256plus_init(UI8 seed) {
 	MASTER_random_xoshiro256plus xs256p;
 	xs256p.__x[0] = seed;
 	return xs256p;
 }
 
-unsigned long long
+UI8
 MASTER_random_xoshiro256plus_get(MASTER_random_xoshiro256plus * const xs256p) {
-	const unsigned long long res = xs256p->__x[0] + xs256p->__x[3];
-	const unsigned long long t = xs256p->__x[1] << 17;
+	const UI8 res = xs256p->__x[0] + xs256p->__x[3];
+	const UI8 t = xs256p->__x[1] << 17;
 	
 	xs256p->__x[2] ^= xs256p->__x[0];
 	xs256p->__x[3] ^= xs256p->__x[1];
@@ -399,20 +396,20 @@ MASTER_random_xoshiro256plus_get(MASTER_random_xoshiro256plus * const xs256p) {
 // #!! xoshiro256++
 
 typedef struct {
-	unsigned long long __x[4];
+	UI8 __x[4];
 } MASTER_random_xoshiro256plusplus;
 
 MASTER_random_xoshiro256plusplus
-MASTER_random_xoshiro256plusplus_init(unsigned long long seed) {
+MASTER_random_xoshiro256plusplus_init(UI8 seed) {
 	MASTER_random_xoshiro256plusplus xs256pp;
 	xs256pp.__x[0] = seed;
 	return xs256pp;
 }
 
-unsigned long long
+UI8
 MASTER_random_xoshiro256plusplus_get(MASTER_random_xoshiro256plusplus * const xs256pp) {
-	const unsigned long long r = MASTER_rol64(xs256pp->__x[0] + xs256pp->__x[3], 23) + xs256pp->__x[0];
-	const unsigned long long t = xs256pp->__x[1] << 17;
+	const UI8 r = MASTER_rol64(xs256pp->__x[0] + xs256pp->__x[3], 23) + xs256pp->__x[0];
+	const UI8 t = xs256pp->__x[1] << 17;
 	
 	xs256pp->__x[2] ^= xs256pp->__x[0];
 	xs256pp->__x[3] ^= xs256pp->__x[1];
@@ -429,20 +426,20 @@ MASTER_random_xoshiro256plusplus_get(MASTER_random_xoshiro256plusplus * const xs
 // #!! xoshiro256**
 
 typedef struct {
-	unsigned long long __x[4];
+	UI8 __x[4];
 } MASTER_random_xoshiro256starstar;
 
 MASTER_random_xoshiro256starstar
-MASTER_random_xoshiro256starstar_init(unsigned long long seed) {
+MASTER_random_xoshiro256starstar_init(UI8 seed) {
 	MASTER_random_xoshiro256starstar xs256ss;
 	xs256ss.__x[0] = seed;
 	return xs256ss;
 }
 
-unsigned long long
+UI8
 MASTER_random_xoshiro256starstar_get(MASTER_random_xoshiro256starstar * const xs256ss) {
-	const unsigned long long res = MASTER_rol64(xs256ss->__x[1] * 5, 7) * 9;
-	const unsigned long long t = xs256ss->__x[1] << 17;
+	const UI8 res = MASTER_rol64(xs256ss->__x[1] * 5, 7) * 9;
+	const UI8 t = xs256ss->__x[1] << 17;
 	
 	xs256ss->__x[2] ^= xs256ss->__x[0];
 	xs256ss->__x[3] ^= xs256ss->__x[1];
@@ -464,29 +461,29 @@ MASTER_random_xoshiro256starstar_get(MASTER_random_xoshiro256starstar * const xs
 
 // #! RDRAND
 
-unsigned char
+UI1
 MASTER_rdrand_supported(void) {
 #if defined(__x86_64__) || defined(__i386__)
-    unsigned int eax, ebx, ecx, edx;
-    if (__get_cpuid(1, &eax, &ebx, &ecx, &edx))
-        return (ecx & bit_RDRND) != 0;
+	UI4 eax, ebx, ecx, edx;
+	if (__get_cpuid(1, &eax, &ebx, &ecx, &edx))
+		return (ecx & bit_RDRND) != 0;
 #endif /* Processor */
-    return 0;
+	return 0;
 }
 
 #if defined(__x86_64__) || defined(__i386__)
 
 #define MASTER_RDRAND_CONTENT { \
-    unsigned char ok; \
-    __asm__ volatile ("rdrand %0; setc %1" : "=r" (*rand), "=qm" (ok)); \
-    return ok; }
+	UI1 ok; \
+	__asm__ volatile ("rdrand %0; setc %1" : "=r" (*rand), "=qm" (ok)); \
+	return ok; }
 
-unsigned char
-MASTER_rdrand16_get(unsigned short * rand) MASTER_RDRAND_CONTENT
-unsigned char
-MASTER_rdrand32_get(unsigned int * rand) MASTER_RDRAND_CONTENT
-unsigned char
-MASTER_rdrand64_get(unsigned long long * rand) MASTER_RDRAND_CONTENT
+UI1
+MASTER_rdrand16_get(UI2 * rand) MASTER_RDRAND_CONTENT
+UI1
+MASTER_rdrand32_get(UI4 * rand) MASTER_RDRAND_CONTENT
+UI1
+MASTER_rdrand64_get(UI8 * rand) MASTER_RDRAND_CONTENT
 
 #undef MASTER_RDRAND_CONTENT
 
@@ -496,29 +493,29 @@ MASTER_rdrand64_get(unsigned long long * rand) MASTER_RDRAND_CONTENT
 
 // #! RDSEED
 
-unsigned char MASTER_rdseed_supported(void) {
+UI1 MASTER_rdseed_supported(void) {
 #if defined(__x86_64__) || defined(__i386__)
-    unsigned int eax, ebx, ecx, edx;
-    if (__get_cpuid(1, &eax, &ebx, &ecx, &edx))
-        return (ecx & (1 << 18)) != 0;
+	UI4 eax, ebx, ecx, edx;
+	if (__get_cpuid(1, &eax, &ebx, &ecx, &edx))
+		return (ecx & (1 << 18)) != 0;
 #endif /* Processor */
-    return 0;
+	return 0;
 }
 
 #if defined(__x86_64__) || defined(__i386__)
 
 #define MASTER_RDSEED_CONTENT { \
-    unsigned char ok; \
-    __asm__ volatile ("rdseed %0; setc %1" : "=r" (*rand), "=qm" (ok)); \
-    return ok; \
+	UI1 ok; \
+	__asm__ volatile ("rdseed %0; setc %1" : "=r" (*rand), "=qm" (ok)); \
+	return ok; \
 }
 
-unsigned char
-MASTER_rdseed16_get(unsigned short * rand) MASTER_RDSEED_CONTENT
-unsigned char
-MASTER_rdseed32_get(unsigned int * rand) MASTER_RDSEED_CONTENT
-unsigned char
-MASTER_rdseed64_get(unsigned long long * rand) MASTER_RDSEED_CONTENT
+UI1
+MASTER_rdseed16_get(UI2 * rand) MASTER_RDSEED_CONTENT
+UI1
+MASTER_rdseed32_get(UI4 * rand) MASTER_RDSEED_CONTENT
+UI1
+MASTER_rdseed64_get(UI8 * rand) MASTER_RDSEED_CONTENT
 
 #undef MASTER_RDSEED_CONTENT
 

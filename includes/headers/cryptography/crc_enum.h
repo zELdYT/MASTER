@@ -9,21 +9,23 @@
 #ifndef __MASTER_CRC_ENUM_INCLUDE_H__
 #define __MASTER_CRC_ENUM_INCLUDE_H__
 
+#include "../../headers/enumeration/master_enum.h"
+
 typedef struct {
-	unsigned long width;
-	unsigned long long poly, init;
-	unsigned int refin : 1;
-	unsigned int refout : 1;
-	unsigned long long xorout;
+	UI4 width;
+	UI8 poly, init;
+	UI4 refin : 1;
+	UI4 refout : 1;
+	UI8 xorout;
 } MASTER_CRC;
 
 typedef struct {
-	unsigned long width;
-	unsigned long long poly, init;
-	unsigned int refin : 1;
-	unsigned int refout : 1;
-	unsigned long long xorout;
-	unsigned long long check, residue;
+	UI4 width;
+	UI8 poly, init;
+	UI4 refin : 1;
+	UI4 refout : 1;
+	UI8 xorout;
+	UI8 check, residue;
 } MASTER_CRC_EXT;
 
 #define MASTER_CRC_3_GSM ((MASTER_CRC){ 3, 0x3, 0x0, 0, 0, 0x7 })

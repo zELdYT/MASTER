@@ -2,8 +2,10 @@
 #ifndef __MASTER_COLOR_INCLUDE_H__
 #define __MASTER_COLOR_INCLUDE_H__
 
+#include "../../headers/enumeration/master_enum.h"
+
 typedef struct {
-	unsigned char r, g, b;
+	UI1 r, g, b;
 } MASTER_rgb;
 
 typedef struct {
@@ -23,7 +25,7 @@ typedef struct {
 } MASTER_hsl;
 
 typedef struct {
-	unsigned char y;
+	UI1 y;
 	signed char i, q;
 } MASTER_yiq;
 

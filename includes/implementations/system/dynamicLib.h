@@ -19,13 +19,11 @@
 #	include <dlfcn.h>
 #endif /* OS */
 
-#define ALWAYS_INLINE __attribute__((always_inline))
-
 typedef struct {
 	void * handle;
 } MASTER_dynamic_library;
 
-ALWAYS_INLINE void *
+void *
 MASTER_dynamic_library_open( MASTER_dynamic_library * dl, const char * const libPath) {
 #if defined(__WIN32)
 	dl->handle = LoadLibraryA(libPath);
@@ -35,7 +33,7 @@ MASTER_dynamic_library_open( MASTER_dynamic_library * dl, const char * const lib
 	return dl->handle;
 }
 
-ALWAYS_INLINE void
+void
 MASTER_dynamic_library_close( MASTER_dynamic_library * dl) {
 #if defined(__WIN32)
 	FreeLibrary((HMODULE)dl->handle);
@@ -44,7 +42,7 @@ MASTER_dynamic_library_close( MASTER_dynamic_library * dl) {
 #endif /* OS */
 }
 
-ALWAYS_INLINE void *
+void *
 MASTER_dynamic_library_getFunction( MASTER_dynamic_library * dl, const char * const funcName) {
 #if defined(__WIN32)
 	return (void*)GetProcAddress((HMODULE)dl->handle, funcName);
@@ -53,7 +51,7 @@ MASTER_dynamic_library_getFunction( MASTER_dynamic_library * dl, const char * co
 #endif /* OS */
 }
 
-ALWAYS_INLINE const char *
+const char *
 MASTER_dynamic_library_getLastError( void ) {
 #if defined(__WIN32)
 	static char buffer[256];

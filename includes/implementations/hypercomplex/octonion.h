@@ -74,38 +74,38 @@ MASTER_octonion_scalarmul##prefix(const MASTER_octonion##prefix * __octo1, const
 MASTER_octonion##prefix \
 MASTER_octonion_mul##prefix(const MASTER_octonion##prefix * __octo1, const MASTER_octonion##prefix * __octo2) { \
 	MASTER_octonion##prefix octo; \
-    octo.real = __octo1->real * __octo2->real - __octo1->imag * __octo2->imag \
-                - __octo1->jmag * __octo2->jmag - __octo1->kmag * __octo2->kmag \
-                - __octo1->lmag * __octo2->lmag - __octo1->mmag * __octo2->mmag \
-                - __octo1->nmag * __octo2->nmag - __octo1->omag * __octo2->omag; \
-    octo.imag = __octo1->real * __octo2->imag + __octo1->imag * __octo2->real \
-                + __octo1->jmag * __octo2->kmag - __octo1->kmag * __octo2->jmag \
-                + __octo1->lmag * __octo2->mmag - __octo1->mmag * __octo2->lmag \
-                - __octo1->nmag * __octo2->omag + __octo1->omag * __octo2->nmag; \
-    octo.jmag = __octo1->real * __octo2->jmag + __octo1->imag * __octo2->kmag \
-                + __octo1->jmag * __octo2->real - __octo1->kmag * __octo2->imag \
-                + __octo1->lmag * __octo2->nmag - __octo1->mmag * __octo2->omag \
-                - __octo1->nmag * __octo2->lmag + __octo1->omag * __octo2->mmag; \
-    octo.kmag = __octo1->real * __octo2->kmag + __octo1->imag * __octo2->lmag \
-                + __octo1->jmag * __octo2->nmag + __octo1->kmag * __octo2->real \
-                - __octo1->lmag * __octo2->imag + __octo1->mmag * __octo2->jmag \
-                - __octo1->nmag * __octo2->mmag + __octo1->omag * __octo2->lmag; \
-    octo.lmag = __octo1->real * __octo2->lmag + __octo1->imag * __octo2->mmag \
-                + __octo1->jmag * __octo2->omag + __octo1->kmag * __octo2->nmag \
-                + __octo1->lmag * __octo2->real - __octo1->mmag * __octo2->imag \
-                + __octo1->nmag * __octo2->jmag - __octo1->omag * __octo2->kmag; \
-    octo.mmag = __octo1->real * __octo2->mmag + __octo1->imag * __octo2->nmag \
-                + __octo1->jmag * __octo2->lmag + __octo1->kmag * __octo2->omag \
-                + __octo1->lmag * __octo2->kmag + __octo1->mmag * __octo2->real \
-                - __octo1->nmag * __octo2->imag + __octo1->omag * __octo2->jmag; \
-    octo.nmag = __octo1->real * __octo2->nmag + __octo1->imag * __octo2->omag \
-                + __octo1->jmag * __octo2->mmag + __octo1->kmag * __octo2->lmag \
-                + __octo1->lmag * __octo2->nmag + __octo1->mmag * __octo2->kmag \
-                - __octo1->nmag * __octo2->real + __octo1->omag * __octo2->imag; \
-    octo.omag = __octo1->real * __octo2->omag + __octo1->imag * __octo2->real \
-                + __octo1->jmag * __octo2->jmag + __octo1->kmag * __octo2->kmag \
-                + __octo1->lmag * __octo2->lmag + __octo1->mmag * __octo2->mmag \
-                + __octo1->nmag * __octo2->nmag + __octo1->omag * __octo2->real; \
+	octo.real = __octo1->real * __octo2->real - __octo1->imag * __octo2->imag \
+				- __octo1->jmag * __octo2->jmag - __octo1->kmag * __octo2->kmag \
+				- __octo1->lmag * __octo2->lmag - __octo1->mmag * __octo2->mmag \
+				- __octo1->nmag * __octo2->nmag - __octo1->omag * __octo2->omag; \
+	octo.imag = __octo1->real * __octo2->imag + __octo1->imag * __octo2->real \
+				+ __octo1->jmag * __octo2->kmag - __octo1->kmag * __octo2->jmag \
+				+ __octo1->lmag * __octo2->mmag - __octo1->mmag * __octo2->lmag \
+				- __octo1->nmag * __octo2->omag + __octo1->omag * __octo2->nmag; \
+	octo.jmag = __octo1->real * __octo2->jmag + __octo1->imag * __octo2->kmag \
+				+ __octo1->jmag * __octo2->real - __octo1->kmag * __octo2->imag \
+				+ __octo1->lmag * __octo2->nmag - __octo1->mmag * __octo2->omag \
+				- __octo1->nmag * __octo2->lmag + __octo1->omag * __octo2->mmag; \
+	octo.kmag = __octo1->real * __octo2->kmag + __octo1->imag * __octo2->lmag \
+				+ __octo1->jmag * __octo2->nmag + __octo1->kmag * __octo2->real \
+				- __octo1->lmag * __octo2->imag + __octo1->mmag * __octo2->jmag \
+				- __octo1->nmag * __octo2->mmag + __octo1->omag * __octo2->lmag; \
+	octo.lmag = __octo1->real * __octo2->lmag + __octo1->imag * __octo2->mmag \
+				+ __octo1->jmag * __octo2->omag + __octo1->kmag * __octo2->nmag \
+				+ __octo1->lmag * __octo2->real - __octo1->mmag * __octo2->imag \
+				+ __octo1->nmag * __octo2->jmag - __octo1->omag * __octo2->kmag; \
+	octo.mmag = __octo1->real * __octo2->mmag + __octo1->imag * __octo2->nmag \
+				+ __octo1->jmag * __octo2->lmag + __octo1->kmag * __octo2->omag \
+				+ __octo1->lmag * __octo2->kmag + __octo1->mmag * __octo2->real \
+				- __octo1->nmag * __octo2->imag + __octo1->omag * __octo2->jmag; \
+	octo.nmag = __octo1->real * __octo2->nmag + __octo1->imag * __octo2->omag \
+				+ __octo1->jmag * __octo2->mmag + __octo1->kmag * __octo2->lmag \
+				+ __octo1->lmag * __octo2->nmag + __octo1->mmag * __octo2->kmag \
+				- __octo1->nmag * __octo2->real + __octo1->omag * __octo2->imag; \
+	octo.omag = __octo1->real * __octo2->omag + __octo1->imag * __octo2->real \
+				+ __octo1->jmag * __octo2->jmag + __octo1->kmag * __octo2->kmag \
+				+ __octo1->lmag * __octo2->lmag + __octo1->mmag * __octo2->mmag \
+				+ __octo1->nmag * __octo2->nmag + __octo1->omag * __octo2->real; \
 /* Previous has been generated by AI. Can have problems. I will check it later */ \
 	return octo; } \
 \

@@ -16,19 +16,19 @@
  * USV ( User-Separated Values )
  */
 
-typedef struct {
-	char*** data;
-	unsigned long width, height;
-} MASTER_table;
-
 #include <stdlib.h>
 #include <string.h>
 #include "../../headers/enumeration/master_enum.h"
 
+typedef struct {
+	char*** data;
+	UI4 width, height;
+} MASTER_table;
+
 void
 MASTER_table_free( MASTER_table * const table ) {
 	if (table->data != 0) {
-		unsigned long i, j;
+		UI4 i, j;
 		for (i = 0; i < table->height; i++) {
 			if (table->data[i] != 0) {
 				for (j = 0; j < table->width; j++) {
@@ -49,7 +49,7 @@ MASTER_table_free( MASTER_table * const table ) {
 int
 MASTER_table_toCpr( MASTER_table * const table, char * s, const char delimeter ) {
 	if (table->data != 0) {
-		unsigned long i, j, len;
+		UI4 i, j, len;
 		for (i = 0; i < table->height; i++) {
 			if (table->data[i] != 0)
 				for (j = 0; j < table->width; j++) {
@@ -73,7 +73,7 @@ MASTER_usv_parseCpr( MASTER_table * const table, const char * s, const char deli
 	const char * begin = s, * end = s;
 	table->width = 1;
 	table->height = 0;
-	unsigned char quotes_was = 0;
+	UI1 quotes_was = 0;
 	while (*begin == '\r' || *begin == '\n') begin++;
 	while (*begin != '\r' && *begin != '\n' && *begin != 0) {
 		if (*begin == '"') quotes_was = !quotes_was;
@@ -84,7 +84,7 @@ MASTER_usv_parseCpr( MASTER_table * const table, const char * s, const char deli
 	printf("wh : %d %d\n", table->width, table->height);
 	table->data = (char***)malloc(0);
 	begin = s;
-	unsigned long column = 0, row = 0;
+	UI4 column = 0, row = 0;
 	char*** cprprpr;
 	while (*end != 0) {
 		cprprpr = (char***)realloc(table->data, sizeof(char**) * (++table->height));
@@ -138,7 +138,7 @@ MASTER_usv_parseFile( MASTER_table * const table, const char * const filepath, c
 	if (f == 0) return MASTER_FILE_NOT_FOUND;
 	char * s;
 	fseek(f, 0, SEEK_END);
-	const unsigned long size = ftell(f);
+	const UI4 size = ftell(f);
 	fseek(f, 0, SEEK_SET);
 	s = malloc(size * sizeof(char) + 1);
 	if (!s) {
@@ -161,7 +161,7 @@ int
 MASTER_usv_saveToFile( MASTER_table * const table, const char * const filepath, const char delimeter ) {
 	FILE * f = fopen(filepath, "wt");
 	if (table->data != 0) {
-		unsigned long i, j, len = 0;
+		UI4 i, j, len = 0;
 		for (i = 0; i < table->height; i++) {
 			if (table->data[i] != 0) {
 				for (j = 0; j < table->width; j++) {
