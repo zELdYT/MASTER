@@ -9,6 +9,8 @@
 #ifndef __MASTER_DYNAMIC_LIB_INCLUDE_H__
 #define __MASTER_DYNAMIC_LIB_INCLUDE_H__
 
+#include "../../headers/enumeration/master_enum.h"
+
 #if !(defined(__WIN32) || defined(__linux__) || defined(__APPLE__) || defined(__sun))
 #	error "Unknown operation system. Supported only Windows & Linux & MacOS & Solaris."
 #endif /* OS */
@@ -55,7 +57,7 @@ const char *
 MASTER_dynamic_library_getLastError( void ) {
 #if defined(__WIN32)
 	static char buffer[256];
-		FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, GetLastError(), 0, buffer, sizeof(buffer), NULL);
+		FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, nul, GetLastError(), 0, buffer, sizeof(buffer), nul);
 	return buffer;
 #elif defined(__linux__) || defined(__APPLE__) || defined(__sun)
 	return dlerror();

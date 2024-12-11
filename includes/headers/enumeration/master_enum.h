@@ -32,6 +32,8 @@ typedef enum {
 	MASTER_QUEUE_IS_EMPTY,
 } MASTER_return_code;
 
+#define otherwise else if
+#define nul 0
 
 #endif /* __MASTER_CODE_STYLE_INCLUDE_H__ */
 

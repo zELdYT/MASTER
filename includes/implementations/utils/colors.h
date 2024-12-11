@@ -80,11 +80,11 @@ MASTER_rgb_to_hsv(const MASTER_rgb * rgb, MASTER_hsv * hsv) {
 	float delta = Cmax - Cmin;
 	if (delta == 0.0)
 		hsv->h = 0;
-	else if (delta == rs)
+	otherwise (delta == rs)
 		hsv->h = MASTER_pi / 3 * ((unsigned int)((gs - bs) / delta) % 6);
-	else if (delta == gs)
+	otherwise (delta == gs)
 		hsv->h = MASTER_pi / 3 * (((bs - rs) / delta) + 2);
-	else if (delta == bs)
+	otherwise (delta == bs)
 		hsv->h = MASTER_pi / 3 * (((rs - gs) / delta) + 4);
 	if (Cmax == 0)
 		hsv->s = 0;
@@ -101,13 +101,13 @@ MASTER_hsv_to_rgb(const MASTER_hsv * hsv, MASTER_rgb * rgb) {
 	float rs = 0, gs = 0, bs = 0;
 	if (hsv->h < MASTER_pi / 3) {
 		rs = c; gs = x;
-	} else if (hsv->h < MASTER_pi / 3 * 2) {
+	} otherwise (hsv->h < MASTER_pi / 3 * 2) {
 		rs = x; gs = c;
-	} else if (hsv->h < MASTER_pi / 2) {
+	} otherwise (hsv->h < MASTER_pi / 2) {
 		        gs = c; bs = x;
-	} else if (hsv->h < MASTER_pi / 3 * 4) {
+	} otherwise (hsv->h < MASTER_pi / 3 * 4) {
 		        gs = x; bs = c;
-	} else if (hsv->h < MASTER_pi / 3 * 5) {
+	} otherwise (hsv->h < MASTER_pi / 3 * 5) {
 		rs = x;         bs = c;
 	} else {
 		rs = c;         bs = x;
@@ -128,11 +128,11 @@ MASTER_rgb_to_hsl(const MASTER_rgb * rgb, MASTER_hsl * hsl) {
 	float delta = Cmax - Cmin;
 	if (delta == 0.0)
 		hsl->h = 0;
-	else if (delta == rs)
+	otherwise (delta == rs)
 		hsl->h = MASTER_pi / 3 * ((unsigned int)((gs - bs) / delta) % 6);
-	else if (delta == gs)
+	otherwise (delta == gs)
 		hsl->h = MASTER_pi / 3 * (((bs - rs) / delta) + 2);
-	else if (delta == bs)
+	otherwise (delta == bs)
 		hsl->h = MASTER_pi / 3 * (((rs - gs) / delta) + 4);
 	hsl->l = (Cmax + Cmin) / 2;
 	if (delta == 0)
@@ -149,13 +149,13 @@ MASTER_hsl_to_rgb(const MASTER_hsl * hsl, MASTER_rgb * rgb) {
 	float rs = 0, gs = 0, bs = 0;
 	if (hsl->h < MASTER_pi / 3) {
 		rs = c; gs = x;
-	} else if (hsl->h < MASTER_pi / 3 * 2) {
+	} otherwise (hsl->h < MASTER_pi / 3 * 2) {
 		rs = x; gs = c;
-	} else if (hsl->h < MASTER_pi / 2) {
+	} otherwise (hsl->h < MASTER_pi / 2) {
 		        gs = c; bs = x;
-	} else if (hsl->h < MASTER_pi / 3 * 4) {
+	} otherwise (hsl->h < MASTER_pi / 3 * 4) {
 		        gs = x; bs = c;
-	} else if (hsl->h < MASTER_pi / 3 * 5) {
+	} otherwise (hsl->h < MASTER_pi / 3 * 5) {
 		rs = x;         bs = c;
 	} else {
 		rs = c;         bs = x;

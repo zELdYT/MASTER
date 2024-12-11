@@ -369,7 +369,7 @@ typedef struct {
 	UI1 __X[48];
 	UI1 __M[16];
 	UI1 __buffer[16];
-	UI1 __len;
+	UI1 __l;
 } MASTER_MD2;
 
 MASTER_MD2
@@ -377,7 +377,7 @@ MASTER_MD2_Init(void) {
 	MASTER_MD2 __md2;
 	for (UI1 i = 0; i < 16; i++) __md2.__M[i] = 0x00;
 	for (UI1 i = 0; i < 48; i++) __md2.__X[i] = 0x00;
-	__md2.__len = 0;
+	__md2.__l = 0;
 	return __md2;
 }
 
@@ -404,19 +404,19 @@ __MASTED_MD2_Transform(MASTER_MD2 * __md2, const UI1 * __data) {
 void
 MASTER_MD2_Update(MASTER_MD2 * __md2, const char * __s, UI4 __l) {
 	while (__l--) {
-		__md2->__buffer[__md2->__len++] = *(__s++);
-		if (__md2->__len == 16) {
+		__md2->__buffer[__md2->__l++] = *(__s++);
+		if (__md2->__l == 16) {
 			__MASTED_MD2_Transform(__md2, __md2->__buffer);
-			__md2->__len = 0; }
+			__md2->__l = 0; }
 	}
 }
 
 void
 MASTER_MD2_Final(MASTER_MD2 * __md2, UI1 * hash_output) {
-	UI1 rem = 16 - __md2->__len;
+	UI1 rem = 16 - __md2->__l;
 
-	while (__md2->__len < 16)
-		__md2->__buffer[__md2->__len++] = rem;
+	while (__md2->__l < 16)
+		__md2->__buffer[__md2->__l++] = rem;
 
 	__MASTED_MD2_Transform(__md2, __md2->__buffer);
 	__MASTED_MD2_Transform(__md2, __md2->__M);
@@ -478,7 +478,7 @@ MASTER_MD2_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) {
 typedef struct {
 	UI4 __A, __B, __C, __D;
 	UI1 __buffer[64];
-	UI8 __len;
+	UI8 __l;
 } MASTER_MD4;
 
 MASTER_MD4
@@ -488,7 +488,7 @@ MASTER_MD4_Init(void) {
 	__md4.__B = 0xefcdab89;
 	__md4.__C = 0x98badcfe;
 	__md4.__D = 0x10325476;
-	__md4.__len = 0;
+	__md4.__l = 0;
 	return __md4;
 }
 
@@ -535,8 +535,8 @@ __MASTED_MD4_Transform(MASTER_MD4 * __md4) {
 void
 MASTER_MD4_Update(MASTER_MD4 * __md4, const char * __s, UI4 __l) {
 	while (__l--) {
-		__md4->__buffer[__md4->__len++ % 64] = *(__s++);
-		if (__md4->__len % 64 == 0)
+		__md4->__buffer[__md4->__l++ % 64] = *(__s++);
+		if (__md4->__l % 64 == 0)
 			__MASTED_MD4_Transform(__md4);
 	}
 }
@@ -546,16 +546,16 @@ MASTER_MD4_Final(MASTER_MD4 * __md4, UI1 * hash_output) {
 	UI1 bits[8];
 	UI4 index, padLen, i;
 
-	bits[0] = ((__md4->__len << 3) & 0xff);
-	bits[1] = ((__md4->__len << 3) >> 8) & 0xff;
-	bits[2] = ((__md4->__len << 3) >> 16) & 0xff;
-	bits[3] = ((__md4->__len << 3) >> 24) & 0xff;
-	bits[4] = ((__md4->__len << 3) >> 32) & 0xff;
-	bits[5] = ((__md4->__len << 3) >> 40) & 0xff;
-	bits[6] = ((__md4->__len << 3) >> 48) & 0xff;
-	bits[7] = ((__md4->__len << 3) >> 56) & 0xff;
+	bits[0] = ((__md4->__l << 3) & 0xff);
+	bits[1] = ((__md4->__l << 3) >> 8) & 0xff;
+	bits[2] = ((__md4->__l << 3) >> 16) & 0xff;
+	bits[3] = ((__md4->__l << 3) >> 24) & 0xff;
+	bits[4] = ((__md4->__l << 3) >> 32) & 0xff;
+	bits[5] = ((__md4->__l << 3) >> 40) & 0xff;
+	bits[6] = ((__md4->__l << 3) >> 48) & 0xff;
+	bits[7] = ((__md4->__l << 3) >> 56) & 0xff;
 	
-	index = ((__md4->__len) & 0x3f);
+	index = ((__md4->__l) & 0x3f);
 	padLen = (index < 56) ? (56 - index) : (120 - index);
 	const UI1 c = 0x80;
 	MASTER_MD4_Update(__md4, (const char *)&c, 1);
@@ -664,7 +664,7 @@ MASTER_MD4_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 typedef struct {
 	UI4 __A, __B, __C, __D;
 	UI1 __buffer[64];
-	UI8 __len;
+	UI8 __l;
 } MASTER_MD5;
 
 MASTER_MD5
@@ -674,7 +674,7 @@ MASTER_MD5_Init(void) {
 	__md5.__B = 0xefcdab89;
 	__md5.__C = 0x98badcfe;
 	__md5.__D = 0x10325476;
-	__md5.__len = 0;
+	__md5.__l = 0;
 	return __md5;
 }
 
@@ -728,8 +728,8 @@ __MASTED_MD5_Transform(MASTER_MD5 * __md5) {
 void
 MASTER_MD5_Update(MASTER_MD5 * __md5, const char * __s, UI4 __l) {
 	while (__l--) {
-		__md5->__buffer[__md5->__len++ % 64] = *(__s++);
-		if (__md5->__len % 64 == 0)
+		__md5->__buffer[__md5->__l++ % 64] = *(__s++);
+		if (__md5->__l % 64 == 0)
 			__MASTED_MD5_Transform(__md5);
 	}
 }
@@ -739,16 +739,16 @@ MASTER_MD5_Final(MASTER_MD5 * __md5, UI1 * hash_output) {
 	UI1 bits[8];
 	UI4 index, padLen, i;
 
-	bits[0] = ((__md5->__len << 3) & 0xff);
-	bits[1] = ((__md5->__len << 3) >> 8) & 0xff;
-	bits[2] = ((__md5->__len << 3) >> 16) & 0xff;
-	bits[3] = ((__md5->__len << 3) >> 24) & 0xff;
-	bits[4] = ((__md5->__len << 3) >> 32) & 0xff;
-	bits[5] = ((__md5->__len << 3) >> 40) & 0xff;
-	bits[6] = ((__md5->__len << 3) >> 48) & 0xff;
-	bits[7] = ((__md5->__len << 3) >> 56) & 0xff;
+	bits[0] = ((__md5->__l << 3) & 0xff);
+	bits[1] = ((__md5->__l << 3) >> 8) & 0xff;
+	bits[2] = ((__md5->__l << 3) >> 16) & 0xff;
+	bits[3] = ((__md5->__l << 3) >> 24) & 0xff;
+	bits[4] = ((__md5->__l << 3) >> 32) & 0xff;
+	bits[5] = ((__md5->__l << 3) >> 40) & 0xff;
+	bits[6] = ((__md5->__l << 3) >> 48) & 0xff;
+	bits[7] = ((__md5->__l << 3) >> 56) & 0xff;
 	
-	index = ((__md5->__len) & 0x3f);
+	index = ((__md5->__l) & 0x3f);
 	padLen = (index < 56) ? (56 - index) : (120 - index);
 	const UI1 c = 0x80;
 	MASTER_MD5_Update(__md5, (const char *)&c, 1);
@@ -878,7 +878,7 @@ static const UI8 MASTER_MD6_Q[] = {
 typedef struct {
 	UI4 __A, __B, __C, __D, __E;
 	UI1 __buffer[64];
-	UI8 __len;
+	UI8 __l;
 } MASTER_SHA1;
 
 MASTER_SHA1
@@ -889,7 +889,7 @@ MASTER_SHA1_Init(void) {
 	__sha1.__C = 0x98badcfe;
 	__sha1.__D = 0x10325476;
 	__sha1.__E = 0xc3d2e1f0;
-	__sha1.__len = 0;
+	__sha1.__l = 0;
 	return __sha1;
 }
 
@@ -913,11 +913,11 @@ __MASTER_SHA1_Transform(MASTER_SHA1 * __sha1) {
 	for (j = 0; j < 80; j++) {
 		if (j <= 19) {
 			buffer = __MASTER_SHA1_FUNCTION_FF(__sha1->__A, __sha1->__B, __sha1->__C, __sha1->__D, __sha1->__E, j);
-		} else if (j <= 39) {
+		} otherwise (j <= 39) {
 			buffer = __MASTER_SHA1_FUNCTION_GG(__sha1->__A, __sha1->__B, __sha1->__C, __sha1->__D, __sha1->__E, j);
-		} else if (j <= 59) {
+		} otherwise (j <= 59) {
 			buffer = __MASTER_SHA1_FUNCTION_HH(__sha1->__A, __sha1->__B, __sha1->__C, __sha1->__D, __sha1->__E, j);
-		} else if (j <= 79) {
+		} otherwise (j <= 79) {
 			buffer = __MASTER_SHA1_FUNCTION_II(__sha1->__A, __sha1->__B, __sha1->__C, __sha1->__D, __sha1->__E, j);
 		}
 		__sha1->__E = __sha1->__D;
@@ -937,8 +937,8 @@ __MASTER_SHA1_Transform(MASTER_SHA1 * __sha1) {
 void
 MASTER_SHA1_Update(MASTER_SHA1 * __sha1, const char * __s, UI4 __l) {
 	while (__l--) {
-		__sha1->__buffer[__sha1->__len++ % 64] = *(__s++);
-		if (__sha1->__len % 64 == 0)
+		__sha1->__buffer[__sha1->__l++ % 64] = *(__s++);
+		if (__sha1->__l % 64 == 0)
 			__MASTER_SHA1_Transform(__sha1);
 	}
 }
@@ -948,16 +948,16 @@ MASTER_SHA1_Final(MASTER_SHA1 * __sha1, UI1 * hash_output) {
 	UI1 bits[8];
 	UI4 index, padLen, i;
 
-	bits[0] = ((__sha1->__len << 3) >> 56) & 0xff;
-	bits[1] = ((__sha1->__len << 3) >> 48) & 0xff;
-	bits[2] = ((__sha1->__len << 3) >> 40) & 0xff;
-	bits[3] = ((__sha1->__len << 3) >> 32) & 0xff;
-	bits[4] = ((__sha1->__len << 3) >> 24) & 0xff;
-	bits[5] = ((__sha1->__len << 3) >> 16) & 0xff;
-	bits[6] = ((__sha1->__len << 3) >> 8) & 0xff;
-	bits[7] = ((__sha1->__len << 3)) & 0xff;
+	bits[0] = ((__sha1->__l << 3) >> 56) & 0xff;
+	bits[1] = ((__sha1->__l << 3) >> 48) & 0xff;
+	bits[2] = ((__sha1->__l << 3) >> 40) & 0xff;
+	bits[3] = ((__sha1->__l << 3) >> 32) & 0xff;
+	bits[4] = ((__sha1->__l << 3) >> 24) & 0xff;
+	bits[5] = ((__sha1->__l << 3) >> 16) & 0xff;
+	bits[6] = ((__sha1->__l << 3) >> 8) & 0xff;
+	bits[7] = ((__sha1->__l << 3)) & 0xff;
 	
-	index = ((__sha1->__len) & 0x3f);
+	index = ((__sha1->__l) & 0x3f);
 	padLen = (index < 56) ? (56 - index) : (120 - index);
 	const UI1 c = 0x80;
 	MASTER_SHA1_Update(__sha1, (const char *)&c, 1);
@@ -1025,11 +1025,11 @@ MASTER_SHA1_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 		for (j = 0; j < 80; j++) {
 			if (j <= 19) {
 				buffer = __MASTER_SHA1_FUNCTION_FF(A, B, C, D, E, j);
-			} else if (j <= 39) {
+			} otherwise (j <= 39) {
 				buffer = __MASTER_SHA1_FUNCTION_GG(A, B, C, D, E, j);
-			} else if (j <= 59) {
+			} otherwise (j <= 59) {
 				buffer = __MASTER_SHA1_FUNCTION_HH(A, B, C, D, E, j);
-			} else if (j <= 79) {
+			} otherwise (j <= 79) {
 				buffer = __MASTER_SHA1_FUNCTION_II(A, B, C, D, E, j);
 			}
 			E = D;
@@ -1096,7 +1096,7 @@ typedef struct {
 	UI4 __H0, __H1, __H2, __H3,
 					__H4, __H5, __H6, __H7;
 	UI1 __buffer[64];
-	UI8 __len;
+	UI8 __l;
 } MASTER_SHA2_224;
 
 MASTER_SHA2_224
@@ -1110,7 +1110,7 @@ MASTER_SHA2_224_Init(void) {
 	__sha_2_224.__H5 = 0x68581511;
 	__sha_2_224.__H6 = 0x64F98FA7;
 	__sha_2_224.__H7 = 0xBEFA4FA4;
-	__sha_2_224.__len = 0;
+	__sha_2_224.__l = 0;
 	return __sha_2_224;
 }
 
@@ -1159,8 +1159,8 @@ __MASTER_SHA2_224_Transform(MASTER_SHA2_224 * __sha2_224) {
 void
 MASTER_SHA2_224_Update(MASTER_SHA2_224 * __sha2_224, const char * __s, UI4 __l) {
 	while (__l--) {
-		__sha2_224->__buffer[__sha2_224->__len++ % 64] = *(__s++);
-		if (__sha2_224->__len % 64 == 0)
+		__sha2_224->__buffer[__sha2_224->__l++ % 64] = *(__s++);
+		if (__sha2_224->__l % 64 == 0)
 			__MASTER_SHA2_224_Transform(__sha2_224);
 	}
 }
@@ -1170,16 +1170,16 @@ MASTER_SHA2_224_Final(MASTER_SHA2_224 * __sha2_224, UI1 * hash_output) {
 	UI1 bits[8];
 	UI4 index, padLen, i;
 
-	bits[0] = ((__sha2_224->__len << 3) >> 56) & 0xff;
-	bits[1] = ((__sha2_224->__len << 3) >> 48) & 0xff;
-	bits[2] = ((__sha2_224->__len << 3) >> 40) & 0xff;
-	bits[3] = ((__sha2_224->__len << 3) >> 32) & 0xff;
-	bits[4] = ((__sha2_224->__len << 3) >> 24) & 0xff;
-	bits[5] = ((__sha2_224->__len << 3) >> 16) & 0xff;
-	bits[6] = ((__sha2_224->__len << 3) >> 8) & 0xff;
-	bits[7] = ((__sha2_224->__len << 3)) & 0xff;
+	bits[0] = ((__sha2_224->__l << 3) >> 56) & 0xff;
+	bits[1] = ((__sha2_224->__l << 3) >> 48) & 0xff;
+	bits[2] = ((__sha2_224->__l << 3) >> 40) & 0xff;
+	bits[3] = ((__sha2_224->__l << 3) >> 32) & 0xff;
+	bits[4] = ((__sha2_224->__l << 3) >> 24) & 0xff;
+	bits[5] = ((__sha2_224->__l << 3) >> 16) & 0xff;
+	bits[6] = ((__sha2_224->__l << 3) >> 8) & 0xff;
+	bits[7] = ((__sha2_224->__l << 3)) & 0xff;
 	
-	index = ((__sha2_224->__len) & 0x3f);
+	index = ((__sha2_224->__l) & 0x3f);
 	padLen = (index < 56) ? (56 - index) : (120 - index);
 	const UI1 c = 0x80;
 	MASTER_SHA2_224_Update(__sha2_224, (const char *)&c, 1);
@@ -1290,7 +1290,7 @@ typedef struct {
 	UI4 __H0, __H1, __H2, __H3,
 				  __H4, __H5, __H6, __H7;
 	UI1 __buffer[64];
-	UI8 __len;
+	UI8 __l;
 } MASTER_SHA2_256;
 
 MASTER_SHA2_256
@@ -1304,7 +1304,7 @@ MASTER_SHA2_256_Init(void) {
 	__sha2_256.__H5 = 0x9B05688C;
 	__sha2_256.__H6 = 0x1F83D9AB;
 	__sha2_256.__H7 = 0x5BE0CD19;
-	__sha2_256.__len = 0;
+	__sha2_256.__l = 0;
 	return __sha2_256;
 }
 
@@ -1353,8 +1353,8 @@ __MASTER_SHA2_256_Transform(MASTER_SHA2_256 * __sha2_256) {
 void
 MASTER_SHA2_256_Update(MASTER_SHA2_256 * __sha2_256, const char * __s, UI4 __l) {
 	while (__l--) {
-		__sha2_256->__buffer[__sha2_256->__len++ % 64] = *(__s++);
-		if (__sha2_256->__len % 64 == 0)
+		__sha2_256->__buffer[__sha2_256->__l++ % 64] = *(__s++);
+		if (__sha2_256->__l % 64 == 0)
 			__MASTER_SHA2_256_Transform(__sha2_256);
 	}
 }
@@ -1364,16 +1364,16 @@ MASTER_SHA2_256_Final(MASTER_SHA2_256 * __sha2_256, UI1 * hash_output) {
 	UI1 bits[8];
 	UI4 index, padLen, i;
 
-	bits[0] = ((__sha2_256->__len << 3) >> 56) & 0xff;
-	bits[1] = ((__sha2_256->__len << 3) >> 48) & 0xff;
-	bits[2] = ((__sha2_256->__len << 3) >> 40) & 0xff;
-	bits[3] = ((__sha2_256->__len << 3) >> 32) & 0xff;
-	bits[4] = ((__sha2_256->__len << 3) >> 24) & 0xff;
-	bits[5] = ((__sha2_256->__len << 3) >> 16) & 0xff;
-	bits[6] = ((__sha2_256->__len << 3) >> 8) & 0xff;
-	bits[7] = ((__sha2_256->__len << 3)) & 0xff;
+	bits[0] = ((__sha2_256->__l << 3) >> 56) & 0xff;
+	bits[1] = ((__sha2_256->__l << 3) >> 48) & 0xff;
+	bits[2] = ((__sha2_256->__l << 3) >> 40) & 0xff;
+	bits[3] = ((__sha2_256->__l << 3) >> 32) & 0xff;
+	bits[4] = ((__sha2_256->__l << 3) >> 24) & 0xff;
+	bits[5] = ((__sha2_256->__l << 3) >> 16) & 0xff;
+	bits[6] = ((__sha2_256->__l << 3) >> 8) & 0xff;
+	bits[7] = ((__sha2_256->__l << 3)) & 0xff;
 	
-	index = ((__sha2_256->__len) & 0x3f);
+	index = ((__sha2_256->__l) & 0x3f);
 	padLen = (index < 56) ? (56 - index) : (120 - index);
 	const UI1 c = 0x80;
 	MASTER_SHA2_256_Update(__sha2_256, (const char *)&c, 1);
@@ -1492,7 +1492,7 @@ typedef struct {
 	UI8 __H0, __H1, __H2, __H3,
 					   __H4, __H5, __H6, __H7;
 	UI1 __buffer[128];
-	UI8 __len;
+	UI8 __l;
 } MASTER_SHA2_512;
 
 MASTER_SHA2_512
@@ -1506,7 +1506,7 @@ MASTER_SHA2_512_Init(void) {
 	__sha2_512.__H5 = 0x9b05688c2b3e6c1f;
 	__sha2_512.__H6 = 0x1f83d9abfb41bd6b;
 	__sha2_512.__H7 = 0x5be0cd19137e2179;
-	__sha2_512.__len = 0;
+	__sha2_512.__l = 0;
 	return __sha2_512;
 }
 
@@ -1582,8 +1582,8 @@ __MASTER_SHA2_512_Transform(MASTER_SHA2_512 * __sha2_512) {
 void
 MASTER_SHA2_512_Update(MASTER_SHA2_512 * __sha2_512, const char * __s, UI4 __l) {
 	while (__l--) {
-		__sha2_512->__buffer[__sha2_512->__len++ % 128] = *(__s++);
-		if (__sha2_512->__len % 128 == 0)
+		__sha2_512->__buffer[__sha2_512->__l++ % 128] = *(__s++);
+		if (__sha2_512->__l % 128 == 0)
 			__MASTER_SHA2_512_Transform(__sha2_512);
 	}
 }
@@ -1593,16 +1593,16 @@ MASTER_SHA2_512_Final(MASTER_SHA2_512 * __sha2_512, UI1 * hash_output) {
 	UI1 bits[8];
 	UI4 mdi, padding_len, i;
 	
-	bits[0] = ((__sha2_512->__len << 3) >> 56) & 0xff;
-	bits[1] = ((__sha2_512->__len << 3) >> 48) & 0xff;
-	bits[2] = ((__sha2_512->__len << 3) >> 40) & 0xff;
-	bits[3] = ((__sha2_512->__len << 3) >> 32) & 0xff;
-	bits[4] = ((__sha2_512->__len << 3) >> 24) & 0xff;
-	bits[5] = ((__sha2_512->__len << 3) >> 16) & 0xff;
-	bits[6] = ((__sha2_512->__len << 3) >> 8) & 0xff;
-	bits[7] = ((__sha2_512->__len << 3)) & 0xff;
+	bits[0] = ((__sha2_512->__l << 3) >> 56) & 0xff;
+	bits[1] = ((__sha2_512->__l << 3) >> 48) & 0xff;
+	bits[2] = ((__sha2_512->__l << 3) >> 40) & 0xff;
+	bits[3] = ((__sha2_512->__l << 3) >> 32) & 0xff;
+	bits[4] = ((__sha2_512->__l << 3) >> 24) & 0xff;
+	bits[5] = ((__sha2_512->__l << 3) >> 16) & 0xff;
+	bits[6] = ((__sha2_512->__l << 3) >> 8) & 0xff;
+	bits[7] = ((__sha2_512->__l << 3)) & 0xff;
 	
-	mdi = __sha2_512->__len % 128;
+	mdi = __sha2_512->__l % 128;
 	padding_len = (mdi < 112) ? 119 - mdi : 247 - mdi;
 	const UI1 c = 0x80;
 	MASTER_SHA2_512_Update(__sha2_512, (const char *)&c, 1);
@@ -1722,7 +1722,7 @@ typedef struct {
 	UI8 __H0, __H1, __H2, __H3,
 						 __H4, __H5, __H6, __H7;
 	UI1 __buffer[128];
-	UI8 __len;
+	UI8 __l;
 } MASTER_SHA2_384;
 
 MASTER_SHA2_384
@@ -1736,7 +1736,7 @@ MASTER_SHA2_384_Init(void) {
 	__sha2_384.__H5 = 0x8eb44a8768581511;
 	__sha2_384.__H6 = 0xdb0c2e0d64f98fa7;
 	__sha2_384.__H7 = 0x47b5481dbefa4fa4;
-	__sha2_384.__len = 0;
+	__sha2_384.__l = 0;
 	return __sha2_384;
 }
 
@@ -1793,8 +1793,8 @@ __MASTER_SHA2_384_Transform(MASTER_SHA2_384 * __sha2_384) {
 void
 MASTER_SHA2_384_Update(MASTER_SHA2_384 * __sha2_384, const char * __s, UI4 __l) {
 	while (__l--) {
-		__sha2_384->__buffer[__sha2_384->__len++ % 128] = *(__s++);
-		if (__sha2_384->__len % 128 == 0)
+		__sha2_384->__buffer[__sha2_384->__l++ % 128] = *(__s++);
+		if (__sha2_384->__l % 128 == 0)
 			__MASTER_SHA2_384_Transform(__sha2_384);
 	}
 }
@@ -1804,16 +1804,16 @@ MASTER_SHA2_384_Final(MASTER_SHA2_384 * __sha2_384, UI1 * hash_output) {
 	UI1 bits[8];
 	UI4 mdi, padding_len, i;
 	
-	bits[0] = ((__sha2_384->__len << 3) >> 56) & 0xff;
-	bits[1] = ((__sha2_384->__len << 3) >> 48) & 0xff;
-	bits[2] = ((__sha2_384->__len << 3) >> 40) & 0xff;
-	bits[3] = ((__sha2_384->__len << 3) >> 32) & 0xff;
-	bits[4] = ((__sha2_384->__len << 3) >> 24) & 0xff;
-	bits[5] = ((__sha2_384->__len << 3) >> 16) & 0xff;
-	bits[6] = ((__sha2_384->__len << 3) >> 8) & 0xff;
-	bits[7] = ((__sha2_384->__len << 3)) & 0xff;
+	bits[0] = ((__sha2_384->__l << 3) >> 56) & 0xff;
+	bits[1] = ((__sha2_384->__l << 3) >> 48) & 0xff;
+	bits[2] = ((__sha2_384->__l << 3) >> 40) & 0xff;
+	bits[3] = ((__sha2_384->__l << 3) >> 32) & 0xff;
+	bits[4] = ((__sha2_384->__l << 3) >> 24) & 0xff;
+	bits[5] = ((__sha2_384->__l << 3) >> 16) & 0xff;
+	bits[6] = ((__sha2_384->__l << 3) >> 8) & 0xff;
+	bits[7] = ((__sha2_384->__l << 3)) & 0xff;
 	
-	mdi = __sha2_384->__len % 128;
+	mdi = __sha2_384->__l % 128;
 	padding_len = (mdi < 112) ? 119 - mdi : 247 - mdi;
 	const UI1 c = 0x80;
 	MASTER_SHA2_384_Update(__sha2_384, (const char *)&c, 1);
@@ -1929,7 +1929,7 @@ typedef struct {
 	UI8 __H0, __H1, __H2, __H3,
 						 __H4, __H5, __H6, __H7;
 	UI1 __buffer[128];
-	UI8 __len;
+	UI8 __l;
 } MASTER_SHA2_512_224;
 
 MASTER_SHA2_512_224
@@ -1943,7 +1943,7 @@ MASTER_SHA2_512_224_Init(void) {
 	__sha2_512_224.__H5 = 0x77E36F7304C48942;
 	__sha2_512_224.__H6 = 0x3F9D85A86A1D36C8;
 	__sha2_512_224.__H7 = 0x1112E6AD91D692A1;
-	__sha2_512_224.__len = 0;
+	__sha2_512_224.__l = 0;
 	return __sha2_512_224;
 }
 
@@ -2000,8 +2000,8 @@ __MASTER_SHA2_512_224_Transform(MASTER_SHA2_512_224 * __sha2_512_224) {
 void
 MASTER_SHA2_512_224_Update(MASTER_SHA2_512_224 * __sha2_512_224, const char * __s, UI4 __l) {
 	while (__l--) {
-		__sha2_512_224->__buffer[__sha2_512_224->__len++ % 128] = *(__s++);
-		if (__sha2_512_224->__len % 128 == 0)
+		__sha2_512_224->__buffer[__sha2_512_224->__l++ % 128] = *(__s++);
+		if (__sha2_512_224->__l % 128 == 0)
 			__MASTER_SHA2_512_224_Transform(__sha2_512_224);
 	}
 }
@@ -2011,16 +2011,16 @@ MASTER_SHA2_512_224_Final(MASTER_SHA2_512_224 * __sha2_512_224, UI1 * hash_outpu
 	UI1 bits[8];
 	UI4 mdi, padding_len, i;
 	
-	bits[0] = ((__sha2_512_224->__len << 3) >> 56) & 0xff;
-	bits[1] = ((__sha2_512_224->__len << 3) >> 48) & 0xff;
-	bits[2] = ((__sha2_512_224->__len << 3) >> 40) & 0xff;
-	bits[3] = ((__sha2_512_224->__len << 3) >> 32) & 0xff;
-	bits[4] = ((__sha2_512_224->__len << 3) >> 24) & 0xff;
-	bits[5] = ((__sha2_512_224->__len << 3) >> 16) & 0xff;
-	bits[6] = ((__sha2_512_224->__len << 3) >> 8) & 0xff;
-	bits[7] = ((__sha2_512_224->__len << 3)) & 0xff;
+	bits[0] = ((__sha2_512_224->__l << 3) >> 56) & 0xff;
+	bits[1] = ((__sha2_512_224->__l << 3) >> 48) & 0xff;
+	bits[2] = ((__sha2_512_224->__l << 3) >> 40) & 0xff;
+	bits[3] = ((__sha2_512_224->__l << 3) >> 32) & 0xff;
+	bits[4] = ((__sha2_512_224->__l << 3) >> 24) & 0xff;
+	bits[5] = ((__sha2_512_224->__l << 3) >> 16) & 0xff;
+	bits[6] = ((__sha2_512_224->__l << 3) >> 8) & 0xff;
+	bits[7] = ((__sha2_512_224->__l << 3)) & 0xff;
 	
-	mdi = __sha2_512_224->__len % 128;
+	mdi = __sha2_512_224->__l % 128;
 	padding_len = (mdi < 112) ? 119 - mdi : 247 - mdi;
 	const UI1 c = 0x80;
 	MASTER_SHA2_512_224_Update(__sha2_512_224, (const char *)&c, 1);
@@ -2132,7 +2132,7 @@ typedef struct {
 	UI8 __H0, __H1, __H2, __H3,
 						 __H4, __H5, __H6, __H7;
 	UI1 __buffer[128];
-	UI8 __len;
+	UI8 __l;
 } MASTER_SHA2_512_256;
 
 MASTER_SHA2_512_256
@@ -2146,7 +2146,7 @@ MASTER_SHA2_512_256_Init(void) {
 	__sha2_512_256.__H5 = 0xBE5E1E2553863992;
 	__sha2_512_256.__H6 = 0x2B0199FC2C85B8AA;
 	__sha2_512_256.__H7 = 0x0EB72DDC81C52CA2;
-	__sha2_512_256.__len = 0;
+	__sha2_512_256.__l = 0;
 	return __sha2_512_256;
 }
 
@@ -2203,8 +2203,8 @@ __MASTER_SHA2_512_256_Transform(MASTER_SHA2_512_256 * __sha2_512_256) {
 void
 MASTER_SHA2_512_256_Update(MASTER_SHA2_512_256 * __sha2_512_256, const char * __s, UI4 __l) {
 	while (__l--) {
-		__sha2_512_256->__buffer[__sha2_512_256->__len++ % 128] = *(__s++);
-		if (__sha2_512_256->__len % 128 == 0)
+		__sha2_512_256->__buffer[__sha2_512_256->__l++ % 128] = *(__s++);
+		if (__sha2_512_256->__l % 128 == 0)
 			__MASTER_SHA2_512_256_Transform(__sha2_512_256);
 	}
 }
@@ -2214,16 +2214,16 @@ MASTER_SHA2_512_256_Final(MASTER_SHA2_512_256 * __sha2_512_256, UI1 * hash_outpu
 	UI1 bits[8];
 	UI4 mdi, padding_len, i;
 	
-	bits[0] = ((__sha2_512_256->__len << 3) >> 56) & 0xff;
-	bits[1] = ((__sha2_512_256->__len << 3) >> 48) & 0xff;
-	bits[2] = ((__sha2_512_256->__len << 3) >> 40) & 0xff;
-	bits[3] = ((__sha2_512_256->__len << 3) >> 32) & 0xff;
-	bits[4] = ((__sha2_512_256->__len << 3) >> 24) & 0xff;
-	bits[5] = ((__sha2_512_256->__len << 3) >> 16) & 0xff;
-	bits[6] = ((__sha2_512_256->__len << 3) >> 8) & 0xff;
-	bits[7] = ((__sha2_512_256->__len << 3)) & 0xff;
+	bits[0] = ((__sha2_512_256->__l << 3) >> 56) & 0xff;
+	bits[1] = ((__sha2_512_256->__l << 3) >> 48) & 0xff;
+	bits[2] = ((__sha2_512_256->__l << 3) >> 40) & 0xff;
+	bits[3] = ((__sha2_512_256->__l << 3) >> 32) & 0xff;
+	bits[4] = ((__sha2_512_256->__l << 3) >> 24) & 0xff;
+	bits[5] = ((__sha2_512_256->__l << 3) >> 16) & 0xff;
+	bits[6] = ((__sha2_512_256->__l << 3) >> 8) & 0xff;
+	bits[7] = ((__sha2_512_256->__l << 3)) & 0xff;
 	
-	mdi = __sha2_512_256->__len % 128;
+	mdi = __sha2_512_256->__l % 128;
 	padding_len = (mdi < 112) ? 119 - mdi : 247 - mdi;
 	const UI1 c = 0x80;
 	MASTER_SHA2_512_256_Update(__sha2_512_256, (const char *)&c, 1);
@@ -3187,9 +3187,9 @@ MASTER_RIPEMD256_Transform(MASTER_RIPEMD256 * __ripemd256) {
 		bbb = t;
 
 		if (i == 15) { t = aa; aa = aaa; aaa = t; }
-		else if (i == 31) { t = bb; bb = bbb; bbb = t; }
-		else if (i == 47) { t = cc; cc = ccc; ccc = t; }
-		else if (i == 63) { t = dd; dd = ddd; ddd = t; }
+		otherwise (i == 31) { t = bb; bb = bbb; bbb = t; }
+		otherwise (i == 47) { t = cc; cc = ccc; ccc = t; }
+		otherwise (i == 63) { t = dd; dd = ddd; ddd = t; }
 	}
 
 	__ripemd256->__h[0] += aa;
@@ -3351,10 +3351,10 @@ MASTER_RIPEMD320_Transform(MASTER_RIPEMD320 * __ripemd320) {
 		bbb = t;
 
 		if (i == 15) { t = bb; bb = bbb; bbb = t; }
-		else if (i == 31) { t = dd; dd = ddd; ddd = t; }
-		else if (i == 47) { t = aa; aa = aaa; aaa = t; }
-		else if (i == 63) { t = cc; cc = ccc; ccc = t; }
-		else if (i == 79) { t = ee; ee = eee; eee = t; }
+		otherwise (i == 31) { t = dd; dd = ddd; ddd = t; }
+		otherwise (i == 47) { t = aa; aa = aaa; aaa = t; }
+		otherwise (i == 63) { t = cc; cc = ccc; ccc = t; }
+		otherwise (i == 79) { t = ee; ee = eee; eee = t; }
 	}
 
 	__ripemd320->__h[0] += aa;
