@@ -6,18 +6,18 @@
  * See the LICENSE file in the project root for more details.
  */
 
-#ifndef __MASTER_CP437_INCLUDE_H__
-#define __MASTER_CP437_INCLUDE_H__
+#ifndef __MASTER_CP720_INCLUDE_H__
+#define __MASTER_CP720_INCLUDE_H__
 
 #include "../../headers/enumeration/master_enum.h"
 
 typedef struct {
 	UI4 * symbol;
 	UI8 unicode;
-} MASTER_cp437_element;
+} MASTER_cp720_element;
 
-const MASTER_cp437_element
-MASTER_cp437_table[256] = {
+const MASTER_cp720_element
+MASTER_cp720_table[256] = {
 	{ U"\0", 0x00 },
 	{ U"☺", 0xe298ba },
 	{ U"☻", 0xe298bb },
@@ -146,52 +146,52 @@ MASTER_cp437_table[256] = {
 	{ U"}", 0x7d },
 	{ U"~", 0x7e },
 	{ U"⌂", 0xe28c82 },
-	{ U"Ç", 0xc387 },
-	{ U"ü", 0xc3bc },
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
 	{ U"é", 0xc3a9 },
 	{ U"â", 0xc3a2 },
-	{ U"ä", 0xc3a4 },
+	{ U"\0", 0x00 }, /* not used */
 	{ U"à", 0xc3a0 },
-	{ U"å", 0xc3a5 },
+	{ U"\0", 0x00 }, /* not used */
 	{ U"ç", 0xc3a7 },
 	{ U"ê", 0xc3aa },
 	{ U"ë", 0xc3ab },
 	{ U"è", 0xc3a8 },
 	{ U"ï", 0xc3af },
 	{ U"î", 0xc3ae },
-	{ U"ì", 0xc3ac },
-	{ U"Ä", 0xc384 },
-	{ U"Å", 0xc385 },
-	{ U"É", 0xc389 },
-	{ U"æ", 0xc3a6 },
-	{ U"Æ", 0xc386 },
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"_ّ", 0x5fd991 },
+	{ U"_ْ", 0x5fd992 },
 	{ U"ô", 0xc3b4 },
-	{ U"ö", 0xc3b6 },
-	{ U"ò", 0xc3b2 },
+	{ U"¤", 0xc2a4 },
+	{ U"ـ", 0xd980 },
 	{ U"û", 0xc3bb },
 	{ U"ù", 0xc3b9 },
-	{ U"ÿ", 0xc3bf },
-	{ U"Ö", 0xc396 },
-	{ U"Ü", 0xc39c },
-	{ U"¢", 0xc2a2 },
+	{ U"ء", 0xd8a1 },
+	{ U"آ", 0xd8a2 },
+	{ U"أ", 0xd8a3 },
+	{ U"ؤ", 0xd8a4 },
 	{ U"£", 0xc2a3 },
-	{ U"¥", 0xc2a5 },
-	{ U"₧", 0xe282a7 },
-	{ U"ƒ", 0xc692 },
-	{ U"á", 0xc3a1 },
-	{ U"í", 0xc3ad },
-	{ U"ó", 0xc3b3 },
-	{ U"ú", 0xc3ba },
-	{ U"ñ", 0xc3b1 },
-	{ U"Ñ", 0xc391 },
-	{ U"ª", 0xc2aa },
-	{ U"º", 0xc2ba },
-	{ U"¿", 0xc2bf },
-	{ U"⌐", 0xe28c90 },
-	{ U"¬", 0xc2ac },
-	{ U"½", 0xc2bd },
-	{ U"¼", 0xc2bc },
-	{ U"¡", 0xc2a1 },
+	{ U"إ", 0xd8a5 },
+	{ U"ئ", 0xd8a6 },
+	{ U"ا", 0xd8a7 },
+	{ U"ب", 0xd8a8 },
+	{ U"ة", 0xd8a9 },
+	{ U"ت", 0xd8aa },
+	{ U"ث", 0xd8ab },
+	{ U"ج", 0xd8ac },
+	{ U"ح", 0xd8ad },
+	{ U"خ", 0xd8ae },
+	{ U"د", 0xd8af },
+	{ U"ذ", 0xd8b0 },
+	{ U"ر", 0xd8b1 },
+	{ U"ز", 0xd8b2 },
+	{ U"س", 0xd8b3 },
+	{ U"ش", 0xd8b4 },
+	{ U"ص", 0xd8b5 },
 	{ U"«", 0xc2ab },
 	{ U"»", 0xc2bb },
 	{ U"░", 0xe29691 },
@@ -242,29 +242,29 @@ MASTER_cp437_table[256] = {
 	{ U"▌", 0xe2968c },
 	{ U"▐", 0xe29690 },
 	{ U"▀", 0xe29680 },
-	{ U"α", 0xceb1 },
-	{ U"ß", 0xc39f },
-	{ U"Γ", 0xce93 },
-	{ U"π", 0xcf80 },
-	{ U"Σ", 0xcea3 },
-	{ U"σ", 0xcf83 },
+	{ U"ض", 0xd8b6 },
+	{ U"ط", 0xd8b7 },
+	{ U"ظ", 0xd8b8 },
+	{ U"ع", 0xd8b9 },
+	{ U"غ", 0xd8ba },
+	{ U"ف", 0xd981 },
 	{ U"µ", 0xc2b5 },
-	{ U"τ", 0xcf84 },
-	{ U"Φ", 0xcea6 },
-	{ U"Θ", 0xce98 },
-	{ U"Ω", 0xcea9 },
-	{ U"δ", 0xceb4 },
-	{ U"∞", 0xe2889e },
-	{ U"φ", 0xcf86 },
-	{ U"ε", 0xceb5 },
-	{ U"∩", 0xe288a9 },
+	{ U"ق", 0xd982 },
+	{ U"ك", 0xd983 },
+	{ U"ل", 0xd984 },
+	{ U"م", 0xd985 },
+	{ U"ن", 0xd986 },
+	{ U"ه", 0xd987 },
+	{ U"و", 0xd988 },
+	{ U"ى", 0xd989 },
+	{ U"ي", 0xd98a },
 	{ U"≡", 0xe289a1 },
-	{ U"±", 0xc2b1 },
-	{ U"≥", 0xe289a5 },
-	{ U"≤", 0xe289a4 },
-	{ U"⌠", 0xe28ca0 },
-	{ U"⌡", 0xe28ca1 },
-	{ U"÷", 0xc3b7 },
+	{ U"_ً", 0x5fd98b },
+	{ U"_ٌ", 0x5fd98c },
+	{ U"_ٍ", 0x5fd98d },
+	{ U"_َ", 0x5fd98e },
+	{ U"_ُ", 0x5fd98f },
+	{ U"_ِ", 0x5fd990 },
 	{ U"≈", 0xe28988 },
 	{ U"°", 0xc2b0 },
 	{ U"∙", 0xe28899 },
@@ -273,9 +273,9 @@ MASTER_cp437_table[256] = {
 	{ U"ⁿ", 0xe281bf },
 	{ U"²", 0xc2b2 },
 	{ U"■", 0xe296a0 },
-	{ U" ", 0xc2a0 }
+	{ U" ", 0xc2a0 },
 };
 
-#endif /* __MASTER_CP437_INCLUDE_H__ */
+#endif /* __MASTER_CP720_INCLUDE_H__ */
 
 // be master~

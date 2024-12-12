@@ -6,18 +6,18 @@
  * See the LICENSE file in the project root for more details.
  */
 
-#ifndef __MASTER_CP437_INCLUDE_H__
-#define __MASTER_CP437_INCLUDE_H__
+#ifndef __MASTER_CP770_INCLUDE_H__
+#define __MASTER_CP770_INCLUDE_H__
 
 #include "../../headers/enumeration/master_enum.h"
 
 typedef struct {
 	UI4 * symbol;
 	UI8 unicode;
-} MASTER_cp437_element;
+} MASTER_cp770_element;
 
-const MASTER_cp437_element
-MASTER_cp437_table[256] = {
+const MASTER_cp770_element
+MASTER_cp770_table[256] = {
 	{ U"\0", 0x00 },
 	{ U"☺", 0xe298ba },
 	{ U"☻", 0xe298bb },
@@ -146,52 +146,52 @@ MASTER_cp437_table[256] = {
 	{ U"}", 0x7d },
 	{ U"~", 0x7e },
 	{ U"⌂", 0xe28c82 },
-	{ U"Ç", 0xc387 },
+	{ U"Č", 0xc48c },
 	{ U"ü", 0xc3bc },
-	{ U"é", 0xc3a9 },
-	{ U"â", 0xc3a2 },
+	{ U"ė", 0xc497 },
+	{ U"ā", 0xc481 },
 	{ U"ä", 0xc3a4 },
-	{ U"à", 0xc3a0 },
-	{ U"å", 0xc3a5 },
-	{ U"ç", 0xc3a7 },
-	{ U"ê", 0xc3aa },
-	{ U"ë", 0xc3ab },
-	{ U"è", 0xc3a8 },
-	{ U"ï", 0xc3af },
-	{ U"î", 0xc3ae },
-	{ U"ì", 0xc3ac },
+	{ U"ą", 0xc485 },
+	{ U"ļ", 0xc4bc },
+	{ U"č", 0xc48d },
+	{ U"ē", 0xc493 },
+	{ U"Ē", 0xc492 },
+	{ U"ę", 0xc499 },
+	{ U"Ę", 0xc498 },
+	{ U"ī", 0xc4ab },
+	{ U"į", 0xc4af },
 	{ U"Ä", 0xc384 },
-	{ U"Å", 0xc385 },
-	{ U"É", 0xc389 },
-	{ U"æ", 0xc3a6 },
-	{ U"Æ", 0xc386 },
-	{ U"ô", 0xc3b4 },
+	{ U"Ą", 0xc484 },
+	{ U"Ė", 0xc496 },
+	{ U"ž", 0xc5be },
+	{ U"Ž", 0xc5bd },
+	{ U"õ", 0xc3b5 },
 	{ U"ö", 0xc3b6 },
-	{ U"ò", 0xc3b2 },
-	{ U"û", 0xc3bb },
-	{ U"ù", 0xc3b9 },
-	{ U"ÿ", 0xc3bf },
+	{ U"Õ", 0xc395 },
+	{ U"ū", 0xc5ab },
+	{ U"ų", 0xc5b3 },
+	{ U"ģ", 0xc4a3 },
 	{ U"Ö", 0xc396 },
 	{ U"Ü", 0xc39c },
 	{ U"¢", 0xc2a2 },
-	{ U"£", 0xc2a3 },
-	{ U"¥", 0xc2a5 },
-	{ U"₧", 0xe282a7 },
-	{ U"ƒ", 0xc692 },
-	{ U"á", 0xc3a1 },
-	{ U"í", 0xc3ad },
-	{ U"ó", 0xc3b3 },
-	{ U"ú", 0xc3ba },
-	{ U"ñ", 0xc3b1 },
-	{ U"Ñ", 0xc391 },
-	{ U"ª", 0xc2aa },
-	{ U"º", 0xc2ba },
-	{ U"¿", 0xc2bf },
+	{ U"Ļ", 0xc4bb },
+	{ U"„", 0xe2809e },
+	{ U"š", 0xc5a1 },
+	{ U"Š", 0xc5a0 },
+	{ U"Ā", 0xc480 },
+	{ U"Ī", 0xc4aa },
+	{ U"ķ", 0xc4b7 },
+	{ U"Ķ", 0xc4b6 },
+	{ U"ņ", 0xc586 },
+	{ U"Ņ", 0xc585 },
+	{ U"Ū", 0xc5aa },
+	{ U"Ų", 0xc5b2 },
+	{ U"Ģ", 0xc4a2 },
 	{ U"⌐", 0xe28c90 },
 	{ U"¬", 0xc2ac },
 	{ U"½", 0xc2bd },
 	{ U"¼", 0xc2bc },
-	{ U"¡", 0xc2a1 },
+	{ U"Į", 0xc4ae },
 	{ U"«", 0xc2ab },
 	{ U"»", 0xc2bb },
 	{ U"░", 0xe29691 },
@@ -276,6 +276,6 @@ MASTER_cp437_table[256] = {
 	{ U" ", 0xc2a0 }
 };
 
-#endif /* __MASTER_CP437_INCLUDE_H__ */
+#endif /* __MASTER_CP770_INCLUDE_H__ */
 
 // be master~
