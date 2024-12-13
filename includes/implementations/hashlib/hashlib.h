@@ -9,14 +9,10 @@
 #ifndef __MASTER_HASHLIB_INCLUDE_H__
 #define __MASTER_HASHLIB_INCLUDE_H__
 
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../../headers/enumeration/master_enum.h"
 
-#define __MASTER_HASHLIB_FUNCTION_RLL32(X, C) (((X) << (C)) | ((X) >> (32 - (C))))
-#define __MASTER_HASHLIB_FUNCTION_RLL64(X, C) (((X) << (C)) | ((X) >> (64 - (C))))
-#define __MASTER_HASHLIB_FUNCTION_RLR32(X, C) (((X) >> (C)) | ((X) << (32 - (C))))
-#define __MASTER_HASHLIB_FUNCTION_RLR64(X, C) (((X) >> (C)) | ((X) << (64 - (C))))
 #define __MASTER_CHANGE_ENDIAN_64(ptr) \
 	(((UI8)((UI1 *)(ptr))[0]) ^ \
 	(((UI8)((UI1 *)(ptr))[1]) << 8) ^ \
@@ -471,9 +467,9 @@ MASTER_MD2_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) {
 #define __MASTER_MD4_FUNCTION_F(X, Y, Z) ((X & Y) | ((~X) & Z))
 #define __MASTER_MD4_FUNCTION_G(X, Y, Z) ((X & Y) | (X & Z) | (Y & Z))
 #define __MASTER_MD4_FUNCTION_H(X, Y, Z) (X ^ Y ^ Z)
-#define __MASTER_MD4_FUNCTION_FF(A, B, C, D, K, S) A += __MASTER_MD4_FUNCTION_F(B, C, D) + (X[K]); A = __MASTER_HASHLIB_FUNCTION_RLL32(A, S)
-#define __MASTER_MD4_FUNCTION_GG(A, B, C, D, K, S) A += __MASTER_MD4_FUNCTION_G(B, C, D) + (X[K]) + 0x5A827999; A = __MASTER_HASHLIB_FUNCTION_RLL32(A, S)
-#define __MASTER_MD4_FUNCTION_HH(A, B, C, D, K, S) A += __MASTER_MD4_FUNCTION_H(B, C, D) + (X[K]) + 0x6ED9EBA1; A = __MASTER_HASHLIB_FUNCTION_RLL32(A, S)
+#define __MASTER_MD4_FUNCTION_FF(A, B, C, D, K, S) A += __MASTER_MD4_FUNCTION_F(B, C, D) + (X[K]); A = MASTER_RLL32(A, S)
+#define __MASTER_MD4_FUNCTION_GG(A, B, C, D, K, S) A += __MASTER_MD4_FUNCTION_G(B, C, D) + (X[K]) + 0x5A827999; A = MASTER_RLL32(A, S)
+#define __MASTER_MD4_FUNCTION_HH(A, B, C, D, K, S) A += __MASTER_MD4_FUNCTION_H(B, C, D) + (X[K]) + 0x6ED9EBA1; A = MASTER_RLL32(A, S)
 
 typedef struct {
 	UI4 __A, __B, __C, __D;
@@ -656,10 +652,10 @@ MASTER_MD4_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 #define __MASTER_MD5_FUNCTION_G(X, Y, Z) ((X & Z) | ((~Z) & Y))
 #define __MASTER_MD5_FUNCTION_H(X, Y, Z) (X ^ Y ^ Z)
 #define __MASTER_MD5_FUNCTION_I(X, Y, Z) (Y ^ ((~Z) | X))
-#define __MASTER_MD5_FUNCTION_FF(A, B, C, D, K, S, I) A = B + __MASTER_HASHLIB_FUNCTION_RLL32(A + __MASTER_MD5_FUNCTION_F(B, C, D) + X[K] + T[I], S)
-#define __MASTER_MD5_FUNCTION_GG(A, B, C, D, K, S, I) A = B + __MASTER_HASHLIB_FUNCTION_RLL32(A + __MASTER_MD5_FUNCTION_G(B, C, D) + X[K] + T[I], S)
-#define __MASTER_MD5_FUNCTION_HH(A, B, C, D, K, S, I) A = B + __MASTER_HASHLIB_FUNCTION_RLL32(A + __MASTER_MD5_FUNCTION_H(B, C, D) + X[K] + T[I], S)
-#define __MASTER_MD5_FUNCTION_II(A, B, C, D, K, S, I) A = B + __MASTER_HASHLIB_FUNCTION_RLL32(A + __MASTER_MD5_FUNCTION_I(B, C, D) + X[K] + T[I], S)
+#define __MASTER_MD5_FUNCTION_FF(A, B, C, D, K, S, I) A = B + MASTER_RLL32(A + __MASTER_MD5_FUNCTION_F(B, C, D) + X[K] + T[I], S)
+#define __MASTER_MD5_FUNCTION_GG(A, B, C, D, K, S, I) A = B + MASTER_RLL32(A + __MASTER_MD5_FUNCTION_G(B, C, D) + X[K] + T[I], S)
+#define __MASTER_MD5_FUNCTION_HH(A, B, C, D, K, S, I) A = B + MASTER_RLL32(A + __MASTER_MD5_FUNCTION_H(B, C, D) + X[K] + T[I], S)
+#define __MASTER_MD5_FUNCTION_II(A, B, C, D, K, S, I) A = B + MASTER_RLL32(A + __MASTER_MD5_FUNCTION_I(B, C, D) + X[K] + T[I], S)
 
 typedef struct {
 	UI4 __A, __B, __C, __D;
@@ -870,10 +866,10 @@ static const UI8 MASTER_MD6_Q[] = {
 #define __MASTER_SHA1_FUNCTION_G(B, C, D) (B ^ C ^ D)
 #define __MASTER_SHA1_FUNCTION_H(B, C, D) ((B & C) | (B & D) | (C & D))
 #define __MASTER_SHA1_FUNCTION_I(B, C, D) (B ^ C ^ D)
-#define __MASTER_SHA1_FUNCTION_FF(A, B, C, D, E, T) (__MASTER_HASHLIB_FUNCTION_RLL32(A, 5) + __MASTER_SHA1_FUNCTION_F(B, C, D) + E + W[T] + 0x5A827999)
-#define __MASTER_SHA1_FUNCTION_GG(A, B, C, D, E, T) (__MASTER_HASHLIB_FUNCTION_RLL32(A, 5) + __MASTER_SHA1_FUNCTION_G(B, C, D) + E + W[T] + 0x6ED9EBA1)
-#define __MASTER_SHA1_FUNCTION_HH(A, B, C, D, E, T) (__MASTER_HASHLIB_FUNCTION_RLL32(A, 5) + __MASTER_SHA1_FUNCTION_H(B, C, D) + E + W[T] + 0x8F1BBCDC)
-#define __MASTER_SHA1_FUNCTION_II(A, B, C, D, E, T) (__MASTER_HASHLIB_FUNCTION_RLL32(A, 5) + __MASTER_SHA1_FUNCTION_I(B, C, D) + E + W[T] + 0xCA62C1D6)
+#define __MASTER_SHA1_FUNCTION_FF(A, B, C, D, E, T) (MASTER_RLL32(A, 5) + __MASTER_SHA1_FUNCTION_F(B, C, D) + E + W[T] + 0x5A827999)
+#define __MASTER_SHA1_FUNCTION_GG(A, B, C, D, E, T) (MASTER_RLL32(A, 5) + __MASTER_SHA1_FUNCTION_G(B, C, D) + E + W[T] + 0x6ED9EBA1)
+#define __MASTER_SHA1_FUNCTION_HH(A, B, C, D, E, T) (MASTER_RLL32(A, 5) + __MASTER_SHA1_FUNCTION_H(B, C, D) + E + W[T] + 0x8F1BBCDC)
+#define __MASTER_SHA1_FUNCTION_II(A, B, C, D, E, T) (MASTER_RLL32(A, 5) + __MASTER_SHA1_FUNCTION_I(B, C, D) + E + W[T] + 0xCA62C1D6)
 
 typedef struct {
 	UI4 __A, __B, __C, __D, __E;
@@ -902,7 +898,7 @@ __MASTER_SHA1_Transform(MASTER_SHA1 * __sha1) {
 	for (j = 0; j < 16; j++) 
 		W[j] = (__sha1->__buffer[j * 4] << 24) | ((__sha1->__buffer[j * 4 + 1]) << 16) | ((__sha1->__buffer[j * 4 + 2]) << 8) | ((__sha1->__buffer[j * 4 + 3]));
 	for (j = 16; j < 80; j++) 
-		W[j] = __MASTER_HASHLIB_FUNCTION_RLL32((W[j - 3] ^ W[j - 8] ^ W[j - 14] ^ W[j - 16]), 1);
+		W[j] = MASTER_RLL32((W[j - 3] ^ W[j - 8] ^ W[j - 14] ^ W[j - 16]), 1);
 
 	AA = __sha1->__A;
 	BB = __sha1->__B;
@@ -922,7 +918,7 @@ __MASTER_SHA1_Transform(MASTER_SHA1 * __sha1) {
 		}
 		__sha1->__E = __sha1->__D;
 		__sha1->__D = __sha1->__C;
-		__sha1->__C = __MASTER_HASHLIB_FUNCTION_RLL32(__sha1->__B, 30);
+		__sha1->__C = MASTER_RLL32(__sha1->__B, 30);
 		__sha1->__B =__sha1->__A;
 		__sha1->__A = buffer;
 	}
@@ -1014,7 +1010,7 @@ MASTER_SHA1_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 		for (j = 0; j < 16; j++) 
 			W[j] = (__M[i + j * 4] << 24) | ((__M[i + j * 4 + 1]) << 16) | ((__M[i + j * 4 + 2]) << 8) | ((__M[i + j * 4 + 3]));
 		for (j = 16; j < 80; j++) 
-			W[j] = __MASTER_HASHLIB_FUNCTION_RLL32((W[j - 3] ^ W[j - 8] ^ W[j - 14] ^ W[j - 16]), 1);
+			W[j] = MASTER_RLL32((W[j - 3] ^ W[j - 8] ^ W[j - 14] ^ W[j - 16]), 1);
 
 		AA = A;
 		BB = B;
@@ -1034,7 +1030,7 @@ MASTER_SHA1_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 			}
 			E = D;
 			D = C;
-			C = __MASTER_HASHLIB_FUNCTION_RLL32(B, 30);
+			C = MASTER_RLL32(B, 30);
 			B = A;
 			A = buffer;
 		}
@@ -1066,8 +1062,8 @@ MASTER_SHA1_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 
 // #! SHA-2
 
-#define __MASTER_SHA2_FUNCTION_SIGMA0(A) ((__MASTER_HASHLIB_FUNCTION_RLR32(A, 2)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(A, 13)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(A, 22)))
-#define __MASTER_SHA2_FUNCTION_SIGMA1(A) ((__MASTER_HASHLIB_FUNCTION_RLR32(E, 6)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(E, 11)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(E, 25)))
+#define __MASTER_SHA2_FUNCTION_SIGMA0(A) ((MASTER_RLR32(A, 2)) ^ (MASTER_RLR32(A, 13)) ^ (MASTER_RLR32(A, 22)))
+#define __MASTER_SHA2_FUNCTION_SIGMA1(A) ((MASTER_RLR32(E, 6)) ^ (MASTER_RLR32(E, 11)) ^ (MASTER_RLR32(E, 25)))
 #define __MASTER_SHA2_FUNCTION_MAJ(A, B, C) ((A & B) ^ (A & C) ^ (B & C))
 #define __MASTER_SHA2_FUNCTION_CH(E, F, G) ((E & F) ^ ((~E) & G))
 
@@ -1122,8 +1118,8 @@ __MASTER_SHA2_224_Transform(MASTER_SHA2_224 * __sha2_224) {
 		for (j = 0; j < 16; j++) 
 			W[j] = (__sha2_224->__buffer[j * 4] << 24) | ((__sha2_224->__buffer[j * 4 + 1]) << 16) | ((__sha2_224->__buffer[j * 4 + 2]) << 8) | ((__sha2_224->__buffer[j * 4 + 3]));
 		for (j = 16; j < 64; j++) {
-			UI4 s0 = (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 15], 7)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
-					UI4 s1 = (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 2], 17)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
+			UI4 s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
+					UI4 s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
 					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
@@ -1241,8 +1237,8 @@ MASTER_SHA2_224_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 		for (j = 0; j < 16; j++) 
 			W[j] = (__M[i + j * 4] << 24) | ((__M[i + j * 4 + 1]) << 16) | ((__M[i + j * 4 + 2]) << 8) | ((__M[i + j * 4 + 3]));
 		for (j = 16; j < 64; j++) {
-			UI4 s0 = (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 15], 7)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
-					UI4 s1 = (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 2], 17)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
+			UI4 s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
+					UI4 s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
 					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
@@ -1316,8 +1312,8 @@ __MASTER_SHA2_256_Transform(MASTER_SHA2_256 * __sha2_256) {
 	for (j = 0; j < 16; j++) 
 		W[j] = (__sha2_256->__buffer[j * 4] << 24) | ((__sha2_256->__buffer[j * 4 + 1]) << 16) | ((__sha2_256->__buffer[j * 4 + 2]) << 8) | ((__sha2_256->__buffer[j * 4 + 3]));
 	for (j = 16; j < 64; j++) {
-		UI4 s0 = (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 15], 7)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
-		UI4 s1 = (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 2], 17)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
+		UI4 s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
+		UI4 s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -1437,8 +1433,8 @@ MASTER_SHA2_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 		for (j = 0; j < 16; j++) 
 			W[j] = (__M[i + j * 4] << 24) | ((__M[i + j * 4 + 1]) << 16) | ((__M[i + j * 4 + 2]) << 8) | ((__M[i + j * 4 + 3]));
 		for (j = 16; j < 64; j++) {
-			UI4 s0 = (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 15], 7)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
-					UI4 s1 = (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 2], 17)) ^ (__MASTER_HASHLIB_FUNCTION_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
+			UI4 s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
+					UI4 s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
 					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
@@ -1483,8 +1479,8 @@ MASTER_SHA2_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 
 // #!! SHA-2-512
 
-#define __MASTER_SHA2_512_FUNCTION_SIGMA0(A) ((__MASTER_HASHLIB_FUNCTION_RLR64(A, 28)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(A, 34)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(A, 39)))
-#define __MASTER_SHA2_512_FUNCTION_SIGMA1(A) ((__MASTER_HASHLIB_FUNCTION_RLR64(E, 14)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(E, 18)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(E, 41)))
+#define __MASTER_SHA2_512_FUNCTION_SIGMA0(A) ((MASTER_RLR64(A, 28)) ^ (MASTER_RLR64(A, 34)) ^ (MASTER_RLR64(A, 39)))
+#define __MASTER_SHA2_512_FUNCTION_SIGMA1(A) ((MASTER_RLR64(E, 14)) ^ (MASTER_RLR64(E, 18)) ^ (MASTER_RLR64(E, 41)))
 #define __MASTER_SHA2_512_FUNCTION_MAJ(A, B, C) ((A & B) ^ (A & C) ^ (B & C))
 #define __MASTER_SHA2_512_FUNCTION_CH(E, F, G) ((E & F) ^ ((~E) & G))
 
@@ -1547,8 +1543,8 @@ __MASTER_SHA2_512_Transform(MASTER_SHA2_512 * __sha2_512) {
 				 (((UI8)__sha2_512->__buffer[j * 8 + 0]) << 56);
 	}
 	for (j = 16; j < 80; j++) {
-		UI8 s0 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 1)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-		UI8 s1 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 19)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+		UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+		UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -1672,8 +1668,8 @@ MASTER_SHA2_512_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 					 (((UI8)__M[i + j * 8 + 0]) << 56);
 		}
 		for (j = 16; j < 80; j++) {
-			UI8 s0 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 1)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-					UI8 s1 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 19)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+			UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+					UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
@@ -1758,8 +1754,8 @@ __MASTER_SHA2_384_Transform(MASTER_SHA2_384 * __sha2_384) {
 				 (((UI8)__sha2_384->__buffer[j * 8 + 0]) << 56);
 	}
 	for (j = 16; j < 80; j++) {
-		UI8 s0 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 1)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-		UI8 s1 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 19)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+		UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+		UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -1881,8 +1877,8 @@ MASTER_SHA2_384_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 					 (((UI8)__M[i + j * 8 + 0]) << 56);
 		}
 		for (j = 16; j < 80; j++) {
-			UI8 s0 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 1)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-					UI8 s1 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 19)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+			UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+					UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
@@ -1965,8 +1961,8 @@ __MASTER_SHA2_512_224_Transform(MASTER_SHA2_512_224 * __sha2_512_224) {
 				 (((UI8)__sha2_512_224->__buffer[j * 8 + 0]) << 56);
 	}
 	for (j = 16; j < 80; j++) {
-		UI8 s0 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 1)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-		UI8 s1 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 19)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+		UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+		UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -2086,8 +2082,8 @@ MASTER_SHA2_512_224_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 					 (((UI8)__M[i + j * 8 + 0]) << 56);
 		}
 		for (j = 16; j < 80; j++) {
-			UI8 s0 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 1)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-					UI8 s1 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 19)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+			UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+					UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
@@ -2168,8 +2164,8 @@ __MASTER_SHA2_512_256_Transform(MASTER_SHA2_512_256 * __sha2_512_256) {
 				 (((UI8)__sha2_512_256->__buffer[j * 8 + 0]) << 56);
 	}
 	for (j = 16; j < 80; j++) {
-		UI8 s0 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 1)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-		UI8 s1 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 19)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+		UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+		UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -2289,8 +2285,8 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 					 (((UI8)__M[i + j * 8 + 0]) << 56);
 		}
 		for (j = 16; j < 80; j++) {
-			UI8 s0 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 1)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-					UI8 s1 = (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 19)) ^ (__MASTER_HASHLIB_FUNCTION_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+			UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+					UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
@@ -2504,11 +2500,11 @@ MASTER_SHA3_FUNCTION_KECCAKF(void* state) {
 							b[x] ^= a[x + y]; ))
 		FOR5(x, 1,
 				 FOR5(y, 5,
-							a[y + x] ^= b[(x + 4) % 5] ^ __MASTER_HASHLIB_FUNCTION_RLL64(b[(x + 1) % 5], 1); ))
+							a[y + x] ^= b[(x + 4) % 5] ^ MASTER_RLL64(b[(x + 1) % 5], 1); ))
 		t = a[1];
 		x = 0;
 		REPEAT24(b[0] = a[MASTER_SHA3_Table_PI[x]];
-						 a[MASTER_SHA3_Table_PI[x]] = __MASTER_HASHLIB_FUNCTION_RLL64(t, MASTER_SHA3_Table_RHO[x]);
+						 a[MASTER_SHA3_Table_PI[x]] = MASTER_RLL64(t, MASTER_SHA3_Table_RHO[x]);
 						 t = b[0];
 						 x++; )
 		FOR5(y,
@@ -2568,14 +2564,14 @@ defsha3(512)
 #define __MASTER_RIPEMD128_FUNCTION_G(x, y, z) (((x) & (y)) | (~(x) & (z)))
 #define __MASTER_RIPEMD128_FUNCTION_H(x, y, z) (((x) | ~(y)) ^ (z))
 #define __MASTER_RIPEMD128_FUNCTION_I(x, y, z) (((x) & (z)) | ((y) & ~(z)))
-#define __MASTER_RIPEMD128_FUNCTION_FF(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_F(b, c, d) + (x), a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s)
-#define __MASTER_RIPEMD128_FUNCTION_GG(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_G(b, c, d) + (x) + 0x5A827999, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s)
-#define __MASTER_RIPEMD128_FUNCTION_HH(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_H(b, c, d) + (x) + 0x6ED9EBA1, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s)
-#define __MASTER_RIPEMD128_FUNCTION_II(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_I(b, c, d) + (x) + 0x8F1BBCDC, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s)
-#define __MASTER_RIPEMD128_FUNCTION_FFF(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_F(b, c, d) + (x), a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s)
-#define __MASTER_RIPEMD128_FUNCTION_GGG(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_G(b, c, d) + (x) + 0x6D703EF3, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s)
-#define __MASTER_RIPEMD128_FUNCTION_HHH(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_H(b, c, d) + (x) + 0x5C4DD124, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s)
-#define __MASTER_RIPEMD128_FUNCTION_III(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_I(b, c, d) + (x) + 0x50A28BE6, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s)
+#define __MASTER_RIPEMD128_FUNCTION_FF(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_F(b, c, d) + (x), a = MASTER_RLL32(a, s)
+#define __MASTER_RIPEMD128_FUNCTION_GG(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_G(b, c, d) + (x) + 0x5A827999, a = MASTER_RLL32(a, s)
+#define __MASTER_RIPEMD128_FUNCTION_HH(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_H(b, c, d) + (x) + 0x6ED9EBA1, a = MASTER_RLL32(a, s)
+#define __MASTER_RIPEMD128_FUNCTION_II(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_I(b, c, d) + (x) + 0x8F1BBCDC, a = MASTER_RLL32(a, s)
+#define __MASTER_RIPEMD128_FUNCTION_FFF(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_F(b, c, d) + (x), a = MASTER_RLL32(a, s)
+#define __MASTER_RIPEMD128_FUNCTION_GGG(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_G(b, c, d) + (x) + 0x6D703EF3, a = MASTER_RLL32(a, s)
+#define __MASTER_RIPEMD128_FUNCTION_HHH(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_H(b, c, d) + (x) + 0x5C4DD124, a = MASTER_RLL32(a, s)
+#define __MASTER_RIPEMD128_FUNCTION_III(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_I(b, c, d) + (x) + 0x50A28BE6, a = MASTER_RLL32(a, s)
 
 #include <string.h>
 
@@ -2818,16 +2814,16 @@ MASTER_RIPEMD128_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) 
 #define __MASTER_RIPEMD160_FUNCTION_H(x, y, z) (((x) | ~(y)) ^ (z))
 #define __MASTER_RIPEMD160_FUNCTION_I(x, y, z) (((x) & (z)) | ((y) & ~(z)))
 #define __MASTER_RIPEMD160_FUNCTION_J(x, y, z) ((x) ^ ((y) | ~(z)))
-#define __MASTER_RIPEMD160_FUNCTION_FF(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_F(b, c, d) + (x), a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
-#define __MASTER_RIPEMD160_FUNCTION_GG(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_G(b, c, d) + (x) + 0x5A827999, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
-#define __MASTER_RIPEMD160_FUNCTION_HH(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_H(b, c, d) + (x) + 0x6ED9EBA1, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
-#define __MASTER_RIPEMD160_FUNCTION_II(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_I(b, c, d) + (x) + 0x8F1BBCDC, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
-#define __MASTER_RIPEMD160_FUNCTION_JJ(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_J(b, c, d) + (x) + 0xA953FD4E, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
-#define __MASTER_RIPEMD160_FUNCTION_FFF(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_F(b, c, d) + (x), a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
-#define __MASTER_RIPEMD160_FUNCTION_GGG(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_G(b, c, d) + (x) + 0x7A6D76E9, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
-#define __MASTER_RIPEMD160_FUNCTION_HHH(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_H(b, c, d) + (x) + 0x6D703EF3, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
-#define __MASTER_RIPEMD160_FUNCTION_III(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_I(b, c, d) + (x) + 0x5C4DD124, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
-#define __MASTER_RIPEMD160_FUNCTION_JJJ(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_J(b, c, d) + (x) + 0x50A28BE6, a = __MASTER_HASHLIB_FUNCTION_RLL32(a, s) + (e), c = __MASTER_HASHLIB_FUNCTION_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_FF(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_F(b, c, d) + (x), a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_GG(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_G(b, c, d) + (x) + 0x5A827999, a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_HH(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_H(b, c, d) + (x) + 0x6ED9EBA1, a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_II(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_I(b, c, d) + (x) + 0x8F1BBCDC, a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_JJ(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_J(b, c, d) + (x) + 0xA953FD4E, a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_FFF(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_F(b, c, d) + (x), a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_GGG(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_G(b, c, d) + (x) + 0x7A6D76E9, a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_HHH(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_H(b, c, d) + (x) + 0x6D703EF3, a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_III(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_I(b, c, d) + (x) + 0x5C4DD124, a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
+#define __MASTER_RIPEMD160_FUNCTION_JJJ(a, b, c, d, e, x, s) a += __MASTER_RIPEMD160_FUNCTION_J(b, c, d) + (x) + 0x50A28BE6, a = MASTER_RLL32(a, s) + (e), c = MASTER_RLL32(c, 10)
 
 typedef struct {
 	UI4 __h[5];
@@ -3174,13 +3170,13 @@ MASTER_RIPEMD256_Transform(MASTER_RIPEMD256 * __ripemd256) {
 	};
 	
 	for (i = 0; i < 64; i++) {
-		t = __MASTER_HASHLIB_FUNCTION_RLL32(aa + __MASTER_RIPEMD256_FUNCTION_FUNC(i, bb, cc, dd) + x[r[i]] + k[i/16], s[i]);
+		t = MASTER_RLL32(aa + __MASTER_RIPEMD256_FUNCTION_FUNC(i, bb, cc, dd) + x[r[i]] + k[i/16], s[i]);
 		aa = dd;
 		dd = cc;
 		cc = bb;
 		bb = t;
 		
-		t = __MASTER_HASHLIB_FUNCTION_RLL32(aaa + __MASTER_RIPEMD256_FUNCTION_FUNC(63 - i, bbb, ccc, ddd) + x[r[64 + i]] + k[4 + (i/16)], s[64 + i]);
+		t = MASTER_RLL32(aaa + __MASTER_RIPEMD256_FUNCTION_FUNC(63 - i, bbb, ccc, ddd) + x[r[64 + i]] + k[4 + (i/16)], s[64 + i]);
 		aaa = ddd;
 		ddd = ccc;
 		ccc = bbb;
@@ -3336,17 +3332,17 @@ MASTER_RIPEMD320_Transform(MASTER_RIPEMD320 * __ripemd320) {
 	};
 	
 	for (i = 0; i < 80; i++) {
-		t = __MASTER_HASHLIB_FUNCTION_RLL32(aa + __MASTER_RIPEMD320_FUNCTION_FUNC(i, bb, cc, dd) + x[r[i]] + k[i/16], s[i]) + ee;
+		t = MASTER_RLL32(aa + __MASTER_RIPEMD320_FUNCTION_FUNC(i, bb, cc, dd) + x[r[i]] + k[i/16], s[i]) + ee;
 		aa = ee;
 		ee = dd;
-		dd = __MASTER_HASHLIB_FUNCTION_RLL32(cc, 10);
+		dd = MASTER_RLL32(cc, 10);
 		cc = bb;
 		bb = t;
 
-		t = __MASTER_HASHLIB_FUNCTION_RLL32(aaa + __MASTER_RIPEMD320_FUNCTION_FUNC(79 - i, bbb, ccc, ddd) + x[r[80 + i]] + k[5 + i/16], s[80 + i]) + eee;
+		t = MASTER_RLL32(aaa + __MASTER_RIPEMD320_FUNCTION_FUNC(79 - i, bbb, ccc, ddd) + x[r[80 + i]] + k[5 + i/16], s[80 + i]) + eee;
 		aaa = eee;
 		eee = ddd;
-		ddd = __MASTER_HASHLIB_FUNCTION_RLL32(ccc, 10);
+		ddd = MASTER_RLL32(ccc, 10);
 		ccc = bbb;
 		bbb = t;
 
@@ -3515,23 +3511,23 @@ MASTER_MurmurHash2A_CalculateHashSum(const char * __s, UI4 __l, UI4 seed, UI1 * 
 
 #define __MASTER_BLAKE2B_FUNCTION_G(x, y, a, b, c, d) do { \
 	a = a + b + x; \
-	d = __MASTER_HASHLIB_FUNCTION_RLR64(d ^ a, 32); \
+	d = MASTER_RLR64(d ^ a, 32); \
 	c += d; \
-	b = __MASTER_HASHLIB_FUNCTION_RLR64(b ^ c, 24); \
+	b = MASTER_RLR64(b ^ c, 24); \
 	a = a + b + y; \
-	d = __MASTER_HASHLIB_FUNCTION_RLR64(d ^ a, 16); \
+	d = MASTER_RLR64(d ^ a, 16); \
 	c += d; \
-	b = __MASTER_HASHLIB_FUNCTION_RLR64(b ^ c, 63); \
+	b = MASTER_RLR64(b ^ c, 63); \
 } while (0);
 #define __MASTER_BLAKE2S_FUNCTION_G(x, y, a, b, c, d) do { \
 	a = a + b + x; \
-	d = __MASTER_HASHLIB_FUNCTION_RLR32(d ^ a, 16); \
+	d = MASTER_RLR32(d ^ a, 16); \
 	c += d; \
-	b = __MASTER_HASHLIB_FUNCTION_RLR32(b ^ c, 12); \
+	b = MASTER_RLR32(b ^ c, 12); \
 	a = a + b + y; \
-	d = __MASTER_HASHLIB_FUNCTION_RLR32(d ^ a, 8); \
+	d = MASTER_RLR32(d ^ a, 8); \
 	c += d; \
-	b = __MASTER_HASHLIB_FUNCTION_RLR32(b ^ c, 7); \
+	b = MASTER_RLR32(b ^ c, 7); \
 } while (0);
 
 static const UI1 MASTER_BLAKE2B_TABLE_SIGMA[10][16] = {
@@ -5602,7 +5598,7 @@ MASTER_SNEFRU_TABLE_SB[8 * 512] = {
 	x = sbox[(i << 7 & 0x100) + (W[i] & 0xff)]; \
 	W[(i - 1) & 0x0F] ^= x; \
 	if (i >= 2) W[(i - 1) & 0x0F] = \
-	__MASTER_HASHLIB_FUNCTION_RLR32(W[(i - 1) & 0x0F], (UI1)rot); \
+	MASTER_RLR32(W[(i - 1) & 0x0F], (UI1)rot); \
 	W[(i + 1) & 0x0F] ^= x; \
 } while (0)
 
@@ -5633,8 +5629,8 @@ MASTER_SNEFRU_Transform(MASTER_SNEFRU * const __snefru, UI4 * block) {
 	for (sbox = MASTER_SNEFRU_TABLE_SB; sbox < sbox_end; sbox += 512) {
 		for (rot = 0x18100810; rot; rot >>= 8) {
 			for (i = 0; i < 16; i++) __MASTER_SNEFRU_FUNCTION_F(i);
-			W[0] = __MASTER_HASHLIB_FUNCTION_RLR32(W[0], (UI1)rot);
-			W[15] = __MASTER_HASHLIB_FUNCTION_RLR32(W[15], (UI1)rot);
+			W[0] = MASTER_RLR32(W[0], (UI1)rot);
+			W[15] = MASTER_RLR32(W[15], (UI1)rot);
 		}
 	}
 

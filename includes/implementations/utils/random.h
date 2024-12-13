@@ -294,7 +294,7 @@ MASTER_random_xorshift1024star_init(UI8 seed) {
 	return xs1024s;
 }
 
-UI4
+UI8
 MASTER_random_xorshift1024star_get(MASTER_random_xorshift1024star * const xs1024s) {
 	const UI8 s = xs1024s->__x[xs1024s->__i++];
 	UI8 t = xs1024s->__x[xs1024s->__i &= 15];
@@ -361,8 +361,6 @@ MASTER_random_xorshiftr128plus_get(MASTER_random_xorshiftr128plus * const xsr128
 
 // !!# r128+
 
-#define MASTER_rol64(x, k) (((x) << (k)) | ((x) >> (64 - (k))))
-
 // #!! xoshiro256+
 
 typedef struct {
@@ -386,7 +384,7 @@ MASTER_random_xoshiro256plus_get(MASTER_random_xoshiro256plus * const xs256p) {
 	xs256p->__x[1] ^= xs256p->__x[2];
 	xs256p->__x[0] ^= xs256p->__x[3];
 	xs256p->__x[2] ^= t;
-	xs256p->__x[3] ^= MASTER_rol64(xs256p->__x[3], 45);
+	xs256p->__x[3] ^= MASTER_RLL64(xs256p->__x[3], 45);
 	
 	return res;
 }
@@ -408,7 +406,7 @@ MASTER_random_xoshiro256plusplus_init(UI8 seed) {
 
 UI8
 MASTER_random_xoshiro256plusplus_get(MASTER_random_xoshiro256plusplus * const xs256pp) {
-	const UI8 r = MASTER_rol64(xs256pp->__x[0] + xs256pp->__x[3], 23) + xs256pp->__x[0];
+	const UI8 r = MASTER_RLL64(xs256pp->__x[0] + xs256pp->__x[3], 23) + xs256pp->__x[0];
 	const UI8 t = xs256pp->__x[1] << 17;
 	
 	xs256pp->__x[2] ^= xs256pp->__x[0];
@@ -416,7 +414,7 @@ MASTER_random_xoshiro256plusplus_get(MASTER_random_xoshiro256plusplus * const xs
 	xs256pp->__x[1] ^= xs256pp->__x[2];
 	xs256pp->__x[0] ^= xs256pp->__x[3];
 	xs256pp->__x[2] ^= t;
-	xs256pp->__x[3] ^= MASTER_rol64(xs256pp->__x[3], 45);
+	xs256pp->__x[3] ^= MASTER_RLL64(xs256pp->__x[3], 45);
 	
 	return r;
 }
@@ -438,7 +436,7 @@ MASTER_random_xoshiro256starstar_init(UI8 seed) {
 
 UI8
 MASTER_random_xoshiro256starstar_get(MASTER_random_xoshiro256starstar * const xs256ss) {
-	const UI8 res = MASTER_rol64(xs256ss->__x[1] * 5, 7) * 9;
+	const UI8 res = MASTER_RLL64(xs256ss->__x[1] * 5, 7) * 9;
 	const UI8 t = xs256ss->__x[1] << 17;
 	
 	xs256ss->__x[2] ^= xs256ss->__x[0];
@@ -446,7 +444,7 @@ MASTER_random_xoshiro256starstar_get(MASTER_random_xoshiro256starstar * const xs
 	xs256ss->__x[1] ^= xs256ss->__x[2];
 	xs256ss->__x[0] ^= xs256ss->__x[3];
 	xs256ss->__x[2] ^= t;
-	xs256ss->__x[3] ^= MASTER_rol64(xs256ss->__x[3], 45);
+	xs256ss->__x[3] ^= MASTER_RLL64(xs256ss->__x[3], 45);
 	
 	return res;
 }

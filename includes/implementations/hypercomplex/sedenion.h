@@ -12,8 +12,6 @@
 #include <math.h> // sqrt
 #include "../../headers/enumeration/master_enum.h"
 
-#define MASTER_SQUARE(x) (x*x)
-
 #define __MASTER_MACROS_SEDENION_DEFINE_TYPE(type, prefix) \
 typedef struct { \
 	type rl; \
@@ -88,7 +86,7 @@ MASTER_sedenion_div##prefix(const MASTER_sedenion##prefix * __sedi1, const MASTE
 	sedi.rl = __sedi2->rl; \
 	for (i = 0; i < 15; i++) \
 		sedi.e[i] /= delim; \
-	return sedi; } /* Teoretically & in my mind it need to work correctly */ \
+	return sedi; } /* Teoretically & in my opinion it need to work correctly */ \
 \
 type \
 MASTER_sedenion_norm##prefix(const MASTER_sedenion##prefix * __sedi) { \
@@ -106,7 +104,15 @@ MASTER_sedenion_normalize##prefix(const MASTER_sedenion##prefix * __sedi) { \
 	UI1 i = 0; \
 	for (; i < 15; i++) \
 		sedi.e[i] = __sedi->e[i] / delim; \
-	return sedi; }
+	return sedi; } \
+\
+MASTER_sedenion##prefix \
+MASTER_complex_conj##prefix(const MASTER_sedenion##prefix * const __sedi) { \
+	MASTER_sedenion##prefix sedi; \
+	sedi.rl = __sedi->rl; \
+	UI1 i = 0; \
+	for (; i < 15; i++) sedi.e[i] = -__sedi->e[i]; \
+	return sedi; } \
 
 __MASTER_MACROS_SEDENION_DEFINE_TYPE(char,        c)
 __MASTER_MACROS_SEDENION_DEFINE_TYPE(short,       s)

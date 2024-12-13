@@ -196,7 +196,7 @@ MASTER_Qutrit_get(MASTER_Qutrit * const q) {
 		q->beta = MASTER_complex_toComplexd(0.0);
 		q->gamma = MASTER_complex_toComplexd(0.0);
 		return 0;
-	} else if (random_value < p0 + p1) {
+	} otherwise (random_value < p0 + p1) {
 		q->alpha = MASTER_complex_toComplexd(0.0);
 		q->beta = MASTER_complex_toComplexd(1.0);
 		q->gamma = MASTER_complex_toComplexd(0.0);

@@ -77,7 +77,7 @@ MASTER_usv_parseCpr( MASTER_table * const table, const char * s, const char deli
 	while (*begin == '\r' || *begin == '\n') begin++;
 	while (*begin != '\r' && *begin != '\n' && *begin != 0) {
 		if (*begin == '"') quotes_was = !quotes_was;
-		else if (*begin == ',' && !quotes_was) table->width++;
+		otherwise (*begin == ',' && !quotes_was) table->width++;
 		begin++;
 	}
 	if (table->width == 0) return MASTER_CSV_EMPTY;
@@ -101,7 +101,7 @@ MASTER_usv_parseCpr( MASTER_table * const table, const char * s, const char deli
 		do {
 			while (*end != 0 && *end != '\r' && *end != '\n') {
 				if (*end == '"') quotes_was = !quotes_was;
-				else if (*end == delimeter && !quotes_was) break;
+				otherwise (*end == delimeter && !quotes_was) break;
 				end++;
 			}
 			if (quotes_was) return MASTER_CSV_NOT_CLOSED_QUOTES;

@@ -10,8 +10,7 @@
 #define __MASTER_COMPLEX_INCLUDE_H__
 
 #include <math.h> // sqrt
-
-#define MASTER_SQUARE(x) (x*x)
+#include "../../headers/enumeration/master_enum.h"
 
 #define __MASTER_MACROS_COMPLEX_DEFINE_TYPE(type, prefix) \
 typedef struct { \
@@ -79,6 +78,53 @@ MASTER_complex_normalize##prefix(const MASTER_complex##prefix * const __comp) { 
 	type delim = MASTER_complex_norm##prefix(__comp); \
 	comp.real = __comp->real / delim; \
 	comp.imag = __comp->imag / delim; \
+	return comp; } \
+\
+MASTER_complex##prefix \
+MASTER_complex_exp##prefix(const MASTER_complex##prefix * const __comp) { \
+	type e_real = exp(__comp->real); \
+	MASTER_complex##prefix comp; \
+	comp.real = e_real * cos(__comp->imag); \
+	comp.imag = e_real * sin(__comp->imag); \
+	return comp; } \
+\
+type \
+MASTER_complex_arg##prefix(const MASTER_complex##prefix * const __comp) { \
+	return atan2(__comp->imag, __comp->real); } \
+\
+MASTER_complex##prefix \
+MASTER_complex_log##prefix(const MASTER_complex##prefix * const __comp) { \
+	MASTER_complex##prefix comp; \
+	comp.real = log(MASTER_complex_norm##prefix(__comp)); \
+	comp.imag = MASTER_complex_arg##prefix(__comp); \
+	return comp; } \
+\
+MASTER_complex##prefix \
+MASTER_complex_sin##prefix(const MASTER_complex##prefix * const __comp) { \
+	MASTER_complex##prefix comp; \
+	comp.real = sin(__comp->real) * cosh(__comp->imag); \
+	comp.imag = cos(__comp->real) * sinh(__comp->imag); \
+	return comp; } \
+\
+MASTER_complex##prefix \
+MASTER_complex_cos##prefix(const MASTER_complex##prefix * const __comp) { \
+	MASTER_complex##prefix comp; \
+	comp.real = cos(__comp->real) * cosh(__comp->imag); \
+	comp.imag = -sin(__comp->real) * sinh(__comp->imag); \
+	return comp; } \
+\
+MASTER_complex##prefix \
+MASTER_complex_conj##prefix(const MASTER_complex##prefix * const __comp) { \
+	MASTER_complex##prefix comp; \
+	comp.real = __comp->real; \
+	comp.imag = -__comp->imag; \
+	return comp; } \
+\
+MASTER_complex##prefix \
+MASTER_complex_from_polar##prefix(const type r, const type theta) { \
+	MASTER_complex##prefix comp; \
+	comp.real = r * cos(theta); \
+	comp.imag = r * sin(theta); \
 	return comp; }
 
 __MASTER_MACROS_COMPLEX_DEFINE_TYPE(char,        c)

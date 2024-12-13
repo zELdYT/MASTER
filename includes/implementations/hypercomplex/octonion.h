@@ -10,8 +10,7 @@
 #define __MASTER_OCTONION_INCLUDE_H__
 
 #include <math.h> // sqrt
-
-#define MASTER_SQUARE(x) (x*x)
+#include "../../headers/enumeration/master_enum.h"
 
 #define __MASTER_MACROS_OCTONION_DEFINE_TYPE(type, prefix) \
 typedef struct { \
@@ -148,6 +147,19 @@ MASTER_octonion_normalize##prefix(const MASTER_octonion##prefix * __octo) { \
 	octo.mmag = __octo->mmag / delim; \
 	octo.nmag = __octo->nmag / delim; \
 	octo.omag = __octo->omag / delim; \
+	return octo; } \
+\
+MASTER_octonion##prefix \
+MASTER_octonion_conj##prefix(const MASTER_octonion##prefix * const __octo) { \
+	MASTER_octonion##prefix octo; \
+	octo.real = __octo->real; \
+	octo.imag = -__octo->imag; \
+	octo.jmag = -__octo->jmag; \
+	octo.kmag = -__octo->kmag; \
+	octo.lmag = -__octo->lmag; \
+	octo.mmag = -__octo->mmag; \
+	octo.nmag = -__octo->nmag; \
+	octo.omag = -__octo->omag; \
 	return octo; }
 
 __MASTER_MACROS_OCTONION_DEFINE_TYPE(char,        c)

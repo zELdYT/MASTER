@@ -18,7 +18,6 @@
 //#define __MASTER_MACROS_TRASHCAN__
 #include "../utils/memory_safe.h"
 
-#define otherwise else if
 #define BOOL char
 #define TRUE 1
 #define FALSE 0
@@ -41,13 +40,11 @@ int_delete_empty(INT * __i) {
 	__i->chunks = (UI4 *)MASTER_realloc(__i->chunks, sizeof(UI4) * __i->size);
 }
 
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-
 // a = bytes(b[:l])
 INT
 str_2_intExt(const char * __s, UI4 __l) {
 	INT __i;
-	UI4 size = min(strlen(__s), __l);
+	UI4 size = MASTER_MIN(strlen(__s), __l);
 	__i.size = size / 4 + ((size % 4 > 0) ? 1 : 0);
 	__i.chunks = (UI4 *)MASTER_calloc(__i.size, sizeof(UI4));
 	for (UI4 i = size - 1;; i--) {
@@ -67,7 +64,7 @@ str_2_int(const char * __s) {
 INT
 str_2_intbExt(const char * __s, UI4 __l) {
 	INT __i;
-	UI4 size = min(strlen(__s), __l);
+	UI4 size = MASTER_MIN(strlen(__s), __l);
 	__i.size = size / 4 + ((size % 4 > 0) ? 1 : 0);
 	__i.chunks = (UI4 *)MASTER_calloc(__i.size, sizeof(UI4));
 	for (UI4 i = 0; i < size; i++) {
@@ -264,13 +261,3 @@ int_geq(const INT * __i1, const INT * __i2) {
 #endif /* __MASTER_INT_INCLUDE_H__ */
 
 // be master~
-
-int main() {
-	INT a = ul_2_int(0xFF);
-	INT b = ul_2_int(0xFF);
-	printf("%s\n", int_gtr(&a, &b) ? "True" : "False");
-	free_int(&a);
-	free_int(&b);
-	MASTER_output();
-	return 0;
-}

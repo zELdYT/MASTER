@@ -10,7 +10,7 @@
 #define __MASTER_COLORS_ENUM_INCLUDE_H__
 
 typedef struct {
-	unsigned char r, g, b;
+	UI1 r, g, b;
 	const wchar_t * const color_name;
 } MASTER_color_rgb;
 

@@ -22,16 +22,16 @@ MASTER_unicode_to_utf8(UI4 __cp, UI1 * __o) {
 	if (__cp <= 0x7F) { 
 		__o[0] = __cp;
 		return 1;
-	} else if (__cp <= 0x7FF) { 
+	} otherwise (__cp <= 0x7FF) { 
 		__o[0] = 0xC0 | (__cp >> 6);
 		__o[1] = 0x80 | (__cp & 0x3F);
 		return 2;
-	} else if (__cp <= 0xFFFF) { 
+	} otherwise (__cp <= 0xFFFF) { 
 		__o[0] = 0xE0 | (__cp >> 12);
 		__o[1] = 0x80 | ((__cp >> 6) & 0x3F);
 		__o[2] = 0x80 | (__cp & 0x3F);
 		return 3;
-	} else if (__cp <= 0x10FFFF) { 
+	} otherwise (__cp <= 0x10FFFF) { 
 		__o[0] = 0xF0 | (__cp >> 18);
 		__o[1] = 0x80 | ((__cp >> 12) & 0x3F);
 		__o[2] = 0x80 | ((__cp >> 6) & 0x3F);

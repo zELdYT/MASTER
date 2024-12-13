@@ -250,7 +250,7 @@ MASTER_quantiles##suff( const type * array, UI4 __l, UI4 n, const UI1 method) { 
 			for (; i < __l; i++) \
 				probs[i] = i / (__l - (type)1); \
 			break; \
-		default: return (type *)NULL; \
+		default: return (type *)nul; \
 	} \
 	quantiles = (type *)malloc(sizeof(type) * (n - 1)); \
 	for (i = 1; i < n; i++) { \
@@ -376,7 +376,7 @@ MASTER_linear_regression##suff( const type * array_1, const type * array_2, UI4 
 		c_slope = num / den; \
 		c_intercept = y_mean - c_slope * x_mean; \
 	} \
-	if (intercept != NULL) \
+	if (intercept != nul) \
 		*intercept = c_intercept; \
 	return c_slope; \
 }

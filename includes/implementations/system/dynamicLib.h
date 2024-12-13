@@ -67,26 +67,3 @@ MASTER_dynamic_library_getLastError( void ) {
 #endif /* __MASTER_DYNAMIC_LIB_INCLUDE_H__ */
 
 // be master~
-
-#include <stdio.h>
-#include <stdlib.h>
-int main(int argc, char *argv[]) {
-	MASTER_dynamic_library myLib;
-	system("cp /storage/emulated/0/Documents/CxxDroid/MASTER/MyLib.so /data/data/ru.iiec.cxxdroid/files/OtherLibs/MyLib.so");
-	MASTER_dynamic_library_open(&myLib, "/data/data/ru.iiec.cxxdroid/files/OtherLibs/MyLib.so");
-	if (!myLib.handle) {
-		printf("%s\n", MASTER_dynamic_library_getLastError());
-		return 1;
-	}
-	unsigned long long (*fib)(int) = MASTER_dynamic_library_getFunction(&myLib, "fib");
-	if (!fib) {
-		printf("%s\n", MASTER_dynamic_library_getLastError());
-		MASTER_dynamic_library_close(&myLib);
-		return 1;
-	}
-	int arg = 42;
-	printf("Fibonnachi %d is %llu", arg, fib(arg));
-
-	MASTER_dynamic_library_close(&myLib);
-	return 0;
-}

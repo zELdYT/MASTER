@@ -12,10 +12,6 @@
 #include "../bigint/int.h"
 #include "../../headers/enumeration/master_enum.h"
 
-#define otherwise else if
-
-#define max(n1, n2) ((n1 > n2) ? n1 : n2)
-
 UI1
 MASTER_base85_encodeExt(char * __o, const char * __i, UI4 __l) {
 	const char b85[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~";
@@ -55,7 +51,7 @@ __MASTER_base64_encodeExt_variations(char * __o, const char * __i, UI4 __l, cons
 	UI1 __buf_c = *__ptr_i;
 	while (__ptr_i - __i < __l) {
 		__off += 6;
-		__buf_c = ((*__ptr_i >> max( 8 - __off, 0 )) & 0x3F);
+		__buf_c = ((*__ptr_i >> MASTER_MAX( 8 - __off, 0 )) & 0x3F);
 		if (__off >= 8) { \
 			__buf_c = ((__buf_c << (__off - 8)) | ((*(__ptr_i + 1) >> (16 - __off)) & ((10 << (__off - 8)) - 1))) & 0x3F; \
 			__ptr_i++;
@@ -136,7 +132,7 @@ MASTER_base32_encodeExt(char * __o, const char * __i, UI4 __l) {
 	UI1 __buf_c;
 	while (__ptr_i - __i < __l) {
 		__off += 5;
-		__buf_c = ((*__ptr_i >> max( 8 - __off, 0 )) & 0x1F);
+		__buf_c = ((*__ptr_i >> MASTER_MAX( 8 - __off, 0 )) & 0x1F);
 		if (__off >= 8) {
 			__buf_c = ((__buf_c << (__off - 8)) | ((*(__ptr_i + 1) >> (16 - __off)) & ((10 << (__off - 8)) - 1))) & 0x1F;
 			__ptr_i++;
@@ -168,7 +164,7 @@ MASTER_base16_encodeExt(char * __o, const char * __i, UI4 __l) {
 	UI1 __buf_c;
 	while (__ptr_i - __i < __l) {
 		__off += 4;
-		__buf_c = ((*__ptr_i >> max( 8 - __off, 0 )) & 0x0F);
+		__buf_c = ((*__ptr_i >> MASTER_MAX( 8 - __off, 0 )) & 0x0F);
 		if (__off >= 8) {
 			__buf_c = ((__buf_c << (__off - 8)) | ((*(__ptr_i + 1) >> (16 - __off)) & ((10 << (__off - 8)) - 1))) & 0x0F;
 			__ptr_i++;
@@ -230,7 +226,7 @@ MASTER_base85_decode(char * __o, const char * __i) {
 		for (j = 0; j < 5; j++) {
 			__buf_c = strchr(b85, (was_null) ? 'u' : __i[i + j]);
 			block = block * 85 + (int)(__buf_c - b85);
-			if (__buf_c == NULL || __buf_c[0] == '\0') was_null = 1;
+			if (__buf_c == nul || __buf_c[0] == '\0') was_null = 1;
 		}
 		block = ((block & 0xFF000000) >> 24) | ((block & 0xFF0000) >> 8) | ((block & 0xFF00) << 8) | ((block & 0xFF) << 24);
 		for (j = 0; j < 4; j++) {
@@ -262,18 +258,17 @@ MASTER_base85_decode(char * __o, const char * __i) {
 			otherwise (__buf[i] == s63) __buf[i] = 63; \
 			otherwise (__buf[i] == '=') __buf[i] = 64; \
 			__ptr_i++; } \
-		*__ptr_o = ((__buf[0] << 2) & 0b11111100) | ((__buf[1] >> 4) & 0b00000011); \
+		*__ptr_o = ((__buf[0] << 2) & 0xFC) | ((__buf[1] >> 4) & 0x03); \
 		__ptr_o++; \
-		*__ptr_o = ((__buf[1] << 4) & 0b11110000) | ((__buf[2] >> 2) & 0b00001111); \
+		*__ptr_o = ((__buf[1] << 4) & 0xF0) | ((__buf[2] >> 2) & 0x0F); \
 		__ptr_o++; \
-		*__ptr_o = ((__buf[2] << 6) & 0b11000000) | ((__buf[3] >> 0) & 0b00111111); \
+		*__ptr_o = ((__buf[2] << 6) & 0xC0) | ((__buf[3] >> 0) & 0x3F); \
 		__ptr_o++; } \
 	*__ptr_o = '\0'; \
 	return 0; }
 
 UI1
 MASTER_base64_decode(char * __o, const char * __i) BASE_DEF('+', '/')
-
 UI1
 MASTER_base64url_decode(char * __o, const char * __i) BASE_DEF('-', '_')
 
@@ -335,15 +330,15 @@ MASTER_base32_decode(char * __o, const char * __i) {
 			otherwise (__buf[i] == '=') __buf[i] = 32;
 			__ptr_i++;
 		}
-		*__ptr_o = ((__buf[0] << 3) & 0b11111000) | ((__buf[1] >> 2) & 0b00000111);
+		*__ptr_o = ((__buf[0] << 3) & 0xF8) | ((__buf[1] >> 2) & 0x07);
 		__ptr_o++;
-		*__ptr_o = ((__buf[1] << 6) & 0b11000000) | ((__buf[2] << 1) & 0b00111110) | ((__buf[3] >> 4) & 0b00000001);
+		*__ptr_o = ((__buf[1] << 6) & 0xC0) | ((__buf[2] << 1) & 0x7E) | ((__buf[3] >> 4) & 0x01);
 		__ptr_o++;
-		*__ptr_o = ((__buf[3] << 4) & 0b11110000) | ((__buf[4] >> 1) & 0b00001111);
+		*__ptr_o = ((__buf[3] << 4) & 0xF0) | ((__buf[4] >> 1) & 0x0F);
 		__ptr_o++;
-		*__ptr_o = ((__buf[4] << 7) & 0b10000000) | ((__buf[5] << 2) & 0b01111100) | ((__buf[6] >> 3) & 0b00000011);
+		*__ptr_o = ((__buf[4] << 7) & 0x80) | ((__buf[5] << 2) & 0x7C) | ((__buf[6] >> 3) & 0x03);
 		__ptr_o++;
-		*__ptr_o = ((__buf[6] << 5) & 0b11100000) | (__buf[7] & 0b00011111);
+		*__ptr_o = ((__buf[6] << 5) & 0xE0) | (__buf[7] & 0x1F);
 		__ptr_o++;
 	}
 	*__ptr_o = '\0';
@@ -381,7 +376,7 @@ MASTER_base_custom_decode(char * __o, const char * __i, UI4 __base, const char *
 	while (*__ptr_i != '\0') {
 		int_imul(&__int, __base);
 		p = strchr(__base_str, *__ptr_i++);
-		if (p == NULL) {
+		if (p == nul) {
 			free_int(&__int);
 			return 1;
 		}

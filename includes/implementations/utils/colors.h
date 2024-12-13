@@ -1,4 +1,11 @@
 
+/*
+ * Copyright (c) 2024 zELdYT
+ *
+ * Licensed under the BSD 2-Clause License.
+ * See the LICENSE file in the project root for more details.
+ */
+
 #ifndef __MASTER_COLOR_INCLUDE_H__
 #define __MASTER_COLOR_INCLUDE_H__
 
@@ -26,12 +33,9 @@ typedef struct {
 
 typedef struct {
 	UI1 y;
-	signed char i, q;
+	SI1 i, q;
 } MASTER_yiq;
 
-#define MASTER_max(a, b) ((a) > (b) ? (a) : (b))
-#define MASTER_min(a, b) ((a) < (b) ? (a) : (b))
-#define MASTER_abs(a) ((a) < 0 ? -(a) : (a))
 #define MASTER_pi 3.141592653589793238462643383279502884197169399f
 
 MASTER_cmyk *
@@ -39,7 +43,7 @@ MASTER_rgb_to_cmyk(const MASTER_rgb * rgb, MASTER_cmyk * cmyk) {
 	float rs = rgb->r / 255.0,
 		  gs = rgb->g / 255.0,
 		  bs = rgb->b / 255.0;
-	cmyk->k = 1 - MASTER_max(MASTER_max(rs, gs), bs);
+	cmyk->k = 1 - MASTER_MAX(MASTER_MAX(rs, gs), bs);
 	cmyk->c = (1 - rs - cmyk->k) / (1 - cmyk->k);
 	cmyk->m = (1 - gs - cmyk->k) / (1 - cmyk->k);
 	cmyk->y = (1 - bs - cmyk->k) / (1 - cmyk->k);
@@ -75,7 +79,7 @@ MASTER_rgb_to_hsv(const MASTER_rgb * rgb, MASTER_hsv * hsv) {
 	float rs = rgb->r / 255.0,
 		  gs = rgb->g / 255.0,
 		  bs = rgb->b / 255.0;
-	float Cmax = MASTER_max(MASTER_max(rs, gs), bs);
+	float Cmax = MASTER_MAX(MASTER_MAX(rs, gs), bs);
 	float Cmin = MASTER_min(MASTER_min(rs, gs), bs);
 	float delta = Cmax - Cmin;
 	if (delta == 0.0)
@@ -96,7 +100,7 @@ MASTER_rgb_to_hsv(const MASTER_rgb * rgb, MASTER_hsv * hsv) {
 MASTER_rgb *
 MASTER_hsv_to_rgb(const MASTER_hsv * hsv, MASTER_rgb * rgb) {
 	float c = hsv->v * hsv->s;
-	float x = c * (1 - MASTER_abs(((unsigned int)(hsv->h / (MASTER_pi / 3)) % 2) - 1));
+	float x = c * (1 - MASTER_ABS(((unsigned int)(hsv->h / (MASTER_pi / 3)) % 2) - 1));
 	float m = hsv->v - c;
 	float rs = 0, gs = 0, bs = 0;
 	if (hsv->h < MASTER_pi / 3) {
@@ -123,7 +127,7 @@ MASTER_rgb_to_hsl(const MASTER_rgb * rgb, MASTER_hsl * hsl) {
 	float rs = rgb->r / 255.0,
 		  gs = rgb->g / 255.0,
 		  bs = rgb->b / 255.0;
-	float Cmax = MASTER_max(MASTER_max(rs, gs), bs);
+	float Cmax = MASTER_MAX(MASTER_MAX(rs, gs), bs);
 	float Cmin = MASTER_min(MASTER_min(rs, gs), bs);
 	float delta = Cmax - Cmin;
 	if (delta == 0.0)
@@ -137,14 +141,14 @@ MASTER_rgb_to_hsl(const MASTER_rgb * rgb, MASTER_hsl * hsl) {
 	hsl->l = (Cmax + Cmin) / 2;
 	if (delta == 0)
 		hsl->s = 0;
-	else hsl->s = delta / (1 - MASTER_abs(2*hsl->l - 1));
+	else hsl->s = delta / (1 - MASTER_ABS(2*hsl->l - 1));
 	return hsl;
 }
 
 MASTER_rgb *
 MASTER_hsl_to_rgb(const MASTER_hsl * hsl, MASTER_rgb * rgb) {
-	float c = (hsl->l - MASTER_abs(2 * hsl->l - 1)) * hsl->s;
-	float x = c * (1 - MASTER_abs(((unsigned int)(hsl->h / (MASTER_pi / 3)) % 2) - 1));
+	float c = (hsl->l - MASTER_ABS(2 * hsl->l - 1)) * hsl->s;
+	float x = c * (1 - MASTER_ABS(((unsigned int)(hsl->h / (MASTER_pi / 3)) % 2) - 1));
 	float m = hsl->l - c/2;
 	float rs = 0, gs = 0, bs = 0;
 	if (hsl->h < MASTER_pi / 3) {

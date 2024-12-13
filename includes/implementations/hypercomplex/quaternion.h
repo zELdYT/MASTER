@@ -10,8 +10,7 @@
 #define __MASTER_QUATERNION_INCLUDE_H__
 
 #include <math.h> // sqrt
-
-#define MASTER_SQUARE(x) (x*x)
+#include "../../headers/enumeration/master_enum.h"
 
 #define __MASTER_MACROS_QUATERNION_DEFINE_TYPE(type, prefix) \
 typedef struct { \
@@ -22,14 +21,23 @@ typedef struct { \
 } MASTER_quaternion##prefix; \
 \
 MASTER_quaternion##prefix \
-MASTER_quaternion_toQuaternion##prefix(type value) { \
+MASTER_quaternion_toQuaternion##prefix(const type value) { \
 	MASTER_quaternion##prefix __quat; \
 	__quat.real = value; \
 	__quat.imag = __quat.jmag = __quat.kmag = 0; \
 	return __quat; } \
 \
 MASTER_quaternion##prefix \
-MASTER_quaternion_add##prefix(const MASTER_quaternion##prefix * __quat1, const MASTER_quaternion##prefix * __quat2) { \
+MASTER_quaternion_toQuaternionExt##prefix(const type real, const type imag, const type jmag, const type kmag) { \
+	MASTER_quaternion##prefix __quat; \
+	__quat.real = real; \
+	__quat.imag = imag; \
+	__quat.jmag = jmag; \
+	__quat.kmag = kmag; \
+	return __quat; } \
+\
+MASTER_quaternion##prefix \
+MASTER_quaternion_add##prefix(const MASTER_quaternion##prefix * const __quat1, const MASTER_quaternion##prefix * const __quat2) { \
 	MASTER_quaternion##prefix quat; \
 	quat.real = __quat1->real + __quat2->real; \
 	quat.imag = __quat1->imag + __quat2->imag; \
@@ -38,7 +46,7 @@ MASTER_quaternion_add##prefix(const MASTER_quaternion##prefix * __quat1, const M
 	return quat; } \
 \
 MASTER_quaternion##prefix \
-MASTER_quaternion_sub##prefix(const MASTER_quaternion##prefix * __quat1, const MASTER_quaternion##prefix * __quat2) { \
+MASTER_quaternion_sub##prefix(const MASTER_quaternion##prefix * const __quat1, const MASTER_quaternion##prefix * const __quat2) { \
 	MASTER_quaternion##prefix quat; \
 	quat.real = __quat1->real - __quat2->real; \
 	quat.imag = __quat1->imag - __quat2->imag; \
@@ -47,16 +55,16 @@ MASTER_quaternion_sub##prefix(const MASTER_quaternion##prefix * __quat1, const M
 	return quat; } \
 \
 MASTER_quaternion##prefix \
-MASTER_quaternion_scalarmul##prefix(const MASTER_quaternion##prefix * __quat1, const type scalar) { \
+MASTER_quaternion_scalarmul##prefix(const MASTER_quaternion##prefix * const __quat, const type scalar) { \
 	MASTER_quaternion##prefix quat; \
-	quat.real = __quat1->real * scalar; \
-	quat.imag = __quat1->imag * scalar; \
-	quat.jmag = __quat1->jmag * scalar; \
-	quat.kmag = __quat1->kmag * scalar; \
+	quat.real = __quat->real * scalar; \
+	quat.imag = __quat->imag * scalar; \
+	quat.jmag = __quat->jmag * scalar; \
+	quat.kmag = __quat->kmag * scalar; \
 	return quat; } \
 \
 MASTER_quaternion##prefix \
-MASTER_quaternion_mul##prefix(const MASTER_quaternion##prefix * __quat1, const MASTER_quaternion##prefix * __quat2) { \
+MASTER_quaternion_mul##prefix(const MASTER_quaternion##prefix * const __quat1, const MASTER_quaternion##prefix * const __quat2) { \
 	MASTER_quaternion##prefix quat; \
 	quat.real = __quat1->real * __quat2->real - __quat1->imag * __quat2->imag - __quat1->jmag * __quat2->jmag - __quat1->kmag * __quat2->kmag; \
 	quat.imag = __quat1->real * __quat2->imag + __quat2->real * __quat1->imag + __quat1->jmag * __quat2->kmag - __quat2->jmag * __quat1->kmag; \
@@ -65,7 +73,7 @@ MASTER_quaternion_mul##prefix(const MASTER_quaternion##prefix * __quat1, const M
 	return quat; } \
 \
 MASTER_quaternion##prefix \
-MASTER_quaternion_div##prefix(const MASTER_quaternion##prefix * __quat1, const MASTER_quaternion##prefix * __quat2) { \
+MASTER_quaternion_div##prefix(const MASTER_quaternion##prefix * const __quat1, const MASTER_quaternion##prefix * const __quat2) { \
 	MASTER_quaternion##prefix quat; \
 	quat.real = __quat2->real; \
 	quat.imag = -__quat2->imag; \
@@ -80,17 +88,26 @@ MASTER_quaternion_div##prefix(const MASTER_quaternion##prefix * __quat1, const M
 	return quat; } /* Teoretically & in my mind it need to work correctly */ \
 \
 type \
-MASTER_quaternion_norm##prefix(const MASTER_quaternion##prefix * __quat) { \
+MASTER_quaternion_norm##prefix(const MASTER_quaternion##prefix * const __quat) { \
 	return sqrt(MASTER_SQUARE(__quat->real) + MASTER_SQUARE(__quat->imag) + MASTER_SQUARE(__quat->jmag) + MASTER_SQUARE(__quat->kmag)); } \
 \
 MASTER_quaternion##prefix \
-MASTER_quaternion_normalize##prefix(const MASTER_quaternion##prefix * __quat) { \
+MASTER_quaternion_normalize##prefix(const MASTER_quaternion##prefix * const __quat) { \
 	MASTER_quaternion##prefix quat; \
 	type delim = MASTER_quaternion_norm##prefix(__quat); \
 	quat.real = __quat->real / delim; \
 	quat.imag = __quat->imag / delim; \
 	quat.jmag = __quat->jmag / delim; \
 	quat.kmag = __quat->kmag / delim; \
+	return quat; } \
+\
+MASTER_quaternion##prefix \
+MASTER_quaternion_conj##prefix(const MASTER_quaternion##prefix * const __quat) { \
+	MASTER_quaternion##prefix quat; \
+	quat.real = __quat->real; \
+	quat.imag = -__quat->imag; \
+	quat.jmag = -__quat->jmag; \
+	quat.kmag = -__quat->kmag; \
 	return quat; }
 
 __MASTER_MACROS_QUATERNION_DEFINE_TYPE(char,        c)

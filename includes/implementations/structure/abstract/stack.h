@@ -13,8 +13,6 @@
 #	define __MASTER_STACK_DEFINE_UNIDIRECTIONAL_LIST__
 #endif /* STACK TYPES */
 
-#define nul NULL
-
 #include <stdlib.h>
 #include <string.h>
 #include "../../../headers/enumeration/master_enum.h"
