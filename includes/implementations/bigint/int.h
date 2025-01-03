@@ -9,6 +9,10 @@
 #ifndef __MASTER_INT_INCLUDE_H__
 #define __MASTER_INT_INCLUDE_H__
 
+/* #! Completed code !# */
+
+#warning "Warning : This library will be deprecated soon. All its functionalities will be moved to bigint.h."
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

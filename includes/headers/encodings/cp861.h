@@ -6,8 +6,8 @@
  * See the LICENSE file in the project root for more details.
  */
 
-#ifndef __MASTER_CP437_INCLUDE_H__
-#define __MASTER_CP437_INCLUDE_H__
+#ifndef __MASTER_CP861_INCLUDE_H__
+#define __MASTER_CP861_INCLUDE_H__
 
 /* #! Low priority !# */
 
@@ -16,10 +16,10 @@
 typedef struct {
 	UI4 * symbol;
 	UI8 unicode;
-} MASTER_cp437_element;
+} MASTER_CP861_element;
 
-const MASTER_cp437_element
-MASTER_cp437_table[256] = {
+const MASTER_CP861_element
+MASTER_CP861_table[256] = {
 	{ U"\0", 0x00 },
 	{ U"☺", 0xe298ba },
 	{ U"☻", 0xe298bb },
@@ -159,9 +159,9 @@ MASTER_cp437_table[256] = {
 	{ U"ê", 0xc3aa },
 	{ U"ë", 0xc3ab },
 	{ U"è", 0xc3a8 },
-	{ U"ï", 0xc3af },
-	{ U"î", 0xc3ae },
-	{ U"ì", 0xc3ac },
+	{ U"Ð", 0xc390 },
+	{ U"ð", 0xc3b0 },
+	{ U"Þ", 0xc39e },
 	{ U"Ä", 0xc384 },
 	{ U"Å", 0xc385 },
 	{ U"É", 0xc389 },
@@ -169,25 +169,25 @@ MASTER_cp437_table[256] = {
 	{ U"Æ", 0xc386 },
 	{ U"ô", 0xc3b4 },
 	{ U"ö", 0xc3b6 },
-	{ U"ò", 0xc3b2 },
+	{ U"þ", 0xc3be },
 	{ U"û", 0xc3bb },
-	{ U"ù", 0xc3b9 },
-	{ U"ÿ", 0xc3bf },
+	{ U"Ý", 0xc39d },
+	{ U"ý", 0xc3bd },
 	{ U"Ö", 0xc396 },
 	{ U"Ü", 0xc39c },
-	{ U"¢", 0xc2a2 },
+	{ U"ø", 0xc3b8 },
 	{ U"£", 0xc2a3 },
-	{ U"¥", 0xc2a5 },
+	{ U"Ø", 0xc398 },
 	{ U"₧", 0xe282a7 },
 	{ U"ƒ", 0xc692 },
 	{ U"á", 0xc3a1 },
 	{ U"í", 0xc3ad },
 	{ U"ó", 0xc3b3 },
 	{ U"ú", 0xc3ba },
-	{ U"ñ", 0xc3b1 },
-	{ U"Ñ", 0xc391 },
-	{ U"ª", 0xc2aa },
-	{ U"º", 0xc2ba },
+	{ U"Á", 0xc381 },
+	{ U"Í", 0xc38d },
+	{ U"Ó", 0xc393 },
+	{ U"Ú", 0xc39a },
 	{ U"¿", 0xc2bf },
 	{ U"⌐", 0xe28c90 },
 	{ U"¬", 0xc2ac },
@@ -278,6 +278,6 @@ MASTER_cp437_table[256] = {
 	{ U" ", 0xc2a0 }
 };
 
-#endif /* __MASTER_CP437_INCLUDE_H__ */
+#endif /* __MASTER_CP861_INCLUDE_H__ */
 
 // be master~

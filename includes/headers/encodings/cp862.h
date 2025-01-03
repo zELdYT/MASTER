@@ -6,8 +6,8 @@
  * See the LICENSE file in the project root for more details.
  */
 
-#ifndef __MASTER_CP437_INCLUDE_H__
-#define __MASTER_CP437_INCLUDE_H__
+#ifndef __MASTER_CP862_INCLUDE_H__
+#define __MASTER_CP862_INCLUDE_H__
 
 /* #! Low priority !# */
 
@@ -16,10 +16,10 @@
 typedef struct {
 	UI4 * symbol;
 	UI8 unicode;
-} MASTER_cp437_element;
+} MASTER_CP862_element;
 
-const MASTER_cp437_element
-MASTER_cp437_table[256] = {
+const MASTER_CP862_element
+MASTER_CP862_table[256] = {
 	{ U"\0", 0x00 },
 	{ U"☺", 0xe298ba },
 	{ U"☻", 0xe298bb },
@@ -148,33 +148,33 @@ MASTER_cp437_table[256] = {
 	{ U"}", 0x7d },
 	{ U"~", 0x7e },
 	{ U"⌂", 0xe28c82 },
-	{ U"Ç", 0xc387 },
-	{ U"ü", 0xc3bc },
-	{ U"é", 0xc3a9 },
-	{ U"â", 0xc3a2 },
-	{ U"ä", 0xc3a4 },
-	{ U"à", 0xc3a0 },
-	{ U"å", 0xc3a5 },
-	{ U"ç", 0xc3a7 },
-	{ U"ê", 0xc3aa },
-	{ U"ë", 0xc3ab },
-	{ U"è", 0xc3a8 },
-	{ U"ï", 0xc3af },
-	{ U"î", 0xc3ae },
-	{ U"ì", 0xc3ac },
-	{ U"Ä", 0xc384 },
-	{ U"Å", 0xc385 },
-	{ U"É", 0xc389 },
-	{ U"æ", 0xc3a6 },
-	{ U"Æ", 0xc386 },
-	{ U"ô", 0xc3b4 },
-	{ U"ö", 0xc3b6 },
-	{ U"ò", 0xc3b2 },
-	{ U"û", 0xc3bb },
-	{ U"ù", 0xc3b9 },
-	{ U"ÿ", 0xc3bf },
-	{ U"Ö", 0xc396 },
-	{ U"Ü", 0xc39c },
+	{ U"א", 0xd790 },
+	{ U"ב", 0xd791 },
+	{ U"ג", 0xd792 },
+	{ U"ד", 0xd793 },
+	{ U"ה", 0xd794 },
+	{ U"ו", 0xd795 },
+	{ U"ז", 0xd796 },
+	{ U"ח", 0xd797 },
+	{ U"ט", 0xd798 },
+	{ U"י", 0xd799 },
+	{ U"ך", 0xd79a },
+	{ U"כ", 0xd79b },
+	{ U"ל", 0xd79c },
+	{ U"ם", 0xd79d },
+	{ U"מ", 0xd79e },
+	{ U"ן", 0xd79f },
+	{ U"נ", 0xd7a0 },
+	{ U"ס", 0xd7a1 },
+	{ U"ע", 0xd7a2 },
+	{ U"ף", 0xd7a3 },
+	{ U"פ", 0xd7a4 },
+	{ U"ץ", 0xd7a5 },
+	{ U"צ", 0xd7a6 },
+	{ U"ק", 0xd7a7 },
+	{ U"ר", 0xd7a8 },
+	{ U"ש", 0xd7a9 },
+	{ U"ת", 0xd7aa },
 	{ U"¢", 0xc2a2 },
 	{ U"£", 0xc2a3 },
 	{ U"¥", 0xc2a5 },
@@ -278,6 +278,6 @@ MASTER_cp437_table[256] = {
 	{ U" ", 0xc2a0 }
 };
 
-#endif /* __MASTER_CP437_INCLUDE_H__ */
+#endif /* __MASTER_CP862_INCLUDE_H__ */
 
 // be master~

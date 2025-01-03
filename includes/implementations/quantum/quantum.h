@@ -9,7 +9,10 @@
 #ifndef __MASTER_QUANTUM_INCLUDE_H__
 #define __MASTER_QUANTUM_INCLUDE_H__
 
-#include <stdio.h>
+/* #! Low priority !# */
+
+#include "../../headers/enumeration/master_enum.h"
+
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>

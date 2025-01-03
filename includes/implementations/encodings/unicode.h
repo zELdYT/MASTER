@@ -9,6 +9,8 @@
 #ifndef __MASTER_UNICODE_INCLUDE_H__
 #define __MASTER_UNICODE_INCLUDE_H__
 
+/* #! No priority !# */
+
 #include "../../headers/enumeration/master_enum.h"
 
 #define MASTER_UNICODE_BOM_UTF8 "\xEF\xBB\xBF"

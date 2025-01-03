@@ -9,6 +9,8 @@
 #ifndef __MASTER_PARSER_CSV_INCLUDE_H__
 #define __MASTER_PARSER_CSV_INCLUDE_H__
 
+/* #! Low priority !# */
+
 /*
  * Supports:
  * CSV ( Comma-Separated Values )
@@ -26,30 +28,30 @@ typedef struct {
 } MASTER_table;
 
 void
-MASTER_table_free( MASTER_table * const table ) {
+MASTER_table_MASTER_FREE( MASTER_table * const table ) {
 	if (table->data != 0) {
 		UI4 i, j;
 		for (i = 0; i < table->height; i++) {
 			if (table->data[i] != 0) {
 				for (j = 0; j < table->width; j++) {
 					if (table->data[i][j] != 0) {
-						free(table->data[i][j]);
+						MASTER_FREE(table->data[i][j]);
 						table->data[i][j] = 0;
 					}
 				}
-				free(table->data[i]);
+				MASTER_FREE(table->data[i]);
 				table->data[i] = 0;
 			}
 		}
-		free(table->data);
+		MASTER_FREE(table->data);
 		table->data = 0;
 	}
 }
 
 int
-MASTER_table_toCpr( MASTER_table * const table, char * s, const char delimeter ) {
+MASTER_table_toCpr( const MASTER_table * const table, char * s, const char delimeter ) {
 	if (table->data != 0) {
-		UI4 i, j, len;
+		UI4 i, j;
 		for (i = 0; i < table->height; i++) {
 			if (table->data[i] != 0)
 				for (j = 0; j < table->width; j++) {
@@ -81,20 +83,19 @@ MASTER_usv_parseCpr( MASTER_table * const table, const char * s, const char deli
 		begin++;
 	}
 	if (table->width == 0) return MASTER_CSV_EMPTY;
-	printf("wh : %d %d\n", table->width, table->height);
-	table->data = (char***)malloc(0);
+	table->data = (char***)MASTER_MALLOC(0);
 	begin = s;
 	UI4 column = 0, row = 0;
 	char*** cprprpr;
 	while (*end != 0) {
-		cprprpr = (char***)realloc(table->data, sizeof(char**) * (++table->height));
+		cprprpr = (char***)MASTER_REALLOC(table->data, sizeof(char**) * (++table->height));
 		if (cprprpr == 0) {
-			MASTER_table_free(table);
+			MASTER_table_MASTER_FREE(table);
 			return MASTER_FAILED_REALLOC;
 		} else table->data = cprprpr;
-		table->data[table->height - 1] = (char**)calloc(table->width, sizeof(char *));
+		table->data[table->height - 1] = (char**)MASTER_CALLOC(table->width, sizeof(char *));
 		if (table->data[table->height - 1] == 0) {
-			MASTER_table_free(table);
+			MASTER_table_MASTER_FREE(table);
 			return MASTER_FAILED_MALLOC;
 		}
 		quotes_was = 0;
@@ -105,15 +106,14 @@ MASTER_usv_parseCpr( MASTER_table * const table, const char * s, const char deli
 				end++;
 			}
 			if (quotes_was) return MASTER_CSV_NOT_CLOSED_QUOTES;
-			table->data[column][row] = (char *)calloc(end - begin + 1, sizeof(char));
+			table->data[column][row] = (char *)MASTER_CALLOC(end - begin + 1, sizeof(char));
 			if (table->data[column][row] == 0) {
-				MASTER_table_free(table);
+				MASTER_table_MASTER_FREE(table);
 				return MASTER_FAILED_MALLOC;
 			}
 			if (*begin == *(end - 1) && *begin == '"') {
 				strncpy(table->data[column][row], begin + 1, end - begin - 2);
 			} else strncpy(table->data[column][row], begin, end - begin);
-			printf(" * %d %d : %s\n", column, row, table->data[column][row]);
 			row++;
 			end++;
 			begin = end;
@@ -140,25 +140,25 @@ MASTER_usv_parseFile( MASTER_table * const table, const char * const filepath, c
 	fseek(f, 0, SEEK_END);
 	const UI4 size = ftell(f);
 	fseek(f, 0, SEEK_SET);
-	s = malloc(size * sizeof(char) + 1);
+	s = MASTER_MALLOC(size * sizeof(char) + 1);
 	if (!s) {
 		fclose(f);
 		return MASTER_FAILED_MALLOC;
 	}
 	if (fread(s, sizeof(char), size, f) != size) {
-		free(s);
+		MASTER_FREE(s);
 		fclose(f);
 		return MASTER_FILE_READ_FAILURE;
 	}
 	s[size] = 0;
 	fclose(f);
 	int res = MASTER_usv_parseCpr(table, s, delimeter);
-	free(s);
+	MASTER_FREE(s);
 	return res;
 }
 
 int
-MASTER_usv_saveToFile( MASTER_table * const table, const char * const filepath, const char delimeter ) {
+MASTER_usv_saveToFile( const MASTER_table * const table, const char * const filepath, const char delimeter ) {
 	FILE * f = fopen(filepath, "wt");
 	if (table->data != 0) {
 		UI4 i, j, len = 0;
@@ -172,14 +172,14 @@ MASTER_usv_saveToFile( MASTER_table * const table, const char * const filepath, 
 			}
 		}
 		len += table->height * table->width * 2 + table->height * (table->width - 1) + table->height;
-		char * s = (char *)malloc(len * sizeof(char));
+		char * s = (char *)MASTER_MALLOC(len * sizeof(char));
 		MASTER_table_toCpr(table, s, delimeter);
 		if (fwrite(s, sizeof(char), len, f) != len) {
-			free(s);
+			MASTER_FREE(s);
 			fclose(f);
 			return MASTER_FILE_READ_FAILURE;
 		}
-		free(s);
+		MASTER_FREE(s);
 	}
 	fclose(f);
 	return MASTER_NO_ERROR;

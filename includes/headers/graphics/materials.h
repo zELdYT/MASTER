@@ -9,6 +9,8 @@
 #ifndef __MASTER_MATERIALS_INCLUDE_H__
 #define __MASTER_MATERIALS_INCLUDE_H__
 
+/* #! Low priority !# */
+
 typedef struct {
 	float ambient[3];
 	float diffuse[3];

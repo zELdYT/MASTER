@@ -9,6 +9,8 @@
 #ifndef __MASTER_COLORS_ENUM_INCLUDE_H__
 #define __MASTER_COLORS_ENUM_INCLUDE_H__
 
+/* #! Low priority !# */
+
 typedef struct {
 	UI1 r, g, b;
 	const wchar_t * const color_name;

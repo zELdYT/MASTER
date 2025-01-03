@@ -9,6 +9,8 @@
 #ifndef __MASTER_HASHLIB_INCLUDE_H__
 #define __MASTER_HASHLIB_INCLUDE_H__
 
+/* #! No priority !# */
+
 #include <stdlib.h>
 #include <string.h>
 #include "../../headers/enumeration/master_enum.h"
@@ -72,17 +74,31 @@ MASTER_Adler32_Final(MASTER_Adler32 * __adler32, UI1 * hash_output) {
 }
 
 void
-MASTER_Adler32_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) {
+MASTER_Adler32_CalculateHashSum(const UI1 * __s, UI4 __l, UI1 * hash_output) {
 	UI2 A = 1, B = 0;
 	while (__l--) {
 		A = (A + *(__s++)) % 65521;
 		B = (A + B) % 65521; }
-	UI4 result = (B << 16) | A;
 	
-	hash_output[0] = (result >> 24) & 0xFF;
-	hash_output[1] = (result >> 16) & 0xFF;
-	hash_output[2] = (result >> 8) & 0xFF;
-	hash_output[3] = result & 0xFF;
+	hash_output[0] = (B >> 8) & 0xFF;
+	hash_output[1] = B & 0xFF;
+	hash_output[2] = (A >> 8) & 0xFF;
+	hash_output[3] = A & 0xFF;
+}
+
+void
+MASTER_Adler32_CalculateHashSumExt(const UI1 * __s, UI4 __l, UI1 * hash_output, UI4 init) {
+	UI4 A = init & 0xFFFF;
+	UI4 B = (init >> 16) & 0xFFFF;
+
+	while (__l--) {
+		A = (A + *__s++) % 65521;
+		B = (A + B) % 65521; }
+		
+	hash_output[0] = (B >> 8) & 0xFF;
+	hash_output[1] = B & 0xFF;
+	hash_output[2] = (A >> 8) & 0xFF;
+	hash_output[3] = A & 0xFF;
 }
 
 // !# ADLER32
@@ -378,7 +394,7 @@ MASTER_MD2_Init(void) {
 }
 
 static void
-__MASTED_MD2_Transform(MASTER_MD2 * __md2, const UI1 * __data) {
+__MASTER_MD2_Transform(MASTER_MD2 * __md2, const UI1 * __data) {
 	UI1 t;
 	UI4 j, k;
 	for (j = 0; j < 16; j++) {
@@ -402,7 +418,7 @@ MASTER_MD2_Update(MASTER_MD2 * __md2, const char * __s, UI4 __l) {
 	while (__l--) {
 		__md2->__buffer[__md2->__l++] = *(__s++);
 		if (__md2->__l == 16) {
-			__MASTED_MD2_Transform(__md2, __md2->__buffer);
+			__MASTER_MD2_Transform(__md2, __md2->__buffer);
 			__md2->__l = 0; }
 	}
 }
@@ -414,8 +430,8 @@ MASTER_MD2_Final(MASTER_MD2 * __md2, UI1 * hash_output) {
 	while (__md2->__l < 16)
 		__md2->__buffer[__md2->__l++] = rem;
 
-	__MASTED_MD2_Transform(__md2, __md2->__buffer);
-	__MASTED_MD2_Transform(__md2, __md2->__M);
+	__MASTER_MD2_Transform(__md2, __md2->__buffer);
+	__MASTER_MD2_Transform(__md2, __md2->__M);
 
 	for (UI1 i = 0; i < 16; i++)
 		hash_output[i] = __md2->__X[i];
@@ -489,7 +505,7 @@ MASTER_MD4_Init(void) {
 }
 
 static void
-__MASTED_MD4_Transform(MASTER_MD4 * __md4) {
+__MASTER_MD4_Transform(MASTER_MD4 * __md4) {
 	UI4 AA, BB, CC, DD, j;
 	UI4 X[16];
 	for (j = 0; j < 16; j++) 
@@ -533,7 +549,7 @@ MASTER_MD4_Update(MASTER_MD4 * __md4, const char * __s, UI4 __l) {
 	while (__l--) {
 		__md4->__buffer[__md4->__l++ % 64] = *(__s++);
 		if (__md4->__l % 64 == 0)
-			__MASTED_MD4_Transform(__md4);
+			__MASTER_MD4_Transform(__md4);
 	}
 }
 
@@ -675,7 +691,7 @@ MASTER_MD5_Init(void) {
 }
 
 static void
-__MASTED_MD5_Transform(MASTER_MD5 * __md5) {
+__MASTER_MD5_Transform(MASTER_MD5 * __md5) {
 	UI4 AA, BB, CC, DD, j;
 	UI4 T[64] = { 0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821, 0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa, 0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8, 0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed, 0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a, 0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c, 0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70, 0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05, 0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665, 0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039, 0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1, 0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1, 0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391 };
 	UI4 X[16];
@@ -726,7 +742,7 @@ MASTER_MD5_Update(MASTER_MD5 * __md5, const char * __s, UI4 __l) {
 	while (__l--) {
 		__md5->__buffer[__md5->__l++ % 64] = *(__s++);
 		if (__md5->__l % 64 == 0)
-			__MASTED_MD5_Transform(__md5);
+			__MASTER_MD5_Transform(__md5);
 	}
 }
 
@@ -2325,8 +2341,6 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 
 // !!# SHA-2-512-256
 
-// !# SHA-2
-
 #undef __MASTER_SHA2_FUNCTION_SIGMA0
 #undef __MASTER_SHA2_FUNCTION_SIGMA1
 #undef __MASTER_SHA2_FUNCTION_MAJ
@@ -2335,6 +2349,8 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 #undef __MASTER_SHA2_512_FUNCTION_SIGMA1
 #undef __MASTER_SHA2_512_FUNCTION_MAJ
 #undef __MASTER_SHA2_512_FUNCTION_CH
+
+// !# SHA-2
 
 // #! SHA-3
 
@@ -2521,9 +2537,7 @@ mkapply_ds(xorin, dst[i] ^= src[i])
 mkapply_sd(setout, dst[i] = src[i])
 
 static inline void
-MASTER_SHA3_FUNCTION_HASH(UI1 * out, UI4 outlen,
-						  const UI1 * in, UI4 inlen,
-						  UI4 rate, UI1 delim) {
+MASTER_SHA3_FUNCTION_HASH(UI1 * out, UI4 outlen, const UI1 * in, UI4 inlen, UI4 rate, UI1 delim) {
 	UI1 a[200] = {0};
 	foldP(in, inlen, xorin);
 	a[inlen] ^= delim;
@@ -3679,13 +3693,11 @@ MASTER_BLAKE2S
 MASTER_BLAKE2S_Init(UI4 outl) {
 	MASTER_BLAKE2S __blake2s;
 	UI4 i;
-	for (i = 0; i < 8; i++)
-		__blake2s.__h[i] = MASTER_BLAKE2S_TABLE_IV[i];
+	for (i = 0; i < 8; i++) __blake2s.__h[i] = MASTER_BLAKE2S_TABLE_IV[i];
 	__blake2s.__h[0] ^= 0x01010000 ^ outl;
 	__blake2s.__t[0] = __blake2s.__t[1] = __blake2s.__c = 0;
 	__blake2s.__outl = outl;
-	for (i = 0; i < 64; i++)
-		__blake2s.__b[i] = 0;
+	for (i = 0; i < 64; i++) __blake2s.__b[i] = 0;
 	return __blake2s;
 }
 
@@ -3695,8 +3707,7 @@ MASTER_BLAKE2S_Update(MASTER_BLAKE2S * __blake2s, const char * __s, UI4 __l) {
 	for (i = 0; i < __l; i++) {
 		if (__blake2s->__c == 64) {
 			__blake2s->__t[0] += __blake2s->__c;
-			if (__blake2s->__t[0] < __blake2s->__c)
-				__blake2s->__t[1]++;
+			if (__blake2s->__t[0] < __blake2s->__c) __blake2s->__t[1]++;
 			MASTER_BLAKE2S_Compress(__blake2s, 0);
 			__blake2s->__c = 0;
 		}
@@ -3708,13 +3719,10 @@ void
 MASTER_BLAKE2S_Final(MASTER_BLAKE2S * __blake2s, UI1 * hash_output) {
 	UI8 i;
 	__blake2s->__t[0] += __blake2s->__c;
-	if (__blake2s->__t[0] < __blake2s->__c)
-		__blake2s->__t[1]++;
-	while (__blake2s->__c < 64)
-		__blake2s->__b[__blake2s->__c++] = 0;
+	if (__blake2s->__t[0] < __blake2s->__c) __blake2s->__t[1]++;
+	while (__blake2s->__c < 64) __blake2s->__b[__blake2s->__c++] = 0;
 	MASTER_BLAKE2S_Compress(__blake2s, 1);
-	for (i = 0; i < __blake2s->__outl; i++)
-		hash_output[i] = (__blake2s->__h[i >> 2] >> (8 * (i & 3))) & 0xFF;
+	for (i = 0; i < __blake2s->__outl; i++) hash_output[i] = (__blake2s->__h[i >> 2] >> (8 * (i & 3))) & 0xFF;
 }
 
 void
@@ -4386,8 +4394,7 @@ MASTER_WHIRLPOOL_Update(MASTER_WHIRLPOOL * const __whirlpool, const char * __s, 
 		value >>= 8;
 	}
 	while (__l > 8) {
-		b = ((__s[__sp] << __sg) & 0xFF) |
-			((__s[__sp + 1] & 0xFF) >> (8 - __sg));
+		b = ((__s[__sp] << __sg) & 0xFF) | ((__s[__sp + 1] & 0xFF) >> (8 - __sg));
 		__b[__bp++] |= (b >> __br);
 		__bb += 8 - __br;
 		if (__bb == 512) {
@@ -5718,7 +5725,6 @@ MASTER_SNEFRU_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output, UI4
 #undef __MASTER_SNEFRU_FUNCTION_F
 
 // !# SNEFRU
-
 
 // #! GOST12
 

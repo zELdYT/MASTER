@@ -12,6 +12,10 @@
 #ifndef __MASTER_MEMORY_SAFE_INCLUDE_H__
 #define __MASTER_MEMORY_SAFE_INCLUDE_H__
 
+/* #! Low priority !# */
+
+#warning "Warning: This library will be deprecated soon. All its functionalities will be moved to master_enum.h."
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "../../headers/enumeration/master_enum.h"

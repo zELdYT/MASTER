@@ -9,12 +9,14 @@
 #ifndef __MASTER_CRC_ENUM_INCLUDE_H__
 #define __MASTER_CRC_ENUM_INCLUDE_H__
 
+/* #! Low priority !# */
+
 #include "../../headers/enumeration/master_enum.h"
 
 typedef struct {
 	UI4 width;
 	UI8 poly, init;
-	UI4 refin : 1;
+	UI4 refin  : 1;
 	UI4 refout : 1;
 	UI8 xorout;
 } MASTER_CRC;
@@ -22,7 +24,7 @@ typedef struct {
 typedef struct {
 	UI4 width;
 	UI8 poly, init;
-	UI4 refin : 1;
+	UI4 refin  : 1;
 	UI4 refout : 1;
 	UI8 xorout;
 	UI8 check, residue;

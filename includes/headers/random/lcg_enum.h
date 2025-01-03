@@ -9,6 +9,8 @@
 #ifndef __MASTER_LCG_ENUMERATION_INCLUDE_H__
 #define __MASTER_LCG_ENUMERATION_INCLUDE_H__
 
+/* #! Low priority !# */
+
 #define MASTER_random_LCG_ZX81_m                   0x10001
 #define MASTER_random_LCG_ZX81_a                   75
 #define MASTER_random_LCG_ZX81_c                   74

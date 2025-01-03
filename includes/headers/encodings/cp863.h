@@ -6,8 +6,8 @@
  * See the LICENSE file in the project root for more details.
  */
 
-#ifndef __MASTER_CP437_INCLUDE_H__
-#define __MASTER_CP437_INCLUDE_H__
+#ifndef __MASTER_CP863_INCLUDE_H__
+#define __MASTER_CP863_INCLUDE_H__
 
 /* #! Low priority !# */
 
@@ -16,10 +16,10 @@
 typedef struct {
 	UI4 * symbol;
 	UI8 unicode;
-} MASTER_cp437_element;
+} MASTER_CP863_element;
 
-const MASTER_cp437_element
-MASTER_cp437_table[256] = {
+const MASTER_CP863_element
+MASTER_CP863_table[256] = {
 	{ U"\0", 0x00 },
 	{ U"☺", 0xe298ba },
 	{ U"☻", 0xe298bb },
@@ -152,48 +152,48 @@ MASTER_cp437_table[256] = {
 	{ U"ü", 0xc3bc },
 	{ U"é", 0xc3a9 },
 	{ U"â", 0xc3a2 },
-	{ U"ä", 0xc3a4 },
+	{ U"Â", 0xc382 },
 	{ U"à", 0xc3a0 },
-	{ U"å", 0xc3a5 },
+	{ U"¶", 0xc2b6 },
 	{ U"ç", 0xc3a7 },
 	{ U"ê", 0xc3aa },
 	{ U"ë", 0xc3ab },
 	{ U"è", 0xc3a8 },
 	{ U"ï", 0xc3af },
 	{ U"î", 0xc3ae },
-	{ U"ì", 0xc3ac },
-	{ U"Ä", 0xc384 },
-	{ U"Å", 0xc385 },
+	{ U"‗", 0xe28097 },
+	{ U"À", 0xc380 },
+	{ U"§", 0xc2a7 },
 	{ U"É", 0xc389 },
-	{ U"æ", 0xc3a6 },
-	{ U"Æ", 0xc386 },
+	{ U"È", 0xc388 },
+	{ U"Ê", 0xc38a },
 	{ U"ô", 0xc3b4 },
-	{ U"ö", 0xc3b6 },
-	{ U"ò", 0xc3b2 },
+	{ U"Ë", 0xc38b },
+	{ U"Ï", 0xc38f },
 	{ U"û", 0xc3bb },
 	{ U"ù", 0xc3b9 },
-	{ U"ÿ", 0xc3bf },
-	{ U"Ö", 0xc396 },
+	{ U"¤", 0xc2a4 },
+	{ U"Ô", 0xc394 },
 	{ U"Ü", 0xc39c },
 	{ U"¢", 0xc2a2 },
 	{ U"£", 0xc2a3 },
-	{ U"¥", 0xc2a5 },
-	{ U"₧", 0xe282a7 },
+	{ U"Ù", 0xc399 },
+	{ U"Û", 0xc39b },
 	{ U"ƒ", 0xc692 },
-	{ U"á", 0xc3a1 },
-	{ U"í", 0xc3ad },
+	{ U"¦", 0xc2a6 },
+	{ U"´", 0xc2b4 },
 	{ U"ó", 0xc3b3 },
 	{ U"ú", 0xc3ba },
-	{ U"ñ", 0xc3b1 },
-	{ U"Ñ", 0xc391 },
-	{ U"ª", 0xc2aa },
-	{ U"º", 0xc2ba },
-	{ U"¿", 0xc2bf },
+	{ U"¨", 0xc2a8 },
+	{ U"¸", 0xc2b8 },
+	{ U"³", 0xc2b3 },
+	{ U"¯", 0xc2af },
+	{ U"Î", 0xc38e },
 	{ U"⌐", 0xe28c90 },
 	{ U"¬", 0xc2ac },
 	{ U"½", 0xc2bd },
 	{ U"¼", 0xc2bc },
-	{ U"¡", 0xc2a1 },
+	{ U"¾", 0xc2be },
 	{ U"«", 0xc2ab },
 	{ U"»", 0xc2bb },
 	{ U"░", 0xe29691 },
@@ -278,6 +278,6 @@ MASTER_cp437_table[256] = {
 	{ U" ", 0xc2a0 }
 };
 
-#endif /* __MASTER_CP437_INCLUDE_H__ */
+#endif /* __MASTER_CP863_INCLUDE_H__ */
 
 // be master~

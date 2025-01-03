@@ -6,8 +6,8 @@
  * See the LICENSE file in the project root for more details.
  */
 
-#ifndef __MASTER_CP437_INCLUDE_H__
-#define __MASTER_CP437_INCLUDE_H__
+#ifndef __MASTER_CP856_INCLUDE_H__
+#define __MASTER_CP856_INCLUDE_H__
 
 /* #! Low priority !# */
 
@@ -16,10 +16,10 @@
 typedef struct {
 	UI4 * symbol;
 	UI8 unicode;
-} MASTER_cp437_element;
+} MASTER_CP856_element;
 
-const MASTER_cp437_element
-MASTER_cp437_table[256] = {
+const MASTER_CP856_element
+MASTER_CP856_table[256] = {
 	{ U"\0", 0x00 },
 	{ U"☺", 0xe298ba },
 	{ U"☻", 0xe298bb },
@@ -38,7 +38,7 @@ MASTER_cp437_table[256] = {
 	{ U"☼", 0xe298bc },
 	{ U"►", 0xe296ba },
 	{ U"◄", 0xe29784 },
-	{ U"↕︎", 0xe28695efb88e },
+	{ U"↕", 0xe28695 },
 	{ U"‼", 0xe280bc },
 	{ U"¶", 0xc2b6 },
 	{ U"§", 0xc2a7 },
@@ -52,14 +52,14 @@ MASTER_cp437_table[256] = {
 	{ U"↔", 0xe28694 },
 	{ U"▲", 0xe296b2 },
 	{ U"▼", 0xe296bc },
-	{ U" ", 0x20 },
+	{ U"  ", 0x2020 },
 	{ U"!", 0x21 },
 	{ U"\"", 0x22 },
 	{ U"#", 0x23 },
 	{ U"$", 0x24 },
 	{ U"%", 0x25 },
 	{ U"&", 0x26 },
-	{ U"\'", 0x27 },
+	{ U"'", 0x27 },
 	{ U"(", 0x28 },
 	{ U")", 0x29 },
 	{ U"*", 0x2a },
@@ -148,52 +148,52 @@ MASTER_cp437_table[256] = {
 	{ U"}", 0x7d },
 	{ U"~", 0x7e },
 	{ U"⌂", 0xe28c82 },
-	{ U"Ç", 0xc387 },
-	{ U"ü", 0xc3bc },
-	{ U"é", 0xc3a9 },
-	{ U"â", 0xc3a2 },
-	{ U"ä", 0xc3a4 },
-	{ U"à", 0xc3a0 },
-	{ U"å", 0xc3a5 },
-	{ U"ç", 0xc3a7 },
-	{ U"ê", 0xc3aa },
-	{ U"ë", 0xc3ab },
-	{ U"è", 0xc3a8 },
-	{ U"ï", 0xc3af },
-	{ U"î", 0xc3ae },
-	{ U"ì", 0xc3ac },
-	{ U"Ä", 0xc384 },
-	{ U"Å", 0xc385 },
-	{ U"É", 0xc389 },
-	{ U"æ", 0xc3a6 },
-	{ U"Æ", 0xc386 },
-	{ U"ô", 0xc3b4 },
-	{ U"ö", 0xc3b6 },
-	{ U"ò", 0xc3b2 },
-	{ U"û", 0xc3bb },
-	{ U"ù", 0xc3b9 },
-	{ U"ÿ", 0xc3bf },
-	{ U"Ö", 0xc396 },
-	{ U"Ü", 0xc39c },
-	{ U"¢", 0xc2a2 },
+	{ U"א", 0xd790 },
+	{ U"ב", 0xd791 },
+	{ U"ג", 0xd792 },
+	{ U"ד", 0xd793 },
+	{ U"ה", 0xd794 },
+	{ U"ו", 0xd795 },
+	{ U"ז", 0xd796 },
+	{ U"ח", 0xd797 },
+	{ U"ט", 0xd798 },
+	{ U"י", 0xd799 },
+	{ U"ך", 0xd79a },
+	{ U"כ", 0xd79b },
+	{ U"ל", 0xd79c },
+	{ U"ם", 0xd79d },
+	{ U"מ", 0xd79e },
+	{ U"ן", 0xd79f },
+	{ U"נ", 0xd7a0 },
+	{ U"ס", 0xd7a1 },
+	{ U"ע", 0xd7a2 },
+	{ U"ף", 0xd7a3 },
+	{ U"פ", 0xd7a4 },
+	{ U"ץ", 0xd7a5 },
+	{ U"צ", 0xd7a6 },
+	{ U"ק", 0xd7a7 },
+	{ U"ר", 0xd7a8 },
+	{ U"ש", 0xd7a9 },
+	{ U"ת", 0xd7aa },
+	{ U"\0", 0x00 }, /* not used */
 	{ U"£", 0xc2a3 },
-	{ U"¥", 0xc2a5 },
-	{ U"₧", 0xe282a7 },
-	{ U"ƒ", 0xc692 },
-	{ U"á", 0xc3a1 },
-	{ U"í", 0xc3ad },
-	{ U"ó", 0xc3b3 },
-	{ U"ú", 0xc3ba },
-	{ U"ñ", 0xc3b1 },
-	{ U"Ñ", 0xc391 },
-	{ U"ª", 0xc2aa },
-	{ U"º", 0xc2ba },
-	{ U"¿", 0xc2bf },
-	{ U"⌐", 0xe28c90 },
+	{ U"\0", 0x00 }, /* not used */
+	{ U"×", 0xc397 },
+	{ U"₪", 0xe282aa },
+	{ U"‎", 0xe2808e },
+	{ U"‏", 0xe2808f },
+	{ U"‪", 0xe280aa },
+	{ U"‫", 0xe280ab },
+	{ U"‭", 0xe280ad },
+	{ U"‮", 0xe280ae },
+	{ U"‬", 0xe280ac },
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"®", 0xc2ae },
 	{ U"¬", 0xc2ac },
 	{ U"½", 0xc2bd },
 	{ U"¼", 0xc2bc },
-	{ U"¡", 0xc2a1 },
+	{ U"€", 0xe282ac },
 	{ U"«", 0xc2ab },
 	{ U"»", 0xc2bb },
 	{ U"░", 0xe29691 },
@@ -201,16 +201,16 @@ MASTER_cp437_table[256] = {
 	{ U"▓", 0xe29693 },
 	{ U"│", 0xe29482 },
 	{ U"┤", 0xe294a4 },
-	{ U"╡", 0xe295a1 },
-	{ U"╢", 0xe295a2 },
-	{ U"╖", 0xe29596 },
-	{ U"╕", 0xe29595 },
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"©", 0xc2a9 },
 	{ U"╣", 0xe295a3 },
 	{ U"║", 0xe29591 },
 	{ U"╗", 0xe29597 },
 	{ U"╝", 0xe2959d },
-	{ U"╜", 0xe2959c },
-	{ U"╛", 0xe2959b },
+	{ U"¢", 0xc2a2 },
+	{ U"¥", 0xc2a5 },
 	{ U"┐", 0xe29490 },
 	{ U"└", 0xe29494 },
 	{ U"┴", 0xe294b4 },
@@ -218,8 +218,8 @@ MASTER_cp437_table[256] = {
 	{ U"├", 0xe2949c },
 	{ U"─", 0xe29480 },
 	{ U"┼", 0xe294bc },
-	{ U"╞", 0xe2959e },
-	{ U"╟", 0xe2959f },
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
 	{ U"╚", 0xe2959a },
 	{ U"╔", 0xe29594 },
 	{ U"╩", 0xe295a9 },
@@ -227,57 +227,57 @@ MASTER_cp437_table[256] = {
 	{ U"╠", 0xe295a0 },
 	{ U"═", 0xe29590 },
 	{ U"╬", 0xe295ac },
-	{ U"╧", 0xe295a7 },
-	{ U"╨", 0xe295a8 },
-	{ U"╤", 0xe295a4 },
-	{ U"╥", 0xe295a5 },
-	{ U"╙", 0xe29599 },
-	{ U"╘", 0xe29598 },
-	{ U"╒", 0xe29592 },
-	{ U"╓", 0xe29593 },
-	{ U"╫", 0xe295ab },
-	{ U"╪", 0xe295aa },
+	{ U"¤", 0xc2a4 },
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
 	{ U"┘", 0xe29498 },
 	{ U"┌", 0xe2948c },
 	{ U"█", 0xe29688 },
 	{ U"▄", 0xe29684 },
-	{ U"▌", 0xe2968c },
-	{ U"▐", 0xe29690 },
+	{ U"¦", 0xc2a6 },
+	{ U"\0", 0x00 }, /* not used */
 	{ U"▀", 0xe29680 },
-	{ U"α", 0xceb1 },
-	{ U"ß", 0xc39f },
-	{ U"Γ", 0xce93 },
-	{ U"π", 0xcf80 },
-	{ U"Σ", 0xcea3 },
-	{ U"σ", 0xcf83 },
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
 	{ U"µ", 0xc2b5 },
-	{ U"τ", 0xcf84 },
-	{ U"Φ", 0xcea6 },
-	{ U"Θ", 0xce98 },
-	{ U"Ω", 0xcea9 },
-	{ U"δ", 0xceb4 },
-	{ U"∞", 0xe2889e },
-	{ U"φ", 0xcf86 },
-	{ U"ε", 0xceb5 },
-	{ U"∩", 0xe288a9 },
-	{ U"≡", 0xe289a1 },
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"\0", 0x00 }, /* not used */
+	{ U"¯", 0xc2af },
+	{ U"´", 0xc2b4 },
+	{ U"­", 0xc2ad },
 	{ U"±", 0xc2b1 },
-	{ U"≥", 0xe289a5 },
-	{ U"≤", 0xe289a4 },
-	{ U"⌠", 0xe28ca0 },
-	{ U"⌡", 0xe28ca1 },
+	{ U"‗", 0xe28097 },
+	{ U"¾", 0xc2be },
+	{ U"¶", 0xc2b6 },
+	{ U"§", 0xc2a7 },
 	{ U"÷", 0xc3b7 },
-	{ U"≈", 0xe28988 },
+	{ U"¸", 0xc2b8 },
 	{ U"°", 0xc2b0 },
-	{ U"∙", 0xe28899 },
+	{ U"¨", 0xc2a8 },
 	{ U"·", 0xc2b7 },
-	{ U"√", 0xe2889a },
-	{ U"ⁿ", 0xe281bf },
+	{ U"¹", 0xc2b9 },
+	{ U"³", 0xc2b3 },
 	{ U"²", 0xc2b2 },
 	{ U"■", 0xe296a0 },
 	{ U" ", 0xc2a0 }
 };
 
-#endif /* __MASTER_CP437_INCLUDE_H__ */
+#endif /* __MASTER_CP856_INCLUDE_H__ */
 
 // be master~

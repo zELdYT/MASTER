@@ -9,6 +9,8 @@
 #ifndef __MASTER_RANDOM_INCLUDE_H__
 #define __MASTER_RANDOM_INCLUDE_H__
 
+/* #! High priority !# */
+
 #include "../../headers/enumeration/master_enum.h"
 
 // #! Linear Conngruental Generator
@@ -44,7 +46,7 @@ MASTER_random_LCG64_set( const UI8 new_seed ) {
 #include <string.h>
 
 /*
- * "o" must be malloced with size (output_len)
+ * "o" must be MASTER_MALLOCed with size (output_len)
 */
 void
 MASTER_random_KDF1( const char * s, UI4 l, UI1 * o, void (*hashfunc)(const char *, UI4, UI1 *), const UI4 hash_len_output, const UI4 output_len ) {
@@ -451,7 +453,58 @@ MASTER_random_xoshiro256starstar_get(MASTER_random_xoshiro256starstar * const xs
 
 // !!# xoshiro256**
 
+/* https://prng.di.unimi.it/
+ * xoroshiro128+
+ * xoroshiro128++
+ * xoroshiro128**
+ * xoshiro512+
+ * xoshiro512++
+ * xoshiro512**
+ * xoroshiro1024
+ * xoroshiro1024++
+ * xoroshiro1024**
+ * MWC128
+ * MWC192
+ * MWC256
+ * GMWC128
+ * GMWC256
+ * SFC64
+ * PCG 128 XSH RS 64 (LCG)
+ * PCG64-DXSM (NumPy)
+ * Ran
+ * SFMT19937 (uses SSE2 instructions)
+ * SFMT607 (uses SSE2 instructions)
+ * Tiny Mersenne Twister (64 bits)
+ * Tiny Mersenne Twister (32 bits)
+ * WELL512a
+ * WELL1024a
+ * WELL family
+ */
+
 // !# XorShift
+
+// #! Splitmix64
+
+typedef struct {
+	UI8 __x;
+} MASTER_random_splitmix64;
+
+MASTER_random_splitmix64
+MASTER_random_splitmix64_init(UI8 seed) {
+	MASTER_random_splitmix64 sm64;
+	sm64.__x = seed;
+	return sm64;
+}
+
+UI8
+MASTER_random_splitmix64_get(MASTER_random_splitmix64 * const sm64) {
+	UI8 t = (sm64->__x += 0x9E3779B97F4A7C15);
+	t = (t ^ (t >> 30)) * 0xBF58476D1CE4E5B9;
+	t = (t ^ (t >> 27)) * 0x94D049BB133111EB;
+	return t ^ (t >> 31);
+}
+
+// !# Splitmix64
 
 #if defined(__x86_64__) || defined(__i386__)
 #include <cpuid.h>
@@ -491,7 +544,8 @@ MASTER_rdrand64_get(UI8 * rand) MASTER_RDRAND_CONTENT
 
 // #! RDSEED
 
-UI1 MASTER_rdseed_supported(void) {
+UI1
+MASTER_rdseed_supported(void) {
 #if defined(__x86_64__) || defined(__i386__)
 	UI4 eax, ebx, ecx, edx;
 	if (__get_cpuid(1, &eax, &ebx, &ecx, &edx))

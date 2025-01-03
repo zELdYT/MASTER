@@ -9,15 +9,52 @@
 #ifndef __MASTER_CODE_STYLE_INCLUDE_H__
 #define __MASTER_CODE_STYLE_INCLUDE_H__
 
+/* #! High priority !# */
+
 typedef unsigned char UI1;
 typedef unsigned short UI2;
-typedef unsigned long UI4;
-typedef unsigned long long UI8;
+typedef unsigned int UI4;
 
 typedef signed char SI1;
 typedef signed short SI2;
-typedef signed long SI4;
-typedef signed long long SI8;
+typedef signed int SI4;
+
+#ifdef __cplusplus
+	typedef unsigned long long MASTER_maxint;
+	typedef unsigned long long int UI8;
+	typedef signed long long int SI8;
+	#define MASTER_64_AVAILABLE 1
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+	#include <limits.h>
+	#if defined(ULLONG_MAX)
+		typedef unsigned long long MASTER_maxint;
+		typedef unsigned long long int UI8;
+		typedef signed long long int SI8;
+		#define MASTER_64_AVAILABLE 1
+	#elif defined(ULONG_MAX) && (ULONG_MAX >= 0xFFFFFFFFFFFFFFFFULL)
+		typedef unsigned long MASTER_maxint;
+		typedef unsigned long long int UI8;
+		typedef signed long long int SI8;
+		#define MASTER_64_AVAILABLE 1
+	#else
+		typedef unsigned long MASTER_maxint;
+		#define MASTER_64_AVAILABLE 0
+	#endif
+#else
+	#include <limits.h>
+	#if defined(ULONG_MAX) && (ULONG_MAX >= 0xFFFFFFFFFFFFFFFFULL)
+		typedef unsigned long MASTER_maxint;
+		typedef unsigned long long int UI8;
+		typedef signed long long int SI8;
+		#define MASTER_64_AVAILABLE 1
+	#elif defined(ULONG_MAX) && (ULONG_MAX >= 0xFFFFFFFFUL)
+		typedef unsigned long MASTER_maxint;
+		#define MASTER_64_AVAILABLE 0
+	#else
+		typedef unsigned short MASTER_maxint;
+		#define MASTER_64_AVAILABLE 0
+	#endif
+#endif
 
 typedef enum {
 	MASTER_NO_ERROR = 0,
@@ -37,13 +74,65 @@ typedef enum {
 	MASTER_QUEUE_IS_EMPTY,
 } MASTER_return_code;
 
+#define MASTER_IS_SUCCESS(code) ((code) == MASTER_NO_ERROR)
+#define MASTER_IS_FAILURE(code) ((code) != MASTER_NO_ERROR)
+
+#ifdef MASTER_ENABLE_ASSERTIONS
+	#ifndef MASTER_FUNCTION_ASSERTION
+		#error \
+		With defined "MASTER_ENABLE_ASSERTIONS" function "MASTER_FUNCTION_ASSERTION" with arguments (expr, msg) must be defined.
+	#endif /* MASTER_FUNCTION_ASSERTION */
+	#define MASTER_ASSERT(expr, msg) MASTER_FUNCTION_ASSERTION((expr), (msg))
+#else
+	#define MASTER_ASSERT(expr, msg)
+#endif /* MASTER_ENABLE_ASSERTIONS */
+
+#ifdef MASTER_MEMORY_SAFE
+	#ifndef MASTER_FUNCTION_ON_FAILURE_MALLOC
+		#error \
+		With defined "MASTER_MEMORY_SAFE" function /* */ "MASTER_FUNCTION_ON_FAILURE_MALLOC" must be defined.
+	#endif /* MASTER_FUNCTION_ON_FAILURE_MALLOC */
+	#ifndef MASTER_FUNCTION_ON_FAILURE_CALLOC
+		#error \
+		With defined "MASTER_MEMORY_SAFE" function "MASTER_FUNCTION_ON_FAILURE_CALLOC" must be defined.
+	#endif /* MASTER_FUNCTION_ON_FAILURE_CALLOC */
+	#ifndef MASTER_FUNCTION_ON_FAILURE_REALLOC
+		#error \
+		With defined "MASTER_MEMORY_SAFE" function "MASTER_FUNCTION_ON_FAILURE_REALLOC" must be defined.
+	#endif /* MASTER_FUNCTION_ON_FAILURE_REALLOC */
+	#define MASTER_MALLOC(__size) ({ \
+		void * __ptr = malloc(__size); \
+		if (__ptr == 0 && __size > 0) MASTER_FUNCTION_ON_FAILURE_MALLOC; \
+		__ptr; })
+	#define MASTER_CALLOC(__count, __size) ({ \
+		void * __ptr = calloc(__count, __size); \
+		if (__ptr == 0 && __size > 0) MASTER_FUNCTION_ON_FAILURE_CALLOC; \
+		__ptr; })
+	#define MASTER_REALLOC(__ptr, __size) ({ \
+		void * __new_ptr = realloc(__ptr, __size); \
+		if (__ptr == 0 && __size > 0) MASTER_FUNCTION_ON_FAILURE_REALLOC; \
+		__new_ptr; })
+#else
+	#define MASTER_MALLOC(__size) malloc(__size)
+	#define MASTER_CALLOC(__count, __size) calloc(__count, __size)
+	#define MASTER_REALLOC(__ptr, __size) realloc(__ptr, __size)
+#endif /* MASTER_MEMORY_SAFE */
+#define MASTER_FREE(__ptr) free(__ptr)
+
 #define otherwise else if
 #define nul 0
 
 #define MASTER_MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MASTER_MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MASTER_ABS(a)	(((a) < 0) ? (-(a)) : (a))
+#define MASTER_CLAMP(a, min, max) MASTER_MAX(min, MASTER_MIN(max, a))
+#define MASTER_ABS(a)    (((a) < 0) ? (-(a)) : (a))
 #define MASTER_SQUARE(a) ((a)*(a))
+#define MASTER_2BYTES_TO_INT(a, b) (((a) << 8) | (b))
+#define MASTER_4BYTES_TO_INT(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
+
+#define MASTER_ADD_OVERFLOW_UI1(a, b, carry) carry = ((a >= ((UI1)-1) - b) ? (1) : (0))
+#define MASTER_ADD_OVERFLOW_UI2(a, b, carry) carry = ((a >= ((UI2)-1) - b) ? (1) : (0))
+#define MASTER_ADD_OVERFLOW_UI4(a, b, carry) carry = ((a >= ((UI4)-1) - b) ? (1) : (0))
 
 /* ENDIAN CHECK */
 
@@ -71,6 +160,7 @@ typedef enum {
 		else return MASTER_UNKNOWN_ENDIAN;
 	}
 	#define MASTER_ENDIANNESS MASTER_getEndianness()
+	#define MASTER_UNKNOWN_ENDIANNESS
 #endif
 
 #define MASTER_BSWAP16(x) (((x) >> 8) | ((x) << 8))
@@ -91,16 +181,18 @@ typedef enum {
 #define MASTER_BSWAP_GENERIC(x, size) \
 	((size == 1) ? (x) : (size == 2) ? MASTER_BSWAP16(x) : (size == 4) ? MASTER_BSWAP32(x) : MASTER_BSWAP64(x))
 
-#if MASTER_ENDIANNESS == MASTER_LITTLE_ENDIAN
-	#define MASTER_TOLE(x) (x)
-	#define MASTER_TOBE(x) MASTER_BSWAP_GENERIC(x, sizeof(x))
-#elif MASTER_ENDIANNESS == MASTER_BIG_ENDIAN
-	#define MASTER_TOLE(x) MASTER_BSWAP_GENERIC(x, sizeof(x))
-	#define MASTER_TOBE(x) (x)
+#ifndef MASTER_UNKNOWN_ENDIANNESS
+	#if MASTER_ENDIANNESS == MASTER_LITTLE_ENDIAN
+		#define MASTER_TOLE(x) (x)
+		#define MASTER_TOBE(x) MASTER_BSWAP_GENERIC(x, sizeof(x))
+	#elif MASTER_ENDIANNESS == MASTER_BIG_ENDIAN
+		#define MASTER_TOLE(x) MASTER_BSWAP_GENERIC(x, sizeof(x))
+		#define MASTER_TOBE(x) (x)
+	#endif /* MASTER_UNKNOWN_ENDIANNESS */
 #else // MASTER_UNKNOWN_ENDIAN - runtime check
 	#define MASTER_TOLE(x) (MASTER_ENDIANNESS == MASTER_LITTLE_ENDIAN ? (x) : MASTER_BSWAP_GENERIC(x, sizeof(x)))
 	#define MASTER_TOBE(x) (MASTER_ENDIANNESS == MASTER_BIG_ENDIAN ? (x) : MASTER_BSWAP_GENERIC(x, sizeof(x)))
-#endif
+#endif /* ENDIANNESS */
 
 #endif /* __MASTER_CODE_STYLE_INCLUDE_H__ */
 

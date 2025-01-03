@@ -9,6 +9,8 @@
 #ifndef __MASTER_ENCODINGS_INCLUDE_H__
 #define __MASTER_ENCODINGS_INCLUDE_H__
 
+/* #! Low priority !# */
+
 #include "../bigint/int.h"
 #include "../../headers/enumeration/master_enum.h"
 
@@ -32,7 +34,7 @@ MASTER_base85_encodeExt(char * __o, const char * __i, UI4 __l) {
 			__o[5+i*5 - j - 1] = buf;
 		}
 	}
-	free_int(&__int);
+	MASTER_FREE_int(&__int);
 	if (padding) __ptr_o -= (4 - padding);
 	*__ptr_o = '\0';
 	return 0;
@@ -105,7 +107,7 @@ MASTER_base58_encodeExt(char * __o, const char * __i, UI4 __l) {
 		*__ptr_o = rem;
 		__ptr_o++;
 	}
-	free_int(&__int);
+	MASTER_FREE_int(&__int);
 	*__ptr_o = '\0';
 	
 	UI4 len = strlen(__o), i;
@@ -194,7 +196,7 @@ MASTER_base_custom_encodeExt(char * __o, const char * __i, UI4 __base, const cha
 		*__ptr_o = __base_str[rem];
 		__ptr_o++;
 	}
-	free_int(&__int);
+	MASTER_FREE_int(&__int);
 	*__ptr_o = '\0';
 	
 	UI4 len = strlen(__o), i;
@@ -290,7 +292,7 @@ MASTER_base58_decode(char * __o, const char * __i) {
 		otherwise (rem >= 'a' && rem <= 'k') rem -= 'a' - 33;
 		otherwise (rem >= 'm' && rem <= 'z') rem -= 'm' - 44;
 		else {
-			free_int(&__int);
+			MASTER_FREE_int(&__int);
 			return 1;
 		}
 		int_iadd(&__int, rem);
@@ -300,7 +302,7 @@ MASTER_base58_decode(char * __o, const char * __i) {
 		int_irsf(&__int, 8);
 		__ptr_o++;
 	}
-	free_int(&__int);
+	MASTER_FREE_int(&__int);
 	*__ptr_o = '\0';
 	
 	UI4 len = strlen(__o), i;
@@ -377,7 +379,7 @@ MASTER_base_custom_decode(char * __o, const char * __i, UI4 __base, const char *
 		int_imul(&__int, __base);
 		p = strchr(__base_str, *__ptr_i++);
 		if (p == nul) {
-			free_int(&__int);
+			MASTER_FREE_int(&__int);
 			return 1;
 		}
 		int_iadd(&__int, p - __base_str);
@@ -387,7 +389,7 @@ MASTER_base_custom_decode(char * __o, const char * __i, UI4 __base, const char *
 		int_irsf(&__int, 8);
 		__ptr_o++;
 	}
-	free_int(&__int);
+	MASTER_FREE_int(&__int);
 	*__ptr_o = '\0';
 	
 	UI4 len = strlen(__o), i;

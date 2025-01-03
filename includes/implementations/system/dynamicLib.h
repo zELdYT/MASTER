@@ -9,6 +9,8 @@
 #ifndef __MASTER_DYNAMIC_LIB_INCLUDE_H__
 #define __MASTER_DYNAMIC_LIB_INCLUDE_H__
 
+/* #! Low priority !# */
+
 #include "../../headers/enumeration/master_enum.h"
 
 #if !(defined(__WIN32) || defined(__linux__) || defined(__APPLE__) || defined(__sun))
@@ -38,7 +40,7 @@ MASTER_dynamic_library_open( MASTER_dynamic_library * dl, const char * const lib
 void
 MASTER_dynamic_library_close( MASTER_dynamic_library * dl) {
 #if defined(__WIN32)
-	FreeLibrary((HMODULE)dl->handle);
+	MASTER_FREELibrary((HMODULE)dl->handle);
 #elif defined(__linux__) || defined(__APPLE__) || defined(__sun)
 	dlclose(dl->handle);
 #endif /* OS */

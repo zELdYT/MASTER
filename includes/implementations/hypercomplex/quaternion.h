@@ -9,6 +9,8 @@
 #ifndef __MASTER_QUATERNION_INCLUDE_H__
 #define __MASTER_QUATERNION_INCLUDE_H__
 
+/* #! Low priority !# */
+
 #include <math.h> // sqrt
 #include "../../headers/enumeration/master_enum.h"
 
