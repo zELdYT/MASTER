@@ -1,4 +1,11 @@
 
+/*
+ * Copyright (c) 2025 zELdYT
+ *
+ * Licensed under the BSD 2-Clause License.
+ * See the LICENSE file in the project root for more details.
+ */
+
 #ifndef __MASTER_SUDOKU_GENERATOR_INCLUDE_H__
 #define __MASTER_SUDOKU_GENERATOR_INCLUDE_H__
 

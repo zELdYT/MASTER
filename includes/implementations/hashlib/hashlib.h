@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2024 zELdYT
+ * Copyright (c) 2025 zELdYT
  *
  * Licensed under the BSD 2-Clause License.
  * See the LICENSE file in the project root for more details.
@@ -294,10 +294,11 @@ MASTER_CRC32B_Init(void) {
 
 void
 MASTER_CRC32B_Update(MASTER_CRC32B * __crc32b, const char * __s, UI4 __l) {
+	UI1 ch, b, j;
 	while (__l--) {
-		UI1 ch = *__s++;
-		for (UI1 j = 0; j < 8; j++) {
-			UI1 b = (ch ^ __crc32b->__crc) & 1;
+		ch = *__s++;
+		for (j = 0; j < 8; j++) {
+			b = (ch ^ __crc32b->__crc) & 1;
 			__crc32b->__crc >>= 1;
 			if (b) __crc32b->__crc ^= 0xEDB88320;
 			ch >>= 1;
@@ -1105,8 +1106,7 @@ static const UI4 MASTER_SHA2_TABLE_K[64] = {
 // #!! SHA-2-224
 
 typedef struct {
-	UI4 __H0, __H1, __H2, __H3,
-					__H4, __H5, __H6, __H7;
+	UI4 __H0, __H1, __H2, __H3, __H4, __H5, __H6, __H7;
 	UI1 __buffer[64];
 	UI8 __l;
 } MASTER_SHA2_224;
@@ -1128,15 +1128,15 @@ MASTER_SHA2_224_Init(void) {
 
 static void
 __MASTER_SHA2_224_Transform(MASTER_SHA2_224 * __sha2_224) {
-	UI4 A, B, C, D, E, F, G, H, j, t1, t2;
+	UI4 A, B, C, D, E, F, G, H, j = 0, t1, t2, s0, s1;
 	
 	UI4 W[64];
-		for (j = 0; j < 16; j++) 
+		for (; j < 16; j++) 
 			W[j] = (__sha2_224->__buffer[j * 4] << 24) | ((__sha2_224->__buffer[j * 4 + 1]) << 16) | ((__sha2_224->__buffer[j * 4 + 2]) << 8) | ((__sha2_224->__buffer[j * 4 + 3]));
-		for (j = 16; j < 64; j++) {
-			UI4 s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
-					UI4 s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
-					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
+		for (; j < 64; j++) {
+			s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
+			s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
+			W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
 		A = __sha2_224->__H0; B = __sha2_224->__H1;
@@ -1245,7 +1245,7 @@ MASTER_SHA2_224_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 	
 	__l += (padding_bytes + 8);
 	
-	UI4 A, B, C, D, E, F, G, H;
+	UI4 A, B, C, D, E, F, G, H, s0, s1;
 	
 	UI4 W[64];
 	UI4 t1, t2;
@@ -1253,9 +1253,9 @@ MASTER_SHA2_224_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 		for (j = 0; j < 16; j++) 
 			W[j] = (__M[i + j * 4] << 24) | ((__M[i + j * 4 + 1]) << 16) | ((__M[i + j * 4 + 2]) << 8) | ((__M[i + j * 4 + 3]));
 		for (j = 16; j < 64; j++) {
-			UI4 s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
-					UI4 s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
-					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
+			s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
+			s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
+			W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
 		A = H0; B = H1; C = H2; D = H3;
@@ -1299,8 +1299,7 @@ MASTER_SHA2_224_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 // #!! SHA-2-256
 
 typedef struct {
-	UI4 __H0, __H1, __H2, __H3,
-				  __H4, __H5, __H6, __H7;
+	UI4 __H0, __H1, __H2, __H3, __H4, __H5, __H6, __H7;
 	UI1 __buffer[64];
 	UI8 __l;
 } MASTER_SHA2_256;
@@ -1322,14 +1321,14 @@ MASTER_SHA2_256_Init(void) {
 
 static void
 __MASTER_SHA2_256_Transform(MASTER_SHA2_256 * __sha2_256) {
-	UI4 A, B, C, D, E, F, G, H, j, t1, t2;
+	UI4 A, B, C, D, E, F, G, H, j = 0, t1, t2, s0, s1;
 	
 	UI4 W[64];
-	for (j = 0; j < 16; j++) 
+	for (; j < 16; j++) 
 		W[j] = (__sha2_256->__buffer[j * 4] << 24) | ((__sha2_256->__buffer[j * 4 + 1]) << 16) | ((__sha2_256->__buffer[j * 4 + 2]) << 8) | ((__sha2_256->__buffer[j * 4 + 3]));
-	for (j = 16; j < 64; j++) {
-		UI4 s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
-		UI4 s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
+	for (; j < 64; j++) {
+		s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
+		s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -1441,7 +1440,7 @@ MASTER_SHA2_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 	__l += (padding_bytes + 8);
 	
 	
-	UI4 A, B, C, D, E, F, G, H;
+	UI4 A, B, C, D, E, F, G, H, s0, s1;
 	
 	UI4 W[64];
 	UI4 t1, t2;
@@ -1449,9 +1448,9 @@ MASTER_SHA2_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 		for (j = 0; j < 16; j++) 
 			W[j] = (__M[i + j * 4] << 24) | ((__M[i + j * 4 + 1]) << 16) | ((__M[i + j * 4 + 2]) << 8) | ((__M[i + j * 4 + 3]));
 		for (j = 16; j < 64; j++) {
-			UI4 s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
-					UI4 s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
-					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
+			s0 = (MASTER_RLR32(W[j - 15], 7)) ^ (MASTER_RLR32(W[j - 15], 18)) ^ (W[j - 15] >> 3);
+			s1 = (MASTER_RLR32(W[j - 2], 17)) ^ (MASTER_RLR32(W[j - 2], 19)) ^ (W[j - 2] >> 10);
+			W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
 		A = H0; B = H1; C = H2; D = H3;
@@ -1501,8 +1500,7 @@ MASTER_SHA2_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 #define __MASTER_SHA2_512_FUNCTION_CH(E, F, G) ((E & F) ^ ((~E) & G))
 
 typedef struct {
-	UI8 __H0, __H1, __H2, __H3,
-					   __H4, __H5, __H6, __H7;
+	UI8 __H0, __H1, __H2, __H3, __H4, __H5, __H6, __H7;
 	UI1 __buffer[128];
 	UI8 __l;
 } MASTER_SHA2_512;
@@ -1543,24 +1541,24 @@ static const UI8 MASTER_SHA2_512_TABLE_K[80] = {
 
 static void
 __MASTER_SHA2_512_Transform(MASTER_SHA2_512 * __sha2_512) {
-	UI8 A, B, C, D, E, F, G, H;
-	UI4 j;
+	UI8 A, B, C, D, E, F, G, H, s0, s1;
+	UI4 j = 0;
 	
 	UI8 W[80];
 	UI8 t1, t2;
-	for (j = 0; j < 16; j++) {
-		W[j] = (((UI8)__sha2_512->__buffer[j * 8 + 7]) << 0) |
-				 (((UI8)__sha2_512->__buffer[j * 8 + 6]) << 8) |
-				 (((UI8)__sha2_512->__buffer[j * 8 + 5]) << 16) |
-				 (((UI8)__sha2_512->__buffer[j * 8 + 4]) << 24) |
-				 (((UI8)__sha2_512->__buffer[j * 8 + 3]) << 32) |
-				 (((UI8)__sha2_512->__buffer[j * 8 + 2]) << 40) |
-				 (((UI8)__sha2_512->__buffer[j * 8 + 1]) << 48) |
-				 (((UI8)__sha2_512->__buffer[j * 8 + 0]) << 56);
+	for (; j < 16; j++) {
+		W[j] = ((UI8)__sha2_512->__buffer[j * 8 + 7]) |
+			   (((UI8)__sha2_512->__buffer[j * 8 + 6]) << 8) |
+			   (((UI8)__sha2_512->__buffer[j * 8 + 5]) << 16) |
+			   (((UI8)__sha2_512->__buffer[j * 8 + 4]) << 24) |
+			   (((UI8)__sha2_512->__buffer[j * 8 + 3]) << 32) |
+			   (((UI8)__sha2_512->__buffer[j * 8 + 2]) << 40) |
+			   (((UI8)__sha2_512->__buffer[j * 8 + 1]) << 48) |
+			   (((UI8)__sha2_512->__buffer[j * 8 + 0]) << 56);
 	}
-	for (j = 16; j < 80; j++) {
-		UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-		UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+	for (; j < 80; j++) {
+		s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+		s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -1668,25 +1666,25 @@ MASTER_SHA2_512_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 	
 	__l += (padding_len + 9);
 	
-	UI8 A, B, C, D, E, F, G, H;
+	UI8 A, B, C, D, E, F, G, H, s0, s1;
 	
 	UI8 W[80];
 	UI8 t1, t2;
 	for (i = 0; i < __l; i += 128) {
 		for (j = 0; j < 16; j++) {
 			W[j] = (((UI8)__M[i + j * 8 + 7]) << 0) |
-					 (((UI8)__M[i + j * 8 + 6]) << 8) |
-					 (((UI8)__M[i + j * 8 + 5]) << 16) |
-					 (((UI8)__M[i + j * 8 + 4]) << 24) |
-					 (((UI8)__M[i + j * 8 + 3]) << 32) |
-					 (((UI8)__M[i + j * 8 + 2]) << 40) |
-					 (((UI8)__M[i + j * 8 + 1]) << 48) |
-					 (((UI8)__M[i + j * 8 + 0]) << 56);
+				   (((UI8)__M[i + j * 8 + 6]) << 8) |
+				   (((UI8)__M[i + j * 8 + 5]) << 16) |
+				   (((UI8)__M[i + j * 8 + 4]) << 24) |
+				   (((UI8)__M[i + j * 8 + 3]) << 32) |
+				   (((UI8)__M[i + j * 8 + 2]) << 40) |
+				   (((UI8)__M[i + j * 8 + 1]) << 48) |
+				   (((UI8)__M[i + j * 8 + 0]) << 56);
 		}
 		for (j = 16; j < 80; j++) {
-			UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-					UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
-					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
+			s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+			s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+			W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
 		A = H0; B = H1; C = H2; D = H3;
@@ -1731,8 +1729,7 @@ MASTER_SHA2_512_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 // #!! SHA-2-384
 
 typedef struct {
-	UI8 __H0, __H1, __H2, __H3,
-						 __H4, __H5, __H6, __H7;
+	UI8 __H0, __H1, __H2, __H3, __H4, __H5, __H6, __H7;
 	UI1 __buffer[128];
 	UI8 __l;
 } MASTER_SHA2_384;
@@ -1754,24 +1751,24 @@ MASTER_SHA2_384_Init(void) {
 
 static void
 __MASTER_SHA2_384_Transform(MASTER_SHA2_384 * __sha2_384) {
-	UI8 A, B, C, D, E, F, G, H;
-	UI4 j;
+	UI8 A, B, C, D, E, F, G, H, s0, s1;
+	UI4 j = 0;
 	
 	UI8 W[80];
 	UI8 t1, t2;
-	for (j = 0; j < 16; j++) {
-		W[j] = (((UI8)__sha2_384->__buffer[j * 8 + 7]) << 0) |
-				 (((UI8)__sha2_384->__buffer[j * 8 + 6]) << 8) |
-				 (((UI8)__sha2_384->__buffer[j * 8 + 5]) << 16) |
-				 (((UI8)__sha2_384->__buffer[j * 8 + 4]) << 24) |
-				 (((UI8)__sha2_384->__buffer[j * 8 + 3]) << 32) |
-				 (((UI8)__sha2_384->__buffer[j * 8 + 2]) << 40) |
-				 (((UI8)__sha2_384->__buffer[j * 8 + 1]) << 48) |
-				 (((UI8)__sha2_384->__buffer[j * 8 + 0]) << 56);
+	for (; j < 16; j++) {
+		W[j] = ((UI8)__sha2_384->__buffer[j * 8 + 7]) |
+			   (((UI8)__sha2_384->__buffer[j * 8 + 6]) << 8) |
+			   (((UI8)__sha2_384->__buffer[j * 8 + 5]) << 16) |
+			   (((UI8)__sha2_384->__buffer[j * 8 + 4]) << 24) |
+			   (((UI8)__sha2_384->__buffer[j * 8 + 3]) << 32) |
+			   (((UI8)__sha2_384->__buffer[j * 8 + 2]) << 40) |
+			   (((UI8)__sha2_384->__buffer[j * 8 + 1]) << 48) |
+			   (((UI8)__sha2_384->__buffer[j * 8 + 0]) << 56);
 	}
-	for (j = 16; j < 80; j++) {
-		UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-		UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+	for (; j < 80; j++) {
+		s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+		s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -1877,25 +1874,25 @@ MASTER_SHA2_384_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 	
 	__l += (padding_len + 9);
 	
-	UI8 A, B, C, D, E, F, G, H;
+	UI8 A, B, C, D, E, F, G, H, s0, s1;
 	
 	UI8 W[80];
 	UI8 t1, t2;
 	for (i = 0; i < __l; i += 128) {
 		for (j = 0; j < 16; j++) {
 			W[j] = (((UI8)__M[i + j * 8 + 7]) << 0) |
-					 (((UI8)__M[i + j * 8 + 6]) << 8) |
-					 (((UI8)__M[i + j * 8 + 5]) << 16) |
-					 (((UI8)__M[i + j * 8 + 4]) << 24) |
-					 (((UI8)__M[i + j * 8 + 3]) << 32) |
-					 (((UI8)__M[i + j * 8 + 2]) << 40) |
-					 (((UI8)__M[i + j * 8 + 1]) << 48) |
-					 (((UI8)__M[i + j * 8 + 0]) << 56);
+				   (((UI8)__M[i + j * 8 + 6]) << 8) |
+				   (((UI8)__M[i + j * 8 + 5]) << 16) |
+				   (((UI8)__M[i + j * 8 + 4]) << 24) |
+				   (((UI8)__M[i + j * 8 + 3]) << 32) |
+				   (((UI8)__M[i + j * 8 + 2]) << 40) |
+				   (((UI8)__M[i + j * 8 + 1]) << 48) |
+				   (((UI8)__M[i + j * 8 + 0]) << 56);
 		}
 		for (j = 16; j < 80; j++) {
-			UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-					UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
-					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
+			s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+			s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+			W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
 		A = H0; B = H1; C = H2; D = H3;
@@ -1938,8 +1935,7 @@ MASTER_SHA2_384_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_output) {
 // #!! SHA-2-512-224
 
 typedef struct {
-	UI8 __H0, __H1, __H2, __H3,
-						 __H4, __H5, __H6, __H7;
+	UI8 __H0, __H1, __H2, __H3, __H4, __H5, __H6, __H7;
 	UI1 __buffer[128];
 	UI8 __l;
 } MASTER_SHA2_512_224;
@@ -1961,24 +1957,24 @@ MASTER_SHA2_512_224_Init(void) {
 
 static void
 __MASTER_SHA2_512_224_Transform(MASTER_SHA2_512_224 * __sha2_512_224) {
-	UI8 A, B, C, D, E, F, G, H;
-	UI4 j;
+	UI8 A, B, C, D, E, F, G, H, s0, s1;
+	UI4 j = 0;
 	
 	UI8 W[80];
 	UI8 t1, t2;
-	for (j = 0; j < 16; j++) {
-		W[j] = (((UI8)__sha2_512_224->__buffer[j * 8 + 7]) << 0) |
-				 (((UI8)__sha2_512_224->__buffer[j * 8 + 6]) << 8) |
-				 (((UI8)__sha2_512_224->__buffer[j * 8 + 5]) << 16) |
-				 (((UI8)__sha2_512_224->__buffer[j * 8 + 4]) << 24) |
-				 (((UI8)__sha2_512_224->__buffer[j * 8 + 3]) << 32) |
-				 (((UI8)__sha2_512_224->__buffer[j * 8 + 2]) << 40) |
-				 (((UI8)__sha2_512_224->__buffer[j * 8 + 1]) << 48) |
-				 (((UI8)__sha2_512_224->__buffer[j * 8 + 0]) << 56);
+	for (; j < 16; j++) {
+		W[j] = ((UI8)__sha2_512_224->__buffer[j * 8 + 7]) |
+			   (((UI8)__sha2_512_224->__buffer[j * 8 + 6]) << 8) |
+			   (((UI8)__sha2_512_224->__buffer[j * 8 + 5]) << 16) |
+			   (((UI8)__sha2_512_224->__buffer[j * 8 + 4]) << 24) |
+			   (((UI8)__sha2_512_224->__buffer[j * 8 + 3]) << 32) |
+			   (((UI8)__sha2_512_224->__buffer[j * 8 + 2]) << 40) |
+			   (((UI8)__sha2_512_224->__buffer[j * 8 + 1]) << 48) |
+			   (((UI8)__sha2_512_224->__buffer[j * 8 + 0]) << 56);
 	}
-	for (j = 16; j < 80; j++) {
-		UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-		UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+	for (; j < 80; j++) {
+		s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+		s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -2082,25 +2078,25 @@ MASTER_SHA2_512_224_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 	
 	__l += (padding_len + 9);
 	
-	UI8 A, B, C, D, E, F, G, H;
+	UI8 A, B, C, D, E, F, G, H, s0, s1;
 	
 	UI8 W[80];
 	UI8 t1, t2;
 	for (i = 0; i < __l; i += 128) {
 		for (j = 0; j < 16; j++) {
 			W[j] = (((UI8)__M[i + j * 8 + 7]) << 0) |
-					 (((UI8)__M[i + j * 8 + 6]) << 8) |
-					 (((UI8)__M[i + j * 8 + 5]) << 16) |
-					 (((UI8)__M[i + j * 8 + 4]) << 24) |
-					 (((UI8)__M[i + j * 8 + 3]) << 32) |
-					 (((UI8)__M[i + j * 8 + 2]) << 40) |
-					 (((UI8)__M[i + j * 8 + 1]) << 48) |
-					 (((UI8)__M[i + j * 8 + 0]) << 56);
+				   (((UI8)__M[i + j * 8 + 6]) << 8) |
+				   (((UI8)__M[i + j * 8 + 5]) << 16) |
+				   (((UI8)__M[i + j * 8 + 4]) << 24) |
+				   (((UI8)__M[i + j * 8 + 3]) << 32) |
+				   (((UI8)__M[i + j * 8 + 2]) << 40) |
+				   (((UI8)__M[i + j * 8 + 1]) << 48) |
+				   (((UI8)__M[i + j * 8 + 0]) << 56);
 		}
 		for (j = 16; j < 80; j++) {
-			UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-					UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
-					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
+			s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+			s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+			W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
 		A = H0; B = H1; C = H2; D = H3;
@@ -2141,8 +2137,7 @@ MASTER_SHA2_512_224_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 // #!! SHA-2-512-256
 
 typedef struct {
-	UI8 __H0, __H1, __H2, __H3,
-						 __H4, __H5, __H6, __H7;
+	UI8 __H0, __H1, __H2, __H3, __H4, __H5, __H6, __H7;
 	UI1 __buffer[128];
 	UI8 __l;
 } MASTER_SHA2_512_256;
@@ -2164,24 +2159,24 @@ MASTER_SHA2_512_256_Init(void) {
 
 static void
 __MASTER_SHA2_512_256_Transform(MASTER_SHA2_512_256 * __sha2_512_256) {
-	UI8 A, B, C, D, E, F, G, H;
-	UI4 j;
+	UI8 A, B, C, D, E, F, G, H, s0, s1;
+	UI4 j = 0;
 	
 	UI8 W[80];
 	UI8 t1, t2;
-	for (j = 0; j < 16; j++) {
-		W[j] = (((UI8)__sha2_512_256->__buffer[j * 8 + 7]) << 0) |
-				 (((UI8)__sha2_512_256->__buffer[j * 8 + 6]) << 8) |
-				 (((UI8)__sha2_512_256->__buffer[j * 8 + 5]) << 16) |
-				 (((UI8)__sha2_512_256->__buffer[j * 8 + 4]) << 24) |
-				 (((UI8)__sha2_512_256->__buffer[j * 8 + 3]) << 32) |
-				 (((UI8)__sha2_512_256->__buffer[j * 8 + 2]) << 40) |
-				 (((UI8)__sha2_512_256->__buffer[j * 8 + 1]) << 48) |
-				 (((UI8)__sha2_512_256->__buffer[j * 8 + 0]) << 56);
+	for (; j < 16; j++) {
+		W[j] = ((UI8)__sha2_512_256->__buffer[j * 8 + 7]) |
+			   (((UI8)__sha2_512_256->__buffer[j * 8 + 6]) << 8) |
+			   (((UI8)__sha2_512_256->__buffer[j * 8 + 5]) << 16) |
+			   (((UI8)__sha2_512_256->__buffer[j * 8 + 4]) << 24) |
+			   (((UI8)__sha2_512_256->__buffer[j * 8 + 3]) << 32) |
+			   (((UI8)__sha2_512_256->__buffer[j * 8 + 2]) << 40) |
+			   (((UI8)__sha2_512_256->__buffer[j * 8 + 1]) << 48) |
+			   (((UI8)__sha2_512_256->__buffer[j * 8 + 0]) << 56);
 	}
-	for (j = 16; j < 80; j++) {
-		UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-		UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+	for (; j < 80; j++) {
+		s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+		s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
 		W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 	}
 
@@ -2285,25 +2280,25 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 	
 	__l += (padding_len + 9);
 	
-	UI8 A, B, C, D, E, F, G, H;
+	UI8 A, B, C, D, E, F, G, H, s0, s1;
 	
 	UI8 W[80];
 	UI8 t1, t2;
 	for (i = 0; i < __l; i += 128) {
 		for (j = 0; j < 16; j++) {
 			W[j] = (((UI8)__M[i + j * 8 + 7]) << 0) |
-					 (((UI8)__M[i + j * 8 + 6]) << 8) |
-					 (((UI8)__M[i + j * 8 + 5]) << 16) |
-					 (((UI8)__M[i + j * 8 + 4]) << 24) |
-					 (((UI8)__M[i + j * 8 + 3]) << 32) |
-					 (((UI8)__M[i + j * 8 + 2]) << 40) |
-					 (((UI8)__M[i + j * 8 + 1]) << 48) |
-					 (((UI8)__M[i + j * 8 + 0]) << 56);
+				   (((UI8)__M[i + j * 8 + 6]) << 8) |
+				   (((UI8)__M[i + j * 8 + 5]) << 16) |
+				   (((UI8)__M[i + j * 8 + 4]) << 24) |
+				   (((UI8)__M[i + j * 8 + 3]) << 32) |
+				   (((UI8)__M[i + j * 8 + 2]) << 40) |
+				   (((UI8)__M[i + j * 8 + 1]) << 48) |
+				   (((UI8)__M[i + j * 8 + 0]) << 56);
 		}
 		for (j = 16; j < 80; j++) {
-			UI8 s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
-					UI8 s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
-					W[j] = W[j - 16] + s0 + W[j - 7] + s1;
+			s0 = (MASTER_RLR64(W[j - 15], 1)) ^ (MASTER_RLR64(W[j - 15], 8)) ^ (W[j - 15] >> 7);
+			s1 = (MASTER_RLR64(W[j - 2], 19)) ^ (MASTER_RLR64(W[j - 2], 61)) ^ (W[j - 2] >> 6);
+			W[j] = W[j - 16] + s0 + W[j - 7] + s1;
 		}
 
 		A = H0; B = H1; C = H2; D = H3;
@@ -2363,16 +2358,16 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 
 #define FOR(i, ST, L, S) \
 	 do { for (UI4 i = 0; i < L; i += ST) { S; } } while (0)
-#define mkapply_ds(NAME, S) \
+#define mkapply_ds(name, S) \
 	static inline void \
-	NAME(UI1 * dst, \
+	name(UI1 * dst, \
 		 const UI1 * src, \
 		 UI4 len) { \
 		FOR(i, 1, len, S); \
 	}
-#define mkapply_sd(NAME, S) \
+#define mkapply_sd(name, S) \
 	static inline void \
-	NAME(const UI1 * src, \
+	name(const UI1 * src, \
 		 UI1 * dst, \
 		 UI4 len) { \
 		FOR(i, 1, len, S); }
@@ -2385,101 +2380,103 @@ MASTER_SHA2_512_256_CalculateHashSum(const char * __s, UI8 __l, UI1 * hash_outpu
 		L -= rate; }
 
 #define defshake(bits) \
-	typedef struct { \
-		UI1 __A[200]; \
-		UI4 __rate; \
-		UI4 __absorbed; \
-	} MASTER_SHAKE##bits; \
-	\
-	MASTER_SHAKE##bits \
-	MASTER_SHAKE##bits##_Init(void) { \
-		MASTER_SHAKE##bits __shake##bits; \
-		memset(__shake##bits.__A, 0, 200); \
-		__shake##bits.__rate = 200 - bits / 4; \
-		__shake##bits.__absorbed = 0; \
-		return __shake##bits; } \
-	\
-	void \
-	MASTER_SHAKE##bits##_Update(MASTER_SHAKE##bits * __shake##bits, const char * __s, UI4 __l) { \
-		while (__l > 0) { \
-			UI4 capacity = __shake##bits->__rate - __shake##bits->__absorbed; \
-			UI4 to_absorb = (__l < capacity) ? __l : capacity; \
-			xorin(__shake##bits->__A + __shake##bits->__absorbed, __s, to_absorb); \
-			__shake##bits->__absorbed += to_absorb; \
-			__s += to_absorb; \
-			__l -= to_absorb; \
-			if (__shake##bits->__absorbed == __shake##bits->__rate) { \
-				MASTER_SHA3_FUNCTION_KECCAKF(__shake##bits->__A); \
-				__shake##bits->__absorbed = 0; } \
-		} \
+\
+typedef struct { \
+	UI1 __A[200]; \
+	UI4 __rate; \
+	UI4 __absorbed; \
+} MASTER_SHAKE##bits; \
+\
+MASTER_SHAKE##bits \
+MASTER_SHAKE##bits##_Init(void) { \
+	MASTER_SHAKE##bits __shake##bits; \
+	memset(__shake##bits.__A, 0, 200); \
+	__shake##bits.__rate = 200 - bits / 4; \
+	__shake##bits.__absorbed = 0; \
+	return __shake##bits; } \
+\
+void \
+MASTER_SHAKE##bits##_Update(MASTER_SHAKE##bits * __shake##bits, const char * __s, UI4 __l) { \
+	while (__l > 0) { \
+		UI4 capacity = __shake##bits->__rate - __shake##bits->__absorbed; \
+		UI4 to_absorb = (__l < capacity) ? __l : capacity; \
+		xorin(__shake##bits->__A + __shake##bits->__absorbed, __s, to_absorb); \
+		__shake##bits->__absorbed += to_absorb; \
+		__s += to_absorb; \
+		__l -= to_absorb; \
+		if (__shake##bits->__absorbed == __shake##bits->__rate) { \
+			MASTER_SHA3_FUNCTION_KECCAKF(__shake##bits->__A); \
+			__shake##bits->__absorbed = 0; } \
 	} \
-	\
-	void \
-	MASTER_SHAKE##bits##_Final(MASTER_SHAKE##bits * __shake##bits, UI1 * hash_output) { \
-		UI4 outlen = bits / 4; \
-		__shake##bits->__A[__shake##bits->__absorbed] ^= 0x1f; \
-		__shake##bits->__A[__shake##bits->__rate - 1] ^= 0x80; \
-		MASTER_SHA3_FUNCTION_KECCAKF(__shake##bits->__A); \
-		while (outlen > 0) { \
-			UI4 to_copy = (outlen < __shake##bits->__rate) ? outlen : __shake##bits->__rate; \
-			memcpy(hash_output, __shake##bits->__A, to_copy); \
-			hash_output += to_copy; \
-			outlen -= to_copy; \
-			if (outlen > 0) MASTER_SHA3_FUNCTION_KECCAKF(__shake##bits->__A); } \
-	} \
-	\
-	void \
-	MASTER_SHAKE##bits##_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) { \
-		MASTER_SHA3_FUNCTION_HASH(hash_output, bits / 4, __s, __l, 200 - (bits / 4), 0x1f); }
+} \
+\
+void \
+MASTER_SHAKE##bits##_Final(MASTER_SHAKE##bits * __shake##bits, UI1 * hash_output) { \
+	UI4 outlen = bits / 4; \
+	__shake##bits->__A[__shake##bits->__absorbed] ^= 0x1f; \
+	__shake##bits->__A[__shake##bits->__rate - 1] ^= 0x80; \
+	MASTER_SHA3_FUNCTION_KECCAKF(__shake##bits->__A); \
+	while (outlen > 0) { \
+		UI4 to_copy = (outlen < __shake##bits->__rate) ? outlen : __shake##bits->__rate; \
+		memcpy(hash_output, __shake##bits->__A, to_copy); \
+		hash_output += to_copy; \
+		outlen -= to_copy; \
+		if (outlen > 0) MASTER_SHA3_FUNCTION_KECCAKF(__shake##bits->__A); } \
+} \
+\
+void \
+MASTER_SHAKE##bits##_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) { \
+	MASTER_SHA3_FUNCTION_HASH(hash_output, bits / 4, __s, __l, 200 - (bits / 4), 0x1f); }
 
 #define defsha3(bits) \
-	typedef struct { \
-		UI1 __A[200]; \
-		UI4 __rate; \
-		UI4 __absorbed; \
-	} MASTER_SHA3_##bits; \
-	\
-	MASTER_SHA3_##bits \
-	MASTER_SHA3_##bits##_Init(void) { \
-		MASTER_SHA3_##bits __sha3_##bits; \
-		memset(__sha3_##bits.__A, 0, 200); \
-		__sha3_##bits.__rate = 200 - bits / 4; \
-		__sha3_##bits.__absorbed = 0; \
-		return __sha3_##bits; } \
-	\
-	void \
-	MASTER_SHA3_##bits##_Update(MASTER_SHA3_##bits * __sha3_##bits, const char * __s, UI4 __l) { \
-		while (__l > 0) { \
-			UI4 capacity = __sha3_##bits->__rate - __sha3_##bits->__absorbed; \
-			UI4 to_absorb = (__l < capacity) ? __l : capacity; \
-			xorin(__sha3_##bits->__A + __sha3_##bits->__absorbed, __s, to_absorb); \
-			__sha3_##bits->__absorbed += to_absorb; \
-			__s += to_absorb; \
-			__l -= to_absorb; \
-			if (__sha3_##bits->__absorbed == __sha3_##bits->__rate) { \
-				MASTER_SHA3_FUNCTION_KECCAKF(__sha3_##bits->__A); \
-				__sha3_##bits->__absorbed = 0; } \
-		} \
+\
+typedef struct { \
+	UI1 __A[200]; \
+	UI4 __rate; \
+	UI4 __absorbed; \
+} MASTER_SHA3_##bits; \
+\
+MASTER_SHA3_##bits \
+MASTER_SHA3_##bits##_Init(void) { \
+	MASTER_SHA3_##bits __sha3_##bits; \
+	memset(__sha3_##bits.__A, 0, 200); \
+	__sha3_##bits.__rate = 200 - bits / 4; \
+	__sha3_##bits.__absorbed = 0; \
+	return __sha3_##bits; } \
+\
+void \
+MASTER_SHA3_##bits##_Update(MASTER_SHA3_##bits * __sha3_##bits, const char * __s, UI4 __l) { \
+	while (__l > 0) { \
+		UI4 capacity = __sha3_##bits->__rate - __sha3_##bits->__absorbed; \
+		UI4 to_absorb = (__l < capacity) ? __l : capacity; \
+		xorin(__sha3_##bits->__A + __sha3_##bits->__absorbed, __s, to_absorb); \
+		__sha3_##bits->__absorbed += to_absorb; \
+		__s += to_absorb; \
+		__l -= to_absorb; \
+		if (__sha3_##bits->__absorbed == __sha3_##bits->__rate) { \
+			MASTER_SHA3_FUNCTION_KECCAKF(__sha3_##bits->__A); \
+			__sha3_##bits->__absorbed = 0; } \
 	} \
-	\
-	void \
-	MASTER_SHA3_##bits##_Final(MASTER_SHA3_##bits * __sha3_##bits, UI1 * hash_output) { \
-		UI4 outlen = bits / 8; \
-		__sha3_##bits->__A[__sha3_##bits->__absorbed] ^= 0x06; \
-		__sha3_##bits->__A[__sha3_##bits->__rate - 1] ^= 0x80; \
-		MASTER_SHA3_FUNCTION_KECCAKF(__sha3_##bits->__A); \
-		while (outlen > 0) { \
-			UI4 to_copy = (outlen < __sha3_##bits->__rate) ? outlen : __sha3_##bits->__rate; \
-			memcpy(hash_output, __sha3_##bits->__A, to_copy); \
-			hash_output += to_copy; \
-			outlen -= to_copy; \
-			if (outlen > 0) MASTER_SHA3_FUNCTION_KECCAKF(__sha3_##bits->__A); \
-		} \
+} \
+\
+void \
+MASTER_SHA3_##bits##_Final(MASTER_SHA3_##bits * __sha3_##bits, UI1 * hash_output) { \
+	UI4 outlen = bits / 8; \
+	__sha3_##bits->__A[__sha3_##bits->__absorbed] ^= 0x06; \
+	__sha3_##bits->__A[__sha3_##bits->__rate - 1] ^= 0x80; \
+	MASTER_SHA3_FUNCTION_KECCAKF(__sha3_##bits->__A); \
+	while (outlen > 0) { \
+		UI4 to_copy = (outlen < __sha3_##bits->__rate) ? outlen : __sha3_##bits->__rate; \
+		memcpy(hash_output, __sha3_##bits->__A, to_copy); \
+		hash_output += to_copy; \
+		outlen -= to_copy; \
+		if (outlen > 0) MASTER_SHA3_FUNCTION_KECCAKF(__sha3_##bits->__A); \
 	} \
-	\
-	void \
-	MASTER_SHA3_##bits##_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) { \
-		MASTER_SHA3_FUNCTION_HASH(hash_output, bits / 8, __s, __l, 200 - (bits / 4), 0x06); }
+} \
+\
+void \
+MASTER_SHA3_##bits##_CalculateHashSum(const char * __s, UI4 __l, UI1 * hash_output) { \
+	MASTER_SHA3_FUNCTION_HASH(hash_output, bits / 8, __s, __l, 200 - (bits / 4), 0x06); }
 
 static const UI1 MASTER_SHA3_Table_RHO[24] = {
 	1, 3, 6, 10, 15, 21,
@@ -2503,32 +2500,19 @@ static const UI8 MASTER_SHA3_Table_RC[24] = {
 };
 
 static inline void
-MASTER_SHA3_FUNCTION_KECCAKF(void* state) {
+MASTER_SHA3_FUNCTION_KECCAKF(void * state) {
 	UI8 * a = (UI8 *)state;
 	UI8 b[5] = {0};
 	UI8 t = 0;
 	UI1 x, y;
-
-	for (int i = 0; i < 24; i++) {
-		FOR5(x, 1,
-				 b[x] = 0;
-				 FOR5(y, 5,
-							b[x] ^= a[x + y]; ))
-		FOR5(x, 1,
-				 FOR5(y, 5,
-							a[y + x] ^= b[(x + 4) % 5] ^ MASTER_RLL64(b[(x + 1) % 5], 1); ))
+	UI4 i = 0;
+	for (; i < 24; i++) {
+		FOR5(x, 1, b[x] = 0; FOR5(y, 5, b[x] ^= a[x + y]; ))
+		FOR5(x, 1, FOR5(y, 5, a[y + x] ^= b[(x + 4) % 5] ^ MASTER_RLL64(b[(x + 1) % 5], 1); ))
 		t = a[1];
 		x = 0;
-		REPEAT24(b[0] = a[MASTER_SHA3_Table_PI[x]];
-						 a[MASTER_SHA3_Table_PI[x]] = MASTER_RLL64(t, MASTER_SHA3_Table_RHO[x]);
-						 t = b[0];
-						 x++; )
-		FOR5(y,
-			 5,
-			 FOR5(x, 1,
-						b[x] = a[y + x];)
-			 FOR5(x, 1,
-						a[y + x] = b[x] ^ ((~b[(x + 1) % 5]) & b[(x + 2) % 5]); ))
+		REPEAT24(b[0] = a[MASTER_SHA3_Table_PI[x]]; a[MASTER_SHA3_Table_PI[x]] = MASTER_RLL64(t, MASTER_SHA3_Table_RHO[x]); t = b[0]; x++; )
+		FOR5(y, 5, FOR5(x, 1, b[x] = a[y + x];) FOR5(x, 1, a[y + x] = b[x] ^ ((~b[(x + 1) % 5]) & b[(x + 2) % 5]); ))
 		a[0] ^= MASTER_SHA3_Table_RC[i];
 	}
 }
@@ -2586,8 +2570,6 @@ defsha3(512)
 #define __MASTER_RIPEMD128_FUNCTION_GGG(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_G(b, c, d) + (x) + 0x6D703EF3, a = MASTER_RLL32(a, s)
 #define __MASTER_RIPEMD128_FUNCTION_HHH(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_H(b, c, d) + (x) + 0x5C4DD124, a = MASTER_RLL32(a, s)
 #define __MASTER_RIPEMD128_FUNCTION_III(a, b, c, d, x, s) a += __MASTER_RIPEMD128_FUNCTION_I(b, c, d) + (x) + 0x50A28BE6, a = MASTER_RLL32(a, s)
-
-#include <string.h>
 
 typedef struct {
 	UI4 __h[4];
@@ -5657,9 +5639,9 @@ void
 MASTER_SNEFRU_Update(MASTER_SNEFRU * const __snefru, const UI1 * __s, UI8 __l) {
 	const UI4 data_block_size = 64 - __snefru->__dl;
 	__snefru->__l += __l;
-
+	UI4 left, * aligned_message_block;
 	if (__snefru->__i) {
-		UI4 left = data_block_size - __snefru->__i;
+		left = data_block_size - __snefru->__i;
 		memcpy((char *)__snefru->__b + __snefru->__i, __s, (__l < left ? __l : left));
 		if (__l < left) {
 			__snefru->__i += (UI4)__l;
@@ -5670,8 +5652,6 @@ MASTER_SNEFRU_Update(MASTER_SNEFRU * const __snefru, const UI1 * __s, UI8 __l) {
 		__l -= left;
 	}
 	while (__l >= data_block_size) {
-		UI4 * aligned_message_block;
-
 		if (((UI8)(__s) & 3) == 0) aligned_message_block = (UI4 *)__s;
 		else {
 			memcpy(__snefru->__b, __s, data_block_size);
@@ -5703,13 +5683,15 @@ MASTER_SNEFRU_Final(MASTER_SNEFRU * const __snefru, UI1 * hash_output) {
 	MASTER_SNEFRU_Transform(__snefru, (UI4 *)__snefru->__b);
 
 	UI8 __i = 0;
+	UI4 * ui4_src, * end;
+	const char * src;
 	if (((((UI8)hash_output | (UI8)__snefru->__h | __snefru->__dl) & 3) == 0) ) {
-		const UI4 * src = (const UI4 *)__snefru->__h;
-		const UI4 * end = (const UI4 *)((const char *)src + __snefru->__dl);
+		ui4_src = (UI4 *)__snefru->__h;
+		end = (UI4 *)((const char *)ui4_src + __snefru->__dl);
 		UI4 * dst = (UI4 *)((char *)hash_output + __i);
-		for (; src < end; dst++, src++) *dst = __MASTER_CHANGE_ENDIAN_32I(*src);
+		for (; ui4_src < end; dst++, ui4_src++) *dst = __MASTER_CHANGE_ENDIAN_32I(*ui4_src);
 	} else {
-		const char * src = (const char *)__snefru->__h;
+		src = (const char *)__snefru->__h;
 		for (__snefru->__dl += __i; (UI8)__i < __snefru->__dl; __i++) ((char *)hash_output)[__i ^ 3] = *(src++);
 	}
 	return 0;
@@ -6220,7 +6202,7 @@ MASTER_GOST12_TABLE_T[8][256] = {
 		0x51F907737B3A7AE4, 0x2268A314BED5EC8C, 0xD944B123B949EDEE, 0x31DCB3B84D8B7017, 
 		0xD3FE65279F218860, 0x097AF2F1DC8FFAB3, 0x9B09A6FC312D0B91, 0xCC6DED78A3C4520F, 
 		0x3481D9BA5EBFCC50, 0x4F2A667F1182D56B, 0xDFD9FDD4509ACE94, 0x26752045FBBC252B, 
-		0xBFFC491F662BC467, 0xDD593272FC202449, 0x3CBBC218D46D4303, 0x91B372F817456E1F, 
+		0xBFFC491F662BC467, 0xDD593272FC202549, 0x3CBBC218D46D4303, 0x91B372F817456E1F, 
 		0x681FAF69BC6385A0, 0xB686BBEEBAA43ED4, 0x1469B5084CD0CA01, 0x98C98009CBCA94AC, 
 		0x6438379A73D8C354, 0xC2CABA2DC0C5FE26, 0x3E3B0DBE78D7A9DE, 0x50B9EE202D670F04, 
 		0x4590B27B37EAB0E5, 0x6025B4CB36B10AF3, 0xFB2C1237079C0162, 0xA12F28130C936BE8, 
@@ -6329,19 +6311,19 @@ MASTER_GOST12_FUNCTION_LPSX(const UI8 * a, const UI8 * b, UI8 * result) {
 static void
 MASTER_GOST12_GN(const UI8 * __n, UI8 * __h, const UI8 * m) {
 	UI8 K_i[8], state[8];
-	UI1 i, j;
+	UI1 i = 0, j = 0;
 
 	MASTER_GOST12_FUNCTION_LPSX(__h, __n, K_i);
 	MASTER_GOST12_FUNCTION_LPSX(K_i, m, state);
 
-	for (i = 0; i < 11; i++) {
+	for (; i < 11; i++) {
 		MASTER_GOST12_FUNCTION_LPSX(K_i, MASTER_GOST12_TABLE_IC[i], K_i);
 		MASTER_GOST12_FUNCTION_LPSX(K_i, state, state);
 	}
 	
 	MASTER_GOST12_FUNCTION_LPSX(K_i, MASTER_GOST12_TABLE_IC[11], K_i);
 	
-	for (j = 0; j < 8; j++) {
+	for (; j < 8; j++) {
 		state[j] ^= K_i[j];
 		state[j] ^= __h[j];
 		__h[j] = state[j] ^ m[j];
@@ -6368,8 +6350,9 @@ MASTER_GOST12_S2(MASTER_GOST12 * const __gost12, UI8 * m) {
 
 void
 MASTER_GOST12_Update(MASTER_GOST12 * const __gost12, const UI1 * __s, UI8 __l) {
+	UI4 rest;
 	if (__gost12->__i) {
-		UI8 rest = 64 - __gost12->__i;
+		rest = 64 - __gost12->__i;
 
 		memcpy(__gost12->__b + __gost12->__i, __s, __l < rest ? __l : rest);
 		__gost12->__i += __l;

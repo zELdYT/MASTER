@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2024 zELdYT
+ * Copyright (c) 2025 zELdYT
  *
  * Licensed under the BSD 2-Clause License.
  * See the LICENSE file in the project root for more details.
@@ -256,7 +256,6 @@ MASTER_random_xorwow_get(MASTER_random_xorwow * const xw) {
 	return t + xw->__c;
 }
 
-
 // !!# XorWow
 
 // #!! 64*
@@ -363,6 +362,81 @@ MASTER_random_xorshiftr128plus_get(MASTER_random_xorshiftr128plus * const xsr128
 
 // !!# r128+
 
+// #!! xoroshiro128+
+
+typedef struct {
+	UI8 __x[2];
+} MASTER_random_xoroshiro128plus;
+
+MASTER_random_xoroshiro128plus
+MASTER_random_xoroshiro128plus_init(UI8 seed) {
+	MASTER_random_xoroshiro128plus xrs128p;
+	xrs128p.__x[0] = seed;
+	xrs128p.__x[1] = 0;
+	return xrs128p;
+}
+
+UI8
+MASTER_random_xoroshiro128plus_get(MASTER_random_xoroshiro128plus * const xrs128p) {
+	const UI8 res = xrs128p->__x[0] + xrs128p->__x[1];
+	const UI8 t = xrs128p->__x[1] ^ xrs128p->__x[0];
+	xrs128p->__x[0] = MASTER_RLL64(xrs128p->__x[0], 24) ^ t ^ (t << 16);
+	xrs128p->__x[1] = MASTER_RLL64(t, 37);
+	return res;
+}
+
+// !!# xoroshiro128+
+
+// #!! xoroshiro128++
+
+typedef struct {
+	UI8 __x[2];
+} MASTER_random_xoroshiro128plusplus;
+
+MASTER_random_xoroshiro128plusplus
+MASTER_random_xoroshiro128plusplus_init(UI8 seed) {
+	MASTER_random_xoroshiro128plusplus xrs128pp;
+	xrs128pp.__x[0] = seed;
+	xrs128pp.__x[1] = 0;
+	return xrs128pp;
+}
+
+UI8
+MASTER_random_xoroshiro128plusplus_get(MASTER_random_xoroshiro128plusplus * const xrs128pp) {
+	const UI8 res = MASTER_RLL64(xrs128pp->__x[0] + xrs128pp->__x[1], 17) + xrs128pp->__x[0];
+	const UI8 t = xrs128pp->__x[1] ^ xrs128pp->__x[0];
+	xrs128pp->__x[0] = MASTER_RLL64(xrs128pp->__x[0], 49) ^ t ^ (t << 21);
+	xrs128pp->__x[1] = MASTER_RLL64(t, 28);
+	return res;
+}
+
+// !!# xoroshiro128++
+
+// #!! xoroshiro128**
+
+typedef struct {
+	UI8 __x[2];
+} MASTER_random_xoroshiro128starstar;
+
+MASTER_random_xoroshiro128starstar
+MASTER_random_xoroshiro128starstar_init(UI8 seed) {
+	MASTER_random_xoroshiro128starstar xrs128ss;
+	xrs128ss.__x[0] = seed;
+	xrs128ss.__x[1] = 0;
+	return xrs128ss;
+}
+
+UI8
+MASTER_random_xoroshiro128starstar_get(MASTER_random_xoroshiro128starstar * const xrs128ss) {
+	const UI8 res = MASTER_RLL64(xrs128ss->__x[0] * 5, 7) * 9;
+	const UI8 t = xrs128ss->__x[1] ^ xrs128ss->__x[0];
+	xrs128ss->__x[0] = MASTER_RLL64(xrs128ss->__x[0], 24) ^ t ^ (t << 16);
+	xrs128ss->__x[1] = MASTER_RLL64(t, 37);
+	return res;
+}
+
+// !!# xoroshiro128**
+
 // #!! xoshiro256+
 
 typedef struct {
@@ -373,6 +447,7 @@ MASTER_random_xoshiro256plus
 MASTER_random_xoshiro256plus_init(UI8 seed) {
 	MASTER_random_xoshiro256plus xs256p;
 	xs256p.__x[0] = seed;
+	xs256p.__x[1] = xs256p.__x[2] = xs256p.__x[3] = 0;
 	return xs256p;
 }
 
@@ -454,9 +529,6 @@ MASTER_random_xoshiro256starstar_get(MASTER_random_xoshiro256starstar * const xs
 // !!# xoshiro256**
 
 /* https://prng.di.unimi.it/
- * xoroshiro128+
- * xoroshiro128++
- * xoroshiro128**
  * xoshiro512+
  * xoshiro512++
  * xoshiro512**
@@ -468,7 +540,6 @@ MASTER_random_xoshiro256starstar_get(MASTER_random_xoshiro256starstar * const xs
  * MWC256
  * GMWC128
  * GMWC256
- * SFC64
  * PCG 128 XSH RS 64 (LCG)
  * PCG64-DXSM (NumPy)
  * Ran
@@ -479,7 +550,53 @@ MASTER_random_xoshiro256starstar_get(MASTER_random_xoshiro256starstar * const xs
  * WELL512a
  * WELL1024a
  * WELL family
+ * https://www.iro.umontreal.ca/~panneton/WELLRNG.html
  */
+ 
+// #! SFC
+
+#define __MASTER_RANDOM_CREATE_SFC_PACKAGE__(name, type, bits, a, b, c) \
+\
+typedef struct { \
+	type __x[4]; \
+} MASTER_random_SFC##name; \
+\
+MASTER_random_SFC##name \
+MASTER_random_SFC##name##_init(type seed) { \
+	MASTER_random_SFC##name sfc##name; \
+	sfc##name.__x[0] = sfc##name.__x[1] = sfc##name.__x[2] = seed; \
+	sfc##name.__x[3] = 1; \
+	return sfc##name; \
+} \
+\
+type \
+MASTER_random_SFC##name##_get( MASTER_random_SFC##name * const sfc##name ) { \
+	const type res = sfc##name->__x[0] + sfc##name->__x[1] + sfc##name->__x[3]++; \
+	sfc##name->__x[0] = sfc##name->__x[1] ^ (sfc##name->__x[1] >> b); \
+	sfc##name->__x[1] = sfc##name->__x[2] + (sfc##name->__x[2] << c); \
+	sfc##name->__x[2] = MASTER_RLL##bits(sfc##name->__x[2], a) + res; \
+	return res; \
+}
+
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(64A, UI8, 64, 24, 11, 3);  /* standart */
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(64B, UI8, 64, 25, 12, 3);
+
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(32A, UI4, 32, 21, 9, 3);  /* standart */
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(32B, UI4, 32, 15, 8, 3);
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(32C, UI4, 32, 25, 8, 3);
+
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(16A, UI2, 16, 4, 3, 2);
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(16B, UI2, 16, 6, 5, 2);
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(16C, UI2, 16, 4, 5, 3);
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(16D, UI2, 16, 6, 5, 3); /* standart */
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(16E, UI2, 16, 7, 5, 3);
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(16F, UI2, 16, 7, 3, 2);
+
+__MASTER_RANDOM_CREATE_SFC_PACKAGE__(8, UI1, 8, 3, 2, 1);
+
+#undef __MASTER_RANDOM_CREATE_SFC_PACKAGE__
+
+// !# SFC
 
 // !# XorShift
 
@@ -513,7 +630,7 @@ MASTER_random_splitmix64_get(MASTER_random_splitmix64 * const sm64) {
 // #! RDRAND
 
 UI1
-MASTER_rdrand_supported(void) {
+MASTER_random_rdrand_supported(void) {
 #if defined(__x86_64__) || defined(__i386__)
 	UI4 eax, ebx, ecx, edx;
 	if (__get_cpuid(1, &eax, &ebx, &ecx, &edx))
@@ -530,11 +647,11 @@ MASTER_rdrand_supported(void) {
 	return ok; }
 
 UI1
-MASTER_rdrand16_get(UI2 * rand) MASTER_RDRAND_CONTENT
+MASTER_random_rdrand16_get(UI2 * rand) MASTER_RDRAND_CONTENT
 UI1
-MASTER_rdrand32_get(UI4 * rand) MASTER_RDRAND_CONTENT
+MASTER_random_rdrand32_get(UI4 * rand) MASTER_RDRAND_CONTENT
 UI1
-MASTER_rdrand64_get(UI8 * rand) MASTER_RDRAND_CONTENT
+MASTER_random_rdrand64_get(UI8 * rand) MASTER_RDRAND_CONTENT
 
 #undef MASTER_RDRAND_CONTENT
 
@@ -545,7 +662,7 @@ MASTER_rdrand64_get(UI8 * rand) MASTER_RDRAND_CONTENT
 // #! RDSEED
 
 UI1
-MASTER_rdseed_supported(void) {
+MASTER_random_rdseed_supported(void) {
 #if defined(__x86_64__) || defined(__i386__)
 	UI4 eax, ebx, ecx, edx;
 	if (__get_cpuid(1, &eax, &ebx, &ecx, &edx))
@@ -563,11 +680,11 @@ MASTER_rdseed_supported(void) {
 }
 
 UI1
-MASTER_rdseed16_get(UI2 * rand) MASTER_RDSEED_CONTENT
+MASTER_random_rdseed16_get(UI2 * rand) MASTER_RDSEED_CONTENT
 UI1
-MASTER_rdseed32_get(UI4 * rand) MASTER_RDSEED_CONTENT
+MASTER_random_rdseed32_get(UI4 * rand) MASTER_RDSEED_CONTENT
 UI1
-MASTER_rdseed64_get(UI8 * rand) MASTER_RDSEED_CONTENT
+MASTER_random_rdseed64_get(UI8 * rand) MASTER_RDSEED_CONTENT
 
 #undef MASTER_RDSEED_CONTENT
 

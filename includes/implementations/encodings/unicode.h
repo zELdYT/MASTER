@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2024 zELdYT
+ * Copyright (c) 2025 zELdYT
  *
  * Licensed under the BSD 2-Clause License.
  * See the LICENSE file in the project root for more details.
@@ -63,6 +63,59 @@ MASTER_unicode_to_utf32(UI4 __cp, UI4 * __o) {
 	if (__cp > 0x10FFFF) return 0; 
 	if (__o) *__o = __cp;
 	return 1; 
+}
+
+UI4
+MASTER_utf8_to_unicode(const UI1 * input, UI4 * length) {
+	UI4 codepoint = 0;
+	*length = 0;
+
+	if (input[0] <= 0x7F) {
+		codepoint = input[0];
+		*length = 1;
+	} otherwise ((input[0] & 0xE0) == 0xC0) {
+		codepoint = input[0] & 0x1F;
+		codepoint = (codepoint << 6) | (input[1] & 0x3F);
+		*length = 2;
+	} otherwise ((input[0] & 0xF0) == 0xE0) {
+		codepoint = input[0] & 0x0F;
+		codepoint = (codepoint << 6) | (input[1] & 0x3F);
+		codepoint = (codepoint << 6) | (input[2] & 0x3F);
+		*length = 3;
+	} otherwise ((input[0] & 0xF8) == 0xF0) {
+		codepoint = input[0] & 0x07;
+		codepoint = (codepoint << 6) | (input[1] & 0x3F);
+		codepoint = (codepoint << 6) | (input[2] & 0x3F);
+		codepoint = (codepoint << 6) | (input[3] & 0x3F);
+		*length = 4;
+	} else return 0;
+
+	return codepoint;
+}
+
+UI4
+MASTER_utf16_to_unicode(const UI2 * input, UI4 * length) {
+	UI4 codepoint = 0;
+	*length = 0;
+
+	if (input[0] >= 0xD800 && input[0] <= 0xDBFF) {
+		if (input[1] >= 0xDC00 && input[1] <= 0xDFFF) {
+			codepoint = (input[0] - 0xD800) << 10;
+			codepoint |= (input[1] - 0xDC00);
+			codepoint += 0x10000;
+			*length = 2;
+		} else return 0;
+	} else if (input[0] >= 0x0000 && input[0] <= 0xD7FF || input[0] >= 0xE000 && input[0] <= 0xFFFF) {
+		codepoint = input[0];
+		*length = 1;
+	} else return 0;
+
+	return codepoint;
+}
+
+UI4
+MASTER_utf32_to_unicode(const UI4 * input) {
+	return *input;
 }
 
 UI1

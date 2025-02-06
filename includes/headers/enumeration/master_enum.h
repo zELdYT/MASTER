@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2024 zELdYT
+ * Copyright (c) 2025 zELdYT
  *
  * Licensed under the BSD 2-Clause License.
  * See the LICENSE file in the project root for more details.
@@ -21,20 +21,14 @@ typedef signed int SI4;
 
 #ifdef __cplusplus
 	typedef unsigned long long MASTER_maxint;
-	typedef unsigned long long int UI8;
-	typedef signed long long int SI8;
 	#define MASTER_64_AVAILABLE 1
 #elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 	#include <limits.h>
 	#if defined(ULLONG_MAX)
 		typedef unsigned long long MASTER_maxint;
-		typedef unsigned long long int UI8;
-		typedef signed long long int SI8;
 		#define MASTER_64_AVAILABLE 1
 	#elif defined(ULONG_MAX) && (ULONG_MAX >= 0xFFFFFFFFFFFFFFFFULL)
 		typedef unsigned long MASTER_maxint;
-		typedef unsigned long long int UI8;
-		typedef signed long long int SI8;
 		#define MASTER_64_AVAILABLE 1
 	#else
 		typedef unsigned long MASTER_maxint;
@@ -44,8 +38,6 @@ typedef signed int SI4;
 	#include <limits.h>
 	#if defined(ULONG_MAX) && (ULONG_MAX >= 0xFFFFFFFFFFFFFFFFULL)
 		typedef unsigned long MASTER_maxint;
-		typedef unsigned long long int UI8;
-		typedef signed long long int SI8;
 		#define MASTER_64_AVAILABLE 1
 	#elif defined(ULONG_MAX) && (ULONG_MAX >= 0xFFFFFFFFUL)
 		typedef unsigned long MASTER_maxint;
@@ -55,6 +47,11 @@ typedef signed int SI4;
 		#define MASTER_64_AVAILABLE 0
 	#endif
 #endif
+
+#if MASTER_64_AVAILABLE == 1
+	typedef unsigned long long int UI8;
+	typedef signed long long int SI8;
+#endif /* MASTER_64_AVAILABLE */
 
 typedef enum {
 	MASTER_NO_ERROR = 0,
@@ -87,6 +84,7 @@ typedef enum {
 	#define MASTER_ASSERT(expr, msg)
 #endif /* MASTER_ENABLE_ASSERTIONS */
 
+#include <stdlib.h>
 #ifdef MASTER_MEMORY_SAFE
 	#ifndef MASTER_FUNCTION_ON_FAILURE_MALLOC
 		#error \
@@ -136,10 +134,16 @@ typedef enum {
 
 /* ENDIAN CHECK */
 
+#define MASTER_RLL8(a, n) (((a) << (n)) | ((a) >> (8 - (n))))
+#define MASTER_RLL16(a, n) (((a) << (n)) | ((a) >> (16 - (n))))
 #define MASTER_RLL32(a, n) (((a) << (n)) | ((a) >> (32 - (n))))
 #define MASTER_RLL64(a, n) (((a) << (n)) | ((a) >> (64 - (n))))
+#define MASTER_RLLN(a, n, k) (((a) << (n)) | ((a) >> ((k) - (n))))
+#define MASTER_RLR8(a, n) (((a) >> (n)) | ((a) << (8 - (n))))
+#define MASTER_RLR16(a, n) (((a) >> (n)) | ((a) << (16 - (n))))
 #define MASTER_RLR32(a, n) (((a) >> (n)) | ((a) << (32 - (n))))
 #define MASTER_RLR64(a, n) (((a) >> (n)) | ((a) << (64 - (n))))
+#define MASTER_RLRN(a, n, k) (((a) >> (n)) | ((a) << ((k) - (n))))
 
 #define MASTER_UNKNOWN_ENDIAN 0
 #define MASTER_LITTLE_ENDIAN 1

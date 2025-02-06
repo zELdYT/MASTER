@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2024 zELdYT
+ * Copyright (c) 2025 zELdYT
  *
  * Licensed under the BSD 2-Clause License.
  * See the LICENSE file in the project root for more details.
@@ -112,7 +112,7 @@ MASTER_CP872_table[256] = {
 	{ U"Y", 0x59 },
 	{ U"Z", 0x5a },
 	{ U"[", 0x5b },
-	{ U"\", 0x5c },
+	{ U"\\", 0x5c },
 	{ U"]", 0x5d },
 	{ U"^", 0x5e },
 	{ U"_", 0x5f },
